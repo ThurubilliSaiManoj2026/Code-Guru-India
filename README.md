@@ -152,4 +152,4 @@ If you found this useful, please give it a ⭐ on GitHub!
 
 ---
 
-*Made with ❤️ for Indian students — భారత విద్యార్థుల కోసం తయారు చేయబడింది*
+*Made with ❤️ for Indian students
