@@ -1,0 +1,6 @@
+﻿venv/
+.env
+__pycache__/
+*.db
+response.mp3
+*.pyc
