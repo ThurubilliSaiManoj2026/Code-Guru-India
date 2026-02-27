@@ -149,7 +149,3 @@ codeguru-india/
 ## ⭐ Support
 
 If you found this useful, please give it a ⭐ on GitHub!
-
----
-
-*Made with ❤️ for Indian students
