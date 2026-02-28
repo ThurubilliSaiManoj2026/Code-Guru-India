@@ -7,62 +7,74 @@ from dotenv import load_dotenv
 load_dotenv()
 
 LANGUAGE_NAMES = {
-    "తెలుగు (Telugu)": "Telugu",
-    "தமிழ் (Tamil)":   "Tamil",
-    "हिंदी (Hindi)":   "Hindi",
+    "తెలుగు (Telugu)":   "Telugu",
+    "தமிழ் (Tamil)":     "Tamil",
+    "हिंदी (Hindi)":     "Hindi",
+    "ಕನ್ನಡ (Kannada)":   "Kannada",
+    "मराठी (Marathi)":   "Marathi",
+}
+
+INDIAN_NAMES = {
+    "Telugu":  "రమేష్, సునీత, కిరణ్, మహేష్, లక్ష్మి",
+    "Tamil":   "ரமேஷ், சுனிதா, கிரண், மகேஷ், லக்ஷ்மி",
+    "Hindi":   "रमेश, सुनीता, किरण, महेश, लक्ष्मी",
+    "Kannada": "ರಮೇಶ್, ಸುನೀತಾ, ಕಿರಣ್, ಮಹೇಶ್, ಲಕ್ಷ್ಮಿ",
+    "Marathi": "रमेश, सुनीता, किरण, महेश, लक्ष्मी",
 }
 
 def get_system_prompt(language):
     lang_name = LANGUAGE_NAMES.get(language, "Telugu")
-    return f"""You are an expert coding teacher for Indian students. Always respond in {lang_name}.
+    names = INDIAN_NAMES.get(lang_name, "రమేష్, సునీత")
 
-STRICT RULES — FOLLOW ALL:
-1. Write ENTIRE response in {lang_name} language only
-2. Give a COMPLETE and DETAILED explanation:
-   - If theory question: explain concept clearly in 5-6 sentences
-   - If code question: explain what the code does step by step
-   - If comparison question: explain both sides clearly with differences
-3. Give ONE real-world Indian example relevant to the exact topic asked
-4. Give ONE working code example (English syntax only, short English comments only — NEVER write Telugu/Tamil/Hindi inside code)
-5. End with ONE complete meaningful practice question in {lang_name}
-6. CRITICAL: Always complete every sentence fully — NEVER stop in the middle
-7. CRITICAL: Code must always use English variable names and English comments
-8. Keep explanation under 200 words in {lang_name} but always 100% complete
-9. Never repeat same point twice"""
+    return f"""You are a world-class coding teacher for Indian students.
+Always respond 100% in {lang_name} language only.
+
+RULES:
+1. Write ENTIRE response in {lang_name} — every single word
+2. Give a COMPLETE and THOROUGH explanation based on what the question requires:
+   - Simple question → concise clear answer
+   - Complex question → detailed full explanation with all steps
+   - Never cut off — always finish your answer completely
+3. Give ONE real-world Indian example using names like: {names}
+   - Example must directly match the topic
+4. Give working code example with English syntax and English comments only
+   - NEVER write {lang_name} script inside code blocks
+   - Code must be complete and runnable
+5. End with ONE relevant practice question in {lang_name}
+6. NEVER stop mid-sentence
+7. Answer as thoroughly as the question demands — no artificial word limits
+8. Use simple language that beginners can understand"""
 
 
-QUIZ_PROMPT = """You are a programming and computer science quiz generator.
-Generate exactly 3 multiple choice questions about this PROGRAMMING/CODING topic: {topic}
+QUIZ_PROMPT = """You are a programming quiz generator for Indian students.
+Generate exactly 3 multiple choice questions about this PROGRAMMING topic: {topic}
+All text must be 100% in {lang_name} language.
 
-IMPORTANT: This is about SOFTWARE DEVELOPMENT and COMPUTER SCIENCE only.
-- If topic is "API" → ask about Application Programming Interface in software
-- If topic is "Python" → ask about Python programming language
-- If topic is "ML" → ask about Machine Learning algorithms
-- Never ask about geography, politics, or anything non-technical
+IMPORTANT:
+- Questions must be about SOFTWARE/PROGRAMMING concepts only
+- Never ask about geography or non-technical topics
+- Beginner to intermediate level
 
-All questions must be in {lang_name} language.
-
-Return ONLY this JSON, no extra text:
+Return ONLY this exact JSON, no extra text:
 [
   {{
-    "question": "Programming question in {lang_name}?",
+    "question": "Question 1 in {lang_name}?",
     "options": ["Option A", "Option B", "Option C", "Option D"],
     "correct": 0
   }},
   {{
-    "question": "Programming question in {lang_name}?",
+    "question": "Question 2 in {lang_name}?",
     "options": ["Option A", "Option B", "Option C", "Option D"],
     "correct": 1
   }},
   {{
-    "question": "Programming question in {lang_name}?",
+    "question": "Question 3 in {lang_name}?",
     "options": ["Option A", "Option B", "Option C", "Option D"],
     "correct": 2
   }}
 ]
 
 Rules:
-- Questions about PROGRAMMING CONCEPTS only
 - correct index must be 0, 1, 2, or 3 only
 - No trailing commas
 - Return ONLY the JSON array"""
@@ -75,42 +87,24 @@ class CodingTutor:
             raise ValueError("❌ GROQ_API_KEY not found!")
         self.client = Groq(api_key=api_key)
         print("✅ Groq LLM loaded successfully!")
+        print("✅ Ready!")
 
     def ask(self, question, language="తెలుగు (Telugu)"):
         system_prompt = get_system_prompt(language)
         response = self.client.chat.completions.create(
+            # Fastest + most powerful model on Groq
             model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user",   "content": question}
             ],
-            max_tokens=1500,        # Enough for Telugu/Tamil/Hindi
-            temperature=0.1,
+            max_tokens=8192,        # Maximum allowed — no word limit
+            temperature=0.1,        # Low = accurate, consistent
             frequency_penalty=0.3,
-            presence_penalty=0.2
+            presence_penalty=0.1,
+            stream=False            # Get full response at once
         )
         answer = response.choices[0].message.content.strip()
-
-        # Check if response got cut off mid-sentence
-        if answer and answer[-1] not in [".", "?", "!", "।", "॥"]:
-            # Try to complete it with one more call
-            try:
-                completion = self.client.chat.completions.create(
-                    model="llama-3.3-70b-versatile",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user",   "content": question},
-                        {"role": "assistant", "content": answer},
-                        {"role": "user", "content": "Please complete the last sentence."}
-                    ],
-                    max_tokens=200,
-                    temperature=0.1
-                )
-                extra = completion.choices[0].message.content.strip()
-                answer = answer + " " + extra
-            except:
-                pass
-
         return answer
 
     def generate_quiz(self, topic, language="తెలుగు (Telugu)"):
@@ -127,30 +121,23 @@ class CodingTutor:
                         )
                     }
                 ],
-                max_tokens=900,
+                max_tokens=1024,
                 temperature=0.1
             )
             raw = response.choices[0].message.content.strip()
-
-            # Clean markdown
             raw = raw.replace("```json", "").replace("```", "").strip()
 
-            # Extract JSON
             start = raw.find("[")
-            end = raw.rfind("]") + 1
+            end   = raw.rfind("]") + 1
             if start == -1 or end == 0:
-                print(f"Quiz JSON not found: {raw[:200]}")
                 return None
 
             json_str = raw[start:end]
-
-            # Fix trailing commas
             json_str = re.sub(r',\s*]', ']', json_str)
             json_str = re.sub(r',\s*}', '}', json_str)
 
             quiz = json.loads(json_str)
 
-            # Validate
             valid_quiz = []
             for q in quiz:
                 if (

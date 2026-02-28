@@ -54,9 +54,11 @@ if "answered" not in st.session_state:
 
 # ── BROWSER LANGUAGE CODES ────────────────
 BROWSER_LANG = {
-    "తెలుగు (Telugu)": "te-IN",
-    "தமிழ் (Tamil)":   "ta-IN",
-    "हिंदी (Hindi)":   "hi-IN",
+    "తెలుగు (Telugu)":   "te-IN",
+    "தமிழ் (Tamil)":     "ta-IN",
+    "हिंदी (Hindi)":     "hi-IN",
+    "ಕನ್ನಡ (Kannada)":   "kn-IN",
+    "मराठी (Marathi)":   "mr-IN",
 }
 
 # ── SIDEBAR ──────────────────────────────
@@ -182,7 +184,19 @@ QUICK_Q = {
         "List क्या होती है?",
         "Function कैसे लिखते हैं?",
         "Loop क्या होता है?"
-    ]
+    ],
+    "ಕನ್ನಡ (Kannada)": [
+        "Variable ಎಂದರೇನು?",
+        "List ಎಂದರೇನು?",
+        "Function ಹೇಗೆ ಬರೆಯಬೇಕು?",
+        "Loop ಎಂದರೇನು?"
+    ],
+    "मराठी (Marathi)": [
+        "Variable म्हणजे काय?",
+        "List म्हणजे काय?",
+        "Function कसे लिहायचे?",
+        "Loop म्हणजे काय?"
+    ],
 }
 
 # ── HELPER FUNCTION ───────────────────────

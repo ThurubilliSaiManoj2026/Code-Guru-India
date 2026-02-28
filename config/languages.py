@@ -1,30 +1,35 @@
 # config/languages.py
-
 LANGUAGE_CONFIG = {
     "తెలుగు (Telugu)": {
-        "code": "tel_Telu",
-        "whisper_code": "te",
-        "gtts_code": "te",
-        "welcome": "నమస్కారం! నేను మీ తెలుగు కోడింగ్ గురువుని 🎓",
+        "welcome":     "నమస్కారం! నేను మీ తెలుగు కోడింగ్ గురువుని 🎓",
         "placeholder": "మీ సందేహం ఇక్కడ రాయండి...",
-        "thinking": "ఆలోచిస్తున్నాను...",
+        "thinking":    "🤔 ఆలోచిస్తున్నాను...",
+        "whisper_code": "te",
     },
     "தமிழ் (Tamil)": {
-        "code": "tam_Taml",
+        "welcome":     "வணக்கம்! நான் உங்கள் தமிழ் கோடிங் குரு 🎓",
+        "placeholder": "உங்கள் கேள்வியை இங்கே எழுதுங்கள்...",
+        "thinking":    "🤔 யோசிக்கிறேன்...",
         "whisper_code": "ta",
-        "gtts_code": "ta",
-        "welcome": "வணக்கம்! நான் உங்கள் கோடிங் ஆசிரியர் 🎓",
-        "placeholder": "உங்கள் கேள்வியை இங்கே தட்டச்சு செய்யுங்கள்...",
-        "thinking": "யோசிக்கிறேன்...",
     },
     "हिंदी (Hindi)": {
-        "code": "hin_Deva",
-        "whisper_code": "hi",
-        "gtts_code": "hi",
-        "welcome": "नमस्ते! मैं आपका कोडिंग गुरु हूँ 🎓",
+        "welcome":     "नमस्ते! मैं आपका हिंदी कोडिंग गुरु हूँ 🎓",
         "placeholder": "अपना सवाल यहाँ लिखें...",
-        "thinking": "सोच रहा हूँ...",
-    }
+        "thinking":    "🤔 सोच रहा हूँ...",
+        "whisper_code": "hi",
+    },
+    "ಕನ್ನಡ (Kannada)": {
+        "welcome":     "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಕನ್ನಡ ಕೋಡಿಂಗ್ ಗುರು 🎓",
+        "placeholder": "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ...",
+        "thinking":    "🤔 ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ...",
+        "whisper_code": "kn",
+    },
+    "मराठी (Marathi)": {
+        "welcome":     "नमस्कार! मी तुमचा मराठी कोडिंग गुरू आहे 🎓",
+        "placeholder": "तुमचा प्रश्न इथे लिहा...",
+        "thinking":    "🤔 विचार करतोय...",
+        "whisper_code": "mr",
+    },
 }
 
 CURRICULUM = {
