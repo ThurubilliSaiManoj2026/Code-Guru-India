@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CodeGuru India — AI Coding in Your Language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&family=Noto+Sans+Telugu&family=Noto+Sans+Tamil&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════════ */
+:root {
+  --saffron:     #FF6B00;
+  --saffron-lt:  #FF9A3C;
+  --gold:        #F5C842;
+  --cyan:        #00F5FF;
+  --cyan-dim:    rgba(0,245,255,0.15);
+  --green:       #00FF88;
+  --ink:         #04060A;
+  --ink2:        #080D14;
+  --surface:     rgba(255,255,255,0.03);
+  --border:      rgba(255,255,255,0.06);
+  --border-hot:  rgba(255,107,0,0.4);
+  --text:        #EDE8E0;
+  --text-dim:    rgba(237,232,224,0.35);
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ═══════════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════════ */
+#cur {
+  width: 8px; height: 8px;
+  background: var(--saffron);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.08s, background 0.2s;
+  box-shadow: 0 0 16px var(--saffron);
+}
+#cur-trail {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(255,107,0,0.4);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transition: all 0.18s ease;
+}
+body:has(a:hover) #cur,
+body:has(button:hover) #cur { transform: scale(3); background: var(--gold); }
+
+/* ═══════════════════════════════════════════
+   CANVAS & BACKGROUND
+═══════════════════════════════════════════ */
+#universe {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* India flag stripe */
+.tricolor {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    #FF9933 0% 33.3%,
+    #FFFFFF 33.3% 66.6%,
+    #138808 66.6% 100%
+  );
+  z-index: 1000;
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT WRAPPER
+═══════════════════════════════════════════ */
+.page { position: relative; z-index: 2; }
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 2px; left: 0; right: 0;
+  z-index: 500;
+  padding: 0 48px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(4,6,10,0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+}
+
+.nav-logo {
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: blink 2.5s ease-in-out infinite;
+}
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.nav-logo em { color: var(--saffron); font-style: normal; }
+
+.nav-center {
+  display: flex;
+  gap: 4px;
+}
+.nlang {
+  padding: 5px 13px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+  background: transparent;
+}
+.nlang:hover, .nlang.on {
+  border-color: var(--saffron);
+  color: var(--saffron);
+  background: rgba(255,107,0,0.07);
+}
+
+.nav-btn {
+  padding: 9px 22px;
+  background: var(--saffron);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-btn:hover {
+  background: var(--saffron-lt);
+  box-shadow: 0 0 28px rgba(255,107,0,0.45);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  padding: 120px 48px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Mandala background glow */
+.hero::before {
+  content: '';
+  position: absolute;
+  right: -200px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 700px; height: 700px;
+  background: radial-gradient(circle,
+    rgba(255,107,0,0.06) 0%,
+    rgba(255,107,0,0.02) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-left {
+  padding-right: 60px;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid rgba(0,255,136,0.25);
+  border-radius: 100px;
+  font-size: 0.68rem;
+  color: var(--green);
+  margin-bottom: 36px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(0,255,136,0.04);
+  opacity: 0;
+  animation: riseIn 0.9s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.tag-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: blink 2s infinite;
+}
+
+.hero-h1 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(3.2rem, 5.5vw, 5.8rem);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -3px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: riseIn 0.9s 0.25s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.hero-h1 .accent { color: var(--saffron); }
+.hero-h1 .ghost {
+  -webkit-text-stroke: 1px rgba(237,232,224,0.18);
+  color: transparent;
+}
+
+.hero-sub {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.9;
+  max-width: 440px;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: riseIn 0.9s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.hero-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: riseIn 0.9s 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.hlang {
+  padding: 8px 16px;
+  border: 1px solid rgba(255,107,0,0.2);
+  border-radius: 6px;
+  font-size: 1.0rem;
+  background: rgba(255,107,0,0.04);
+  transition: all 0.3s;
+  cursor: default;
+  font-family: 'Noto Sans Telugu', 'Noto Sans Tamil', 'Noto Sans Devanagari', sans-serif;
+}
+.hlang:hover {
+  border-color: var(--saffron);
+  background: rgba(255,107,0,0.09);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255,107,0,0.12);
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  opacity: 0;
+  animation: riseIn 0.9s 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.cta-main {
+  padding: 14px 32px;
+  background: var(--saffron);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cta-main:hover {
+  background: var(--saffron-lt);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(255,107,0,0.35);
+}
+.cta-ghost {
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+.cta-ghost:hover {
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.03);
+}
+
+/* HERO RIGHT — floating UI card */
+.hero-right {
+  opacity: 0;
+  animation: riseIn 0.9s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+  position: relative;
+}
+
+.ui-card {
+  background: rgba(8,13,20,0.9);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,107,0,0.06),
+    0 40px 120px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  position: relative;
+}
+.ui-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg,transparent,var(--saffron),transparent);
+  opacity: 0.5;
+}
+
+.ui-topbar {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+.dot { width:11px; height:11px; border-radius:50%; }
+.dr { background:#FF5F57; }
+.dy { background:#FEBC2E; }
+.dg { background:#28C840; }
+.ui-title {
+  flex: 1;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+.ui-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 380px;
+}
+
+.ui-question {
+  align-self: flex-end;
+  background: var(--saffron);
+  color: #000;
+  padding: 11px 18px;
+  border-radius: 14px 14px 3px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  max-width: 80%;
+  font-family: 'Noto Sans Telugu', sans-serif;
+}
+
+.ui-answer {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  border-radius: 3px 14px 14px 14px;
+  font-size: 0.77rem;
+  color: rgba(237,232,224,0.75);
+  max-width: 92%;
+  line-height: 1.75;
+  font-family: 'Noto Sans Telugu', sans-serif;
+}
+
+.ui-code {
+  background: #020810;
+  border: 1px solid rgba(0,245,255,0.15);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 0.7rem;
+  color: var(--cyan);
+  line-height: 1.9;
+  font-family: 'JetBrains Mono', monospace;
+  position: relative;
+}
+.ui-code::before {
+  content: 'python';
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 0.6rem;
+  color: rgba(0,245,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.code-kw { color: var(--saffron); }
+.code-str { color: var(--green); }
+.code-cmt { color: rgba(255,255,255,0.25); }
+.code-fn { color: var(--gold); }
+
+.ui-quiz-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.15);
+  border-radius: 8px;
+  font-size: 0.72rem;
+  color: var(--green);
+}
+
+/* floating stats */
+.float-stat {
+  position: absolute;
+  background: rgba(8,13,20,0.92);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.float-stat-1 {
+  top: -20px; left: -50px;
+  animation: float1 5s ease-in-out infinite;
+}
+.float-stat-2 {
+  bottom: 30px; right: -40px;
+  animation: float2 6s ease-in-out infinite;
+}
+@keyframes float1 {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(-2deg); }
+}
+@keyframes float2 {
+  0%,100% { transform: translateY(0) rotate(2deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+.fstat-num {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--saffron);
+  line-height: 1;
+}
+.fstat-label {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1),
+              transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.up { opacity: 1; transform: none; }
+.d1 { transition-delay: 0.05s; }
+.d2 { transition-delay: 0.15s; }
+.d3 { transition-delay: 0.25s; }
+.d4 { transition-delay: 0.35s; }
+.d5 { transition-delay: 0.45s; }
+.d6 { transition-delay: 0.55s; }
+
+/* ═══════════════════════════════════════════
+   FEATURES
+═══════════════════════════════════════════ */
+.features {
+  padding: 140px 48px;
+  position: relative;
+}
+.sec-eyebrow {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 14px;
+}
+.sec-h2 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: -2.5px;
+  line-height: 1.05;
+  margin-bottom: 70px;
+}
+.sec-h2 em { font-style: normal; color: var(--saffron); }
+
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.feat-card {
+  padding: 36px 30px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+.feat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--saffron), var(--gold), var(--cyan));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s;
+}
+.feat-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255,107,0,0.25);
+  background: rgba(255,107,0,0.03);
+}
+.feat-card:hover::after { transform: scaleX(1); }
+
+.feat-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: rgba(255,107,0,0.08);
+  border: 1px solid rgba(255,107,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 22px;
+}
+.feat-num {
+  font-size: 0.6rem;
+  color: rgba(255,107,0,0.45);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.feat-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+.feat-desc {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════
+   DEMO WINDOW SECTION
+═══════════════════════════════════════════ */
+.demo-sec {
+  padding: 100px 48px 140px;
+  position: relative;
+}
+
+/* Glow behind demo */
+.demo-sec::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 800px; height: 400px;
+  background: radial-gradient(ellipse, rgba(255,107,0,0.04), transparent 70%);
+  pointer-events: none;
+}
+
+.demo-wrap {
+  background: rgba(5,10,18,0.95);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,107,0,0.04),
+    0 60px 160px rgba(0,0,0,0.7);
+}
+.demo-bar {
+  padding: 15px 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.025);
+  border-bottom: 1px solid var(--border);
+}
+.demo-url-bar {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  min-height: 540px;
+}
+
+.dsidebar {
+  border-right: 1px solid var(--border);
+  padding: 22px 16px;
+  background: rgba(255,255,255,0.01);
+}
+.dsb-logo {
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 18px;
+  color: rgba(255,255,255,0.8);
+}
+.dsb-lang {
+  background: rgba(255,107,0,0.08);
+  border: 1px solid rgba(255,107,0,0.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  color: var(--saffron);
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.dsb-section {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.dsb-item {
+  padding: 9px 12px;
+  border-radius: 7px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.dsb-item:hover {
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.7);
+}
+
+.dmain {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+.dmsg-u {
+  align-self: flex-end;
+  background: var(--saffron);
+  color: #000;
+  padding: 10px 16px;
+  border-radius: 14px 14px 3px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  max-width: 75%;
+  font-family: 'Noto Sans Telugu', sans-serif;
+}
+.dmsg-a {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  border-radius: 3px 14px 14px 14px;
+  font-size: 0.75rem;
+  color: rgba(237,232,224,0.7);
+  max-width: 90%;
+  line-height: 1.8;
+  font-family: 'Noto Sans Telugu', sans-serif;
+}
+.dcode {
+  background: #020810;
+  border: 1px solid rgba(0,245,255,0.12);
+  border-radius: 9px;
+  padding: 12px 14px;
+  font-size: 0.68rem;
+  color: var(--cyan);
+  line-height: 1.9;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 8px;
+}
+
+.dquiz {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dq-header {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.dq-q {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  font-family: 'Noto Sans Telugu', sans-serif;
+}
+.dq-opt {
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Noto Sans Telugu', sans-serif;
+}
+.dq-opt:hover { border-color: var(--saffron); color: rgba(255,255,255,0.8); }
+.dq-correct {
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+  background: rgba(0,255,136,0.04);
+}
+.dq-score {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 8px;
+  font-size: 0.72rem;
+  color: var(--green);
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════
+   LANGUAGES
+═══════════════════════════════════════════ */
+.langs-sec {
+  padding: 120px 48px;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,107,0,0.02) 50%, transparent 100%);
+}
+.langs-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 56px;
+}
+.lang-c {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 20px;
+  text-align: center;
+  background: var(--surface);
+  cursor: default;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  position: relative;
+  overflow: hidden;
+}
+.lang-c::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,107,0,0.07), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.lang-c:hover { transform: translateY(-10px); border-color: rgba(255,107,0,0.3); }
+.lang-c:hover::before { opacity: 1; }
+.lang-script {
+  font-size: 2.6rem;
+  line-height: 1;
+  margin-bottom: 14px;
+  display: block;
+  font-family: 'Noto Sans Telugu', 'Noto Sans Tamil', 'Noto Sans Devanagari', sans-serif;
+}
+.lang-en { font-family: 'Clash Display', sans-serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+.lang-native {
+  font-size: 0.8rem;
+  color: var(--saffron);
+  font-family: 'Noto Sans Telugu','Noto Sans Tamil','Noto Sans Devanagari',sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   COMPILER SHOWCASE
+═══════════════════════════════════════════ */
+.compiler-sec {
+  padding: 120px 48px;
+}
+.compiler-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 60px;
+  align-items: center;
+  margin-top: 60px;
+}
+.compiler-info { }
+.compiler-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+}
+.clang {
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  transition: all 0.2s;
+  cursor: default;
+}
+.clang:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: var(--cyan-dim);
+}
+
+.compiler-window {
+  background: #020810;
+  border: 1px solid rgba(0,245,255,0.12);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(0,245,255,0.04);
+}
+.cw-bar {
+  padding: 12px 18px;
+  background: rgba(0,245,255,0.04);
+  border-bottom: 1px solid rgba(0,245,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  color: var(--cyan);
+}
+.cw-lang-badge {
+  margin-left: auto;
+  padding: 3px 10px;
+  border: 1px solid rgba(0,245,255,0.2);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  color: var(--cyan);
+  letter-spacing: 1px;
+}
+.cw-code {
+  padding: 24px;
+  font-size: 0.78rem;
+  color: var(--cyan);
+  line-height: 2;
+}
+.cw-output {
+  padding: 16px 24px;
+  background: rgba(0,255,136,0.03);
+  border-top: 1px solid rgba(0,255,136,0.1);
+  font-size: 0.78rem;
+  color: var(--green);
+}
+.cw-prompt {
+  color: rgba(0,255,136,0.4);
+  margin-right: 8px;
+}
+
+/* ═══════════════════════════════════════════
+   STATS ROW
+═══════════════════════════════════════════ */
+.stats-sec {
+  padding: 80px 48px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 0;
+}
+.stat-item {
+  text-align: center;
+  padding: 30px;
+  border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+.stat-big {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--saffron);
+  letter-spacing: -3px;
+  line-height: 1;
+}
+.stat-lbl {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════
+   TECH STACK
+═══════════════════════════════════════════ */
+.tech-sec {
+  padding: 120px 48px;
+}
+.tech-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 40px;
+}
+.tbadge {
+  padding: 9px 18px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  background: var(--surface);
+  transition: all 0.25s;
+  cursor: default;
+}
+.tbadge:hover {
+  border-color: var(--saffron);
+  color: var(--saffron);
+  background: rgba(255,107,0,0.05);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════
+   CTA BANNER
+═══════════════════════════════════════════ */
+.cta-sec {
+  padding: 160px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse, rgba(255,107,0,0.07), transparent 65%);
+  pointer-events: none;
+}
+.cta-h2 {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(3rem, 6vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -4px;
+  line-height: 1;
+  margin-bottom: 22px;
+}
+.cta-h2 em { font-style: normal; color: var(--saffron); }
+.cta-sub {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 48px;
+  letter-spacing: 0.3px;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  padding: 32px 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo {
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.footer-logo em { font-style: normal; color: var(--saffron); }
+.footer-copy {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.3px;
+}
+.footer-flag { font-size: 1.6rem; }
+
+/* ═══════════════════════════════════════════
+   KEYFRAMES
+═══════════════════════════════════════════ */
+@keyframes riseIn {
+  from { opacity:0; transform:translateY(28px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: rgba(255,107,0,0.25); border-radius:2px; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE (basic)
+═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .feat-grid { grid-template-columns: 1fr 1fr; }
+  .langs-grid { grid-template-columns: repeat(3,1fr); }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .compiler-wrap { grid-template-columns: 1fr; }
+  .demo-grid { grid-template-columns: 1fr; }
+  .dsidebar, .dquiz { display: none; }
+  nav { padding: 0 20px; }
+  .nav-center { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .features, .demo-sec, .langs-sec, .compiler-sec, .cta-sec { padding-left: 24px; padding-right: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-trail"></div>
+
+<!-- INDIA TRICOLOR -->
+<div class="tricolor"></div>
+
+<!-- CANVAS BG -->
+<canvas id="universe"></canvas>
+<div class="grain"></div>
+
+<div class="page">
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    Code<em>Guru</em> India
+  </div>
+  <div class="nav-center">
+    <div class="nlang on">తెలుగు</div>
+    <div class="nlang">தமிழ்</div>
+    <div class="nlang">हिंदी</div>
+    <div class="nlang">ಕನ್ನಡ</div>
+    <div class="nlang">मराठी</div>
+  </div>
+  <a href="https://codeguru-india-lb5idw9qmjkwujggvsdwiz.streamlit.app" target="_blank" class="nav-btn">
+    Launch App <span>↗</span>
+  </a>
+</nav>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">
+      <span class="tag-dot"></span>
+      India's First Multilingual AI Coding Tutor
+    </div>
+
+    <h1 class="hero-h1">
+      Learn Code<br>
+      <em class="accent">In Your</em><br>
+      <span class="ghost">Language</span>
+    </h1>
+
+    <p class="hero-sub">
+      AI-powered coding education in Telugu, Tamil, Hindi, Kannada & Marathi.
+      Ask questions in your mother tongue, get complete answers, run code instantly.
+    </p>
+
+    <div class="hero-langs">
+      <div class="hlang">తెలుగు లో నేర్చుకో</div>
+      <div class="hlang">தமிழில் கற்று</div>
+      <div class="hlang">हिंदी में सीखो</div>
+      <div class="hlang">ಕನ್ನಡದಲ್ಲಿ ಕಲಿ</div>
+      <div class="hlang">मराठीत शिका</div>
+    </div>
+
+    <div class="hero-ctas">
+      <a href="https://codeguru-india-lb5idw9qmjkwujggvsdwiz.streamlit.app" target="_blank" class="cta-main">
+        🚀 Start Learning Free
+      </a>
+      <a href="https://github.com/ThurubilliSaiManoj2026/codeguru-india" target="_blank" class="cta-ghost">
+        GitHub ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- FLOATING UI MOCKUP -->
+  <div class="hero-right">
+    <!-- floating badges -->
+    <div class="float-stat float-stat-1">
+      <div class="fstat-num">22</div>
+      <div class="fstat-label">Languages</div>
+    </div>
+    <div class="float-stat float-stat-2">
+      <div class="fstat-num">&lt;3s</div>
+      <div class="fstat-label">Response</div>
+    </div>
+
+    <div class="ui-card">
+      <div class="ui-topbar">
+        <div class="dot dr"></div>
+        <div class="dot dy"></div>
+        <div class="dot dg"></div>
+        <div class="ui-title">codeguru-india.streamlit.app</div>
+      </div>
+      <div class="ui-body">
+        <div class="ui-question">Python లో string reverse ఎలా చేయాలి?</div>
+        <div class="ui-answer">
+          Python లో string ని reverse చేయడానికి slicing పద్ధతి వాడతాము. <code style="color:var(--saffron)">[::-1]</code> అంటే చివరి నుండి మొదటికి చదవడం. రమేష్ ఒక password checker తయారు చేస్తున్నాడు:
+          <div class="ui-code">
+<span class="code-cmt"># String Reverse - 3 Methods</span><br>
+name = <span class="code-str">"Ramesh"</span><br>
+<br>
+<span class="code-cmt"># Method 1: Slicing (fastest)</span><br>
+rev = name[<span class="code-kw">::-1</span>]<br>
+<span class="code-fn">print</span>(rev)  <span class="code-cmt"># hsemaR</span><br>
+<br>
+<span class="code-cmt"># Method 2: reversed()</span><br>
+rev2 = <span class="code-str">''</span>.join(<span class="code-fn">reversed</span>(name))
+          </div>
+        </div>
+        <div class="ui-quiz-badge">
+          🧠 Quiz ready — 3 questions generated in Telugu
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ STATS -->
+<div class="stats-sec">
+  <div class="stats-row">
+    <div class="stat-item reveal d1">
+      <div class="stat-big">5</div>
+      <div class="stat-lbl">Indian Languages</div>
+    </div>
+    <div class="stat-item reveal d2">
+      <div class="stat-big">22</div>
+      <div class="stat-lbl">Compiler Languages</div>
+    </div>
+    <div class="stat-item reveal d3">
+      <div class="stat-big">&lt;3s</div>
+      <div class="stat-lbl">AI Response Time</div>
+    </div>
+    <div class="stat-item reveal d4">
+      <div class="stat-big">∞</div>
+      <div class="stat-lbl">Questions Supported</div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FEATURES -->
+<section class="features">
+  <p class="sec-eyebrow reveal">Capabilities</p>
+  <h2 class="sec-h2 reveal">Everything you need<br>to <em>code confidently</em></h2>
+
+  <div class="feat-grid">
+    <div class="feat-card reveal d1">
+      <div class="feat-icon">🎙️</div>
+      <div class="feat-num">01 — Voice Input</div>
+      <div class="feat-title">Speak Your Question</div>
+      <div class="feat-desc">Google-quality Web Speech API. Ask in Telugu, Tamil, Hindi, Kannada or Marathi. Auto-stops when you finish.</div>
+    </div>
+    <div class="feat-card reveal d2">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-num">02 — AI Engine</div>
+      <div class="feat-title">LLaMA 3.3 70B via Groq</div>
+      <div class="feat-desc">World's fastest open-source LLM. Complete detailed answers in under 3 seconds. No word limits — full explanations every time.</div>
+    </div>
+    <div class="feat-card reveal d3">
+      <div class="feat-icon">🇮🇳</div>
+      <div class="feat-num">03 — Desi Context</div>
+      <div class="feat-title">Real Indian Examples</div>
+      <div class="feat-desc">Every answer uses relatable Indian examples — Ramesh's shop inventory, Sunita's hospital system, Kiran's bank app.</div>
+    </div>
+    <div class="feat-card reveal d4">
+      <div class="feat-icon">📝</div>
+      <div class="feat-num">04 — Auto Quiz</div>
+      <div class="feat-title">Test After Every Answer</div>
+      <div class="feat-desc">3 MCQ questions auto-generated in your language after each answer. Instant scoring and feedback.</div>
+    </div>
+    <div class="feat-card reveal d5">
+      <div class="feat-icon">💻</div>
+      <div class="feat-num">05 — Live Compiler</div>
+      <div class="feat-title">22 Languages, Zero Setup</div>
+      <div class="feat-desc">Python, Java, C++, JavaScript, Kotlin, Go, Rust, Swift and 14 more. Run code in browser instantly.</div>
+    </div>
+    <div class="feat-card reveal d6">
+      <div class="feat-icon">📊</div>
+      <div class="feat-num">06 — Progress</div>
+      <div class="feat-title">ChatGPT-Style History</div>
+      <div class="feat-desc">Full question history per student. Click any past question to reload it. Track your learning journey.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DEMO -->
+<section class="demo-sec">
+  <p class="sec-eyebrow reveal">Live Preview</p>
+  <h2 class="sec-h2 reveal">See it in <em>action</em></h2>
+
+  <div class="demo-wrap reveal">
+    <div class="demo-bar">
+      <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+      <div class="demo-url-bar">codeguru-india.streamlit.app</div>
+    </div>
+    <div class="demo-grid">
+      <div class="dsidebar">
+        <div class="dsb-logo">📖🎓 CodeGuru India</div>
+        <div class="dsb-lang">తెలుగు (Telugu) <span>▾</span></div>
+        <div class="dsb-section">Recent Questions</div>
+        <div class="dsb-item">💬 Variable అంటే ఏమిటి?</div>
+        <div class="dsb-item">💬 List vs Tuple?</div>
+        <div class="dsb-item">💬 OOP concepts explain...</div>
+        <div class="dsb-item">💬 SQL joins అంటే?</div>
+        <div class="dsb-item">💬 Machine Learning intro</div>
+        <div class="dsb-item">💬 Recursion ఏమిటి?</div>
+      </div>
+      <div class="dmain">
+        <div class="dmsg-u">Python లో string reverse ఎలా చేయాలి?</div>
+        <div class="dmsg-a">
+          Python లో string ని reverse చేయడానికి మూడు methods ఉన్నాయి. అత్యంత సులభమైన మరియు వేగవంతమైన పద్ధతి slicing ని ఉపయోగించడం.
+          <br><br>
+          రమేష్ ఒక password validation system తయారు చేస్తున్నాడు. అతను user password ని reverse చేసి store చేయాలనుకుంటున్నాడు:
+          <div class="dcode">
+<span style="color:var(--text-dim)"># String Reverse in Python</span><br>
+password = <span style="color:var(--green)">"Ramesh@123"</span><br>
+<br>
+<span style="color:var(--text-dim)"># Method 1: Slicing (Best)</span><br>
+<span style="color:var(--cyan)">reversed_pwd = password[::-1]</span><br>
+<span style="color:var(--gold)">print</span>(reversed_pwd)  <span style="color:var(--text-dim)"># 321@hsemaR</span><br>
+<br>
+<span style="color:var(--text-dim)"># Method 2: reversed() built-in</span><br>
+rev2 = <span style="color:var(--green)">''</span>.join(<span style="color:var(--gold)">reversed</span>(password))<br>
+<span style="color:var(--gold)">print</span>(rev2)
+          </div>
+        </div>
+      </div>
+      <div class="dquiz">
+        <div class="dq-header">🧠 Quick Quiz</div>
+        <div class="dq-q">Q1: Python లో string reverse చేయడానికి ఏ slicing వాడాలి?</div>
+        <div class="dq-opt">string[0:-1]</div>
+        <div class="dq-opt dq-correct">string[::-1] ✓</div>
+        <div class="dq-opt">string[-1:0]</div>
+        <div class="dq-opt">string[1::]</div>
+        <div class="dq-score">🎯 Score: 1/1 — Excellent!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LANGUAGES -->
+<section class="langs-sec">
+  <p class="sec-eyebrow reveal">Supported Languages</p>
+  <h2 class="sec-h2 reveal">Your language,<br><em>your way</em></h2>
+  <div class="langs-grid">
+    <div class="lang-c reveal d1">
+      <span class="lang-script">అ</span>
+      <div class="lang-en">Telugu</div>
+      <div class="lang-native">తెలుగు</div>
+    </div>
+    <div class="lang-c reveal d2">
+      <span class="lang-script">அ</span>
+      <div class="lang-en">Tamil</div>
+      <div class="lang-native">தமிழ்</div>
+    </div>
+    <div class="lang-c reveal d3">
+      <span class="lang-script">अ</span>
+      <div class="lang-en">Hindi</div>
+      <div class="lang-native">हिंदी</div>
+    </div>
+    <div class="lang-c reveal d4">
+      <span class="lang-script">ಅ</span>
+      <div class="lang-en">Kannada</div>
+      <div class="lang-native">ಕನ್ನಡ</div>
+    </div>
+    <div class="lang-c reveal d5">
+      <span class="lang-script">अ</span>
+      <div class="lang-en">Marathi</div>
+      <div class="lang-native">मराठी</div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPILER -->
+<section class="compiler-sec">
+  <div class="compiler-wrap">
+    <div class="compiler-info reveal">
+      <p class="sec-eyebrow">Online Compiler</p>
+      <h2 class="sec-h2" style="margin-bottom:20px;">Run code in<br><em>22 languages</em></h2>
+      <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.8;margin-bottom:24px;">
+        Write and execute code directly in the browser. Python runs locally for instant results. Java, C++, and all others powered by JDoodle API.
+      </p>
+      <div class="compiler-langs">
+        <span class="clang">Python</span><span class="clang">Java</span>
+        <span class="clang">C++</span><span class="clang">C</span>
+        <span class="clang">JavaScript</span><span class="clang">TypeScript</span>
+        <span class="clang">Kotlin</span><span class="clang">Go</span>
+        <span class="clang">Rust</span><span class="clang">Swift</span>
+        <span class="clang">Ruby</span><span class="clang">PHP</span>
+        <span class="clang">C#</span><span class="clang">Dart</span>
+        <span class="clang">Scala</span><span class="clang">R</span>
+        <span class="clang">Haskell</span><span class="clang">Lua</span>
+        <span class="clang">Bash</span><span class="clang">SQL</span>
+        <span class="clang">Perl</span><span class="clang">Assembly</span>
+      </div>
+    </div>
+    <div class="compiler-window reveal">
+      <div class="cw-bar">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <span style="margin-left:8px;">compiler.py</span>
+        <span class="cw-lang-badge">PYTHON</span>
+      </div>
+      <div class="cw-code">
+<span style="color:var(--text-dim)"># Fibonacci Series</span><br>
+<span style="color:var(--saffron)">def</span> <span style="color:var(--gold)">fibonacci</span>(n):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a, b = <span style="color:var(--cyan)">0</span>, <span style="color:var(--cyan)">1</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--saffron)">for</span> _ <span style="color:var(--saffron)">in</span> <span style="color:var(--gold)">range</span>(n):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gold)">print</span>(a, end=<span style="color:var(--green)">' '</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a, b = b, a + b<br>
+<br>
+<span style="color:var(--gold)">fibonacci</span>(<span style="color:var(--cyan)">10</span>)
+      </div>
+      <div class="cw-output">
+        <span class="cw-prompt">$</span>
+        <span style="color:var(--green)">0 1 1 2 3 5 8 13 21 34</span>
+        <div style="margin-top:4px;font-size:0.65rem;color:var(--text-dim);">✓ Executed in 0.08s</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TECH -->
+<section class="tech-sec">
+  <p class="sec-eyebrow reveal">Built With</p>
+  <h2 class="sec-h2 reveal" style="font-size:2rem;">Tech Stack</h2>
+  <div class="tech-row reveal">
+    <span class="tbadge">Python 3.12</span>
+    <span class="tbadge">Streamlit</span>
+    <span class="tbadge">Groq API</span>
+    <span class="tbadge">LLaMA 3.3 70B</span>
+    <span class="tbadge">Web Speech API</span>
+    <span class="tbadge">JDoodle Compiler</span>
+    <span class="tbadge">gTTS</span>
+    <span class="tbadge">SQLite</span>
+    <span class="tbadge">Streamlit Cloud</span>
+    <span class="tbadge">GitHub Actions</span>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CTA -->
+<section class="cta-sec">
+  <div class="cta-glow"></div>
+  <h2 class="cta-h2 reveal">
+    Start learning<br><em>today.</em>
+  </h2>
+  <p class="cta-sub reveal">Free forever. No signup. Just open and start coding.</p>
+  <div class="reveal">
+    <a href="https://codeguru-india-lb5idw9qmjkwujggvsdwiz.streamlit.app" target="_blank" class="cta-main" style="font-size:1rem;padding:18px 44px;display:inline-flex;">
+      🚀 Open CodeGuru India
+    </a>
+  </div>
+</section>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FOOTER -->
+<footer>
+  <div class="footer-logo">Code<em>Guru</em> India</div>
+  <div class="footer-copy">Built with ❤️ for Indian students — భారత విద్యార్థుల కోసం</div>
+  <div class="footer-flag">🇮🇳</div>
+</footer>
+
+</div><!-- end .page -->
+
+<script>
+/* ── CURSOR ── */
+const cur = document.getElementById('cur');
+const trail = document.getElementById('cur-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx-4+'px';
+  cur.style.top  = my-4+'px';
+});
+(function animTrail(){
+  tx += (mx-tx)*0.13; ty += (my-ty)*0.13;
+  trail.style.left = tx-16+'px';
+  trail.style.top  = ty-16+'px';
+  requestAnimationFrame(animTrail);
+})();
+
+/* ── CANVAS UNIVERSE — neural/particle system ── */
+const canvas = document.getElementById('universe');
+const ctx = canvas.getContext('2d');
+
+function resize(){
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); initParticles(); });
+
+const PCOUNT = 90;
+let particles = [];
+
+// Floating script characters
+const SCRIPTS = ['అ','ఆ','ఇ','అ','க','அ','त','न','ಅ','ಕ','अ','न','0','1','{}','[]','()','<>','//','fn','def','int','='];
+
+function initParticles(){
+  particles = [];
+  for(let i=0;i<PCOUNT;i++){
+    particles.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      vx:(Math.random()-.5)*.35,
+      vy:(Math.random()-.5)*.35,
+      r: Math.random()*1.5+.5,
+      char: Math.random()<0.3 ? SCRIPTS[Math.floor(Math.random()*SCRIPTS.length)] : null,
+      fontSize: Math.random()*10+8,
+      opacity: Math.random()*0.3+0.05,
+    });
+  }
+}
+initParticles();
+
+function drawUniverse(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // connections
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<130){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`rgba(255,107,0,${0.08*(1-dist/130)})`;
+        ctx.lineWidth=.4;
+        ctx.stroke();
+      }
+    }
+  }
+
+  // nodes
+  particles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0||p.x>canvas.width)  p.vx*=-1;
+    if(p.y<0||p.y>canvas.height) p.vy*=-1;
+
+    if(p.char){
+      ctx.font=`${p.fontSize}px 'Noto Sans Telugu','Noto Sans Tamil','Noto Sans Devanagari','JetBrains Mono',monospace`;
+      ctx.fillStyle=`rgba(255,107,0,${p.opacity*0.6})`;
+      ctx.fillText(p.char,p.x,p.y);
+    } else {
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,107,0,${p.opacity+0.1})`;
+      ctx.fill();
+    }
+  });
+
+  requestAnimationFrame(drawUniverse);
+}
+drawUniverse();
+
+/* ── SCROLL REVEAL ── */
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      const delay = parseFloat(e.target.style.transitionDelay||0)*1000;
+      setTimeout(()=> e.target.classList.add('up'), delay+50);
+    }
+  });
+},{threshold:0.1});
+reveals.forEach(r=>io.observe(r));
+
+/* ── NAV LANG PILLS ── */
+document.querySelectorAll('.nlang').forEach(p=>{
+  p.addEventListener('click',function(){
+    document.querySelectorAll('.nlang').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+
+/* ── QUIZ OPTS (demo interaction) ── */
+document.querySelectorAll('.dq-opt:not(.dq-correct)').forEach(opt=>{
+  opt.addEventListener('click',function(){
+    this.style.borderColor='rgba(255,107,0,0.4)';
+    this.style.color='rgba(255,107,0,0.7)';
+    setTimeout(()=>{
+      this.style.borderColor='';
+      this.style.color='';
+    },600);
+  });
+});
+</script>
+</body>
+</html>
