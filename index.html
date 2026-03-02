@@ -1,1610 +1,1654 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CodeGuru India — AI Coding in Your Language</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;700&family=Noto+Sans+Telugu&family=Noto+Sans+Tamil&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CodeGuru India — AI Coding Tutor in Your Language</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+Telugu&family=Noto+Sans+Tamil&family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --surface2: #16162a;
+      --border: rgba(255,255,255,0.07);
+      --saffron: #FF6B1A;
+      --gold: #F5C842;
+      --green-india: #138808;
+      --text: #f0ede8;
+      --muted: #8887a0;
+      --glow: rgba(255,107,26,0.25);
+      --sidebar-w: 260px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
-/* ═══════════════════════════════════════════
-   ROOT & RESET
-═══════════════════════════════════════════ */
-:root {
-  --saffron:     #FF6B00;
-  --saffron-lt:  #FF9A3C;
-  --gold:        #F5C842;
-  --cyan:        #00F5FF;
-  --cyan-dim:    rgba(0,245,255,0.15);
-  --green:       #00FF88;
-  --ink:         #04060A;
-  --ink2:        #080D14;
-  --surface:     rgba(255,255,255,0.03);
-  --border:      rgba(255,255,255,0.06);
-  --border-hot:  rgba(255,107,0,0.4);
-  --text:        #EDE8E0;
-  --text-dim:    rgba(237,232,224,0.35);
-}
+    /* ── Starfield ── */
+    .starfield{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 20% 30%,rgba(255,107,26,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 70%,rgba(245,200,66,.04) 0%,transparent 50%)}
+    .star{position:absolute;border-radius:50%;background:white;opacity:0;animation:twinkle var(--d,4s) var(--delay,0s) infinite ease-in-out}
+    @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--op,.6);transform:scale(1)}}
 
-*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+    /* ─────────────────────────────────────────
+       AUTH MODAL
+    ───────────────────────────────────────── */
+    .auth-overlay{position:fixed;inset:0;z-index:500;background:rgba(4,4,12,.92);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+    .auth-overlay.show{opacity:1;pointer-events:all}
+    .auth-modal{background:var(--surface);border:1px solid rgba(255,107,26,.2);border-radius:22px;padding:40px 36px 32px;width:100%;max-width:430px;position:relative;animation:authPop .35s ease both;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 60px rgba(255,107,26,.06)}
+    @keyframes authPop{from{transform:scale(.92) translateY(16px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+    .auth-logo{display:flex;align-items:center;gap:8px;font-size:1.3rem;font-weight:800;margin-bottom:24px;justify-content:center;letter-spacing:-.02em}
+    .auth-logo .dot{width:9px;height:9px;border-radius:50%;background:var(--saffron);animation:pulse 2s infinite}
+    .auth-tabs{display:flex;background:var(--surface2);border-radius:12px;padding:4px;margin-bottom:26px;border:1px solid var(--border)}
+    .auth-tab{flex:1;padding:9px;border-radius:9px;border:none;background:transparent;color:var(--muted);font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .auth-tab.active{background:var(--saffron);color:white;box-shadow:0 4px 16px var(--glow)}
+    .auth-field{margin-bottom:16px}
+    .auth-field label{display:block;font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+    .auth-field input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:11px 14px;font-family:'Syne',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
+    .auth-field input:focus{border-color:var(--saffron)}
+    .auth-field input::placeholder{color:var(--muted)}
+    .auth-error{min-height:22px;font-size:.8rem;color:#FF5F57;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .auth-submit-btn{width:100%;padding:13px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 24px var(--glow);margin-bottom:16px}
+    .auth-submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 32px var(--glow)}
+    .auth-submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .auth-switch{text-align:center;font-size:.83rem;color:var(--muted)}
+    .auth-switch a{color:var(--saffron);text-decoration:none;font-weight:700}
+    .auth-switch a:hover{text-decoration:underline}
+    .auth-close-btn{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:6px;border-radius:8px;line-height:1;transition:color .2s}
+    .auth-close-btn:hover{color:var(--text)}
+    /* OTP */
+    .otp-header{text-align:center;margin-bottom:20px}
+    .otp-header .otp-icon{font-size:2.4rem;margin-bottom:10px}
+    .otp-header h3{font-size:1.1rem;font-weight:800;margin-bottom:6px}
+    .otp-header p{font-size:.85rem;color:var(--muted)}
+    .otp-demo-box{background:rgba(245,200,66,.08);border:1px dashed rgba(245,200,66,.4);border-radius:10px;padding:12px 16px;margin-bottom:20px;text-align:center}
+    .otp-demo-box span{font-size:.76rem;color:var(--muted);display:block;margin-bottom:6px}
+    .otp-demo-code{font-size:1.7rem;font-weight:800;color:var(--gold);letter-spacing:.18em;font-family:'Courier New',monospace}
+    .otp-inputs{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
+    .otp-input{width:46px;height:54px;border-radius:10px;border:2px solid var(--border);background:var(--surface2);color:var(--text);font-size:1.4rem;font-weight:800;text-align:center;font-family:'Courier New',monospace;outline:none;transition:border-color .2s}
+    .otp-input:focus{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(255,107,26,.15)}
+    .otp-input.filled{border-color:var(--gold)}
 
-html { scroll-behavior: smooth; }
+    /* ─────────────────────────────────────────
+       APP LAYOUT (post-login)
+    ───────────────────────────────────────── */
+    .app-layout{display:none;height:100vh;overflow:hidden;position:relative;z-index:1}
+    .app-layout.show{display:flex}
 
-body {
-  background: var(--ink);
-  color: var(--text);
-  font-family: 'JetBrains Mono', monospace;
-  overflow-x: hidden;
-  cursor: none;
-}
+    /* ── Sidebar ── */
+    .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden;flex-shrink:0;transition:transform .3s,width .3s}
+    .sidebar.collapsed{width:0;transform:translateX(-100%)}
+    .sidebar-top{padding:18px 14px 10px;flex-shrink:0}
+    .sidebar-logo{display:flex;align-items:center;gap:8px;font-size:1.05rem;font-weight:800;letter-spacing:-.02em;margin-bottom:16px;padding:0 4px}
+    .sidebar-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--saffron);animation:pulse 2s infinite;flex-shrink:0}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--glow)}50%{box-shadow:0 0 0 8px transparent}}
+    .new-chat-btn{width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,107,26,.3);background:rgba(255,107,26,.08);color:var(--saffron);font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;margin-bottom:12px}
+    .new-chat-btn:hover{background:rgba(255,107,26,.15);border-color:var(--saffron)}
+    .new-chat-btn .plus{font-size:1.1rem;font-weight:400}
+    .sidebar-search{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:9px 12px;font-family:'Syne',sans-serif;font-size:.83rem;outline:none;transition:border-color .2s;margin-bottom:6px}
+    .sidebar-search:focus{border-color:var(--muted)}
+    .sidebar-search::placeholder{color:var(--muted)}
+    .sidebar-section-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:10px 4px 6px}
+    /* Chat History */
+    .sidebar-chats{flex:1;overflow-y:auto;padding:4px 8px;display:flex;flex-direction:column;gap:2px}
+    .sidebar-chats::-webkit-scrollbar{width:3px}
+    .sidebar-chats::-webkit-scrollbar-track{background:transparent}
+    .sidebar-chats::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+    .sidebar-chat-item{padding:10px 12px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:background .15s;position:relative}
+    .sidebar-chat-item:hover{background:rgba(255,255,255,.05)}
+    .sidebar-chat-item.active{background:rgba(255,107,26,.12);border:1px solid rgba(255,107,26,.2)}
+    .sidebar-chat-item.active .chat-item-title{color:var(--saffron)}
+    .chat-item-content{flex:1;min-width:0}
+    .chat-item-title{font-size:.83rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+    .chat-item-meta{display:flex;align-items:center;gap:4px;flex-wrap:nowrap}
+    .chat-item-lang{font-size:.68rem;font-weight:700;color:var(--saffron);opacity:.85;white-space:nowrap}
+    .chat-item-dot{font-size:.65rem;color:var(--muted);opacity:.5}
+    .chat-item-time{font-size:.68rem;color:var(--muted);white-space:nowrap}
+    .chat-item-delete{opacity:0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:4px;border-radius:6px;flex-shrink:0;transition:all .2s;line-height:1}
+    .sidebar-chat-item:hover .chat-item-delete{opacity:1}
+    .chat-item-delete:hover{color:#FF5F57;background:rgba(255,95,87,.1)}
+    .sidebar-empty{text-align:center;padding:40px 16px;color:var(--muted);font-size:.82rem}
+    .sidebar-empty .empty-icon{font-size:2rem;margin-bottom:10px}
+    /* Sidebar Footer */
+    .sidebar-footer{padding:12px 14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .sidebar-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .sidebar-user-info{flex:1;min-width:0}
+    .sidebar-user-name{font-size:.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sidebar-user-email{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sidebar-logout-btn{background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:7px 9px;border-radius:8px;font-size:.8rem;transition:all .2s;white-space:nowrap;font-family:'Syne',sans-serif;font-weight:600}
+    .sidebar-logout-btn:hover{border-color:#FF5F57;color:#FF5F57;background:rgba(255,95,87,.08)}
 
-/* ═══════════════════════════════════════════
-   CUSTOM CURSOR
-═══════════════════════════════════════════ */
-#cur {
-  width: 8px; height: 8px;
-  background: var(--saffron);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  transition: transform 0.08s, background 0.2s;
-  box-shadow: 0 0 16px var(--saffron);
-}
-#cur-trail {
-  width: 32px; height: 32px;
-  border: 1px solid rgba(255,107,0,0.4);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 9998;
-  transition: all 0.18s ease;
-}
-body:has(a:hover) #cur,
-body:has(button:hover) #cur { transform: scale(3); background: var(--gold); }
+    /* ── App Main ── */
+    .app-main{flex:1;display:flex;flex-direction:column;overflow-y:auto;scroll-behavior:smooth;min-width:0;height:100vh}
+    .app-main::-webkit-scrollbar{width:7px}
+    .app-main::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+    .app-main::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:4px}
+    .app-main::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.3)}
+    .app-topbar{display:flex;align-items:center;gap:10px;padding:12px 20px;background:rgba(8,8,16,.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0;z-index:10;position:sticky;top:0}
+    .sidebar-toggle-btn{background:none;border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;flex-shrink:0}
+    .sidebar-toggle-btn:hover{border-color:var(--saffron);color:var(--saffron)}
+    .app-lang-pills{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+    .app-user-badge{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .app-user-avatar{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+    .app-user-name{font-size:.83rem;font-weight:700;color:var(--muted);white-space:nowrap}
+    .compiler-toggle-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;transition:all .2s;white-space:nowrap}
+    .compiler-toggle-pill:hover,.compiler-toggle-pill.active{background:rgba(245,200,66,.15);border-color:var(--gold);color:var(--gold)}
 
-/* ═══════════════════════════════════════════
-   CANVAS & BACKGROUND
-═══════════════════════════════════════════ */
-#universe {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-}
+    /* Chat Viewport — fills exactly one screen height below topbar */
+    .chat-viewport{height:calc(100vh - 64px);display:flex;flex-direction:column;flex-shrink:0;position:relative}
+    .app-messages{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:18px;scroll-behavior:smooth}
+    .app-messages::-webkit-scrollbar{width:5px}
+    .app-messages::-webkit-scrollbar-track{background:transparent}
+    .app-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+    .app-input-row{padding:14px 24px 16px;border-top:1px solid var(--border);background:rgba(8,8,16,.92);backdrop-filter:blur(16px);flex-shrink:0;display:flex;gap:10px;align-items:flex-end;position:relative}
 
-.grain {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+    /* Compiler Section — below the chat viewport, scroll down to reach */
+    .app-compiler-section{flex-shrink:0;border-top:2px solid rgba(245,200,66,.2)}
+    .compiler-header-row{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;cursor:pointer;background:rgba(15,15,26,.7);transition:background .2s;user-select:none}
+    .compiler-header-row:hover{background:rgba(245,200,66,.05)}
+    .compiler-header-title{display:flex;align-items:center;gap:10px;font-size:.92rem;font-weight:800}
+    .compiler-header-title .badge{font-size:.68rem;padding:3px 9px;border-radius:20px;background:rgba(245,200,66,.15);color:var(--gold);border:1px solid rgba(245,200,66,.3);font-weight:700}
+    .compiler-chevron{font-size:.85rem;color:var(--muted);transition:transform .3s}
+    .compiler-chevron.open{transform:rotate(180deg)}
+    .compiler-panel{display:none;padding:20px 24px 24px}
+    .compiler-panel.open{display:block}
 
-/* India flag stripe */
-.tricolor {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg,
-    #FF9933 0% 33.3%,
-    #FFFFFF 33.3% 66.6%,
-    #138808 66.6% 100%
-  );
-  z-index: 1000;
-}
+    /* ─────────────────────────────────────────
+       LANDING PAGE (pre-login)
+    ───────────────────────────────────────── */
+    #landingPage{position:relative;z-index:1}
 
-/* ═══════════════════════════════════════════
-   LAYOUT WRAPPER
-═══════════════════════════════════════════ */
-.page { position: relative; z-index: 2; }
+    /* Navbar */
+    nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(8,8,16,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+    .logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;letter-spacing:-.02em;text-decoration:none;color:var(--text)}
+    .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--saffron);animation:pulse 2s infinite}
+    .logo-guru{color:var(--saffron)}
+    .logo-india{color:var(--gold)}
+    .nav-links{display:flex;align-items:center;gap:8px}
+    .lang-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:600;transition:all .2s;white-space:nowrap}
+    .lang-pill:hover,.lang-pill.active{background:var(--saffron);color:white;border-color:var(--saffron);box-shadow:0 0 20px var(--glow)}
+    .btn-signin{padding:8px 18px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;margin-left:6px}
+    .btn-signin:hover{border-color:var(--saffron);color:var(--saffron)}
+    .btn-cta{padding:8px 22px;border-radius:8px;background:linear-gradient(135deg,var(--saffron),#e05500);color:white;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;margin-left:6px;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px var(--glow)}
+    .btn-cta:hover{transform:translateY(-1px);box-shadow:0 6px 30px var(--glow)}
 
-/* ═══════════════════════════════════════════
-   NAV
-═══════════════════════════════════════════ */
-nav {
-  position: fixed;
-  top: 2px; left: 0; right: 0;
-  z-index: 500;
-  padding: 0 48px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  background: rgba(4,6,10,0.75);
-  backdrop-filter: blur(24px) saturate(180%);
-}
+    /* Hero */
+    .hero{position:relative;z-index:1;min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 20px 40px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:30px;border:1px solid rgba(245,200,66,.3);background:rgba(245,200,66,.08);font-size:.8rem;color:var(--gold);font-weight:600;margin-bottom:28px;letter-spacing:.05em;text-transform:uppercase;animation:fadeUp .6s ease both}
+    .hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+    .hero-title{font-size:clamp(2.8rem,7vw,6rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:20px;animation:fadeUp .6s .1s ease both}
+    .hero-title .line-saffron{color:var(--saffron);display:block}
+    .hero-title .line-gold{color:var(--gold);display:block}
+    .hero-sub{font-size:clamp(1rem,2vw,1.2rem);color:var(--muted);max-width:560px;line-height:1.6;margin-bottom:40px;animation:fadeUp .6s .2s ease both}
+    .lang-selector{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:50px;animation:fadeUp .6s .3s ease both}
+    .lang-select-btn{padding:10px 20px;border-radius:30px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:600;transition:all .25s;display:flex;align-items:center;gap:8px}
+    .lang-select-btn:hover{border-color:var(--saffron);color:var(--saffron);transform:translateY(-2px);box-shadow:0 4px 20px var(--glow)}
+    .lang-select-btn.selected{background:var(--saffron);border-color:var(--saffron);color:white;box-shadow:0 4px 24px var(--glow)}
+    .lang-native{font-size:1.05rem}
 
-.nav-logo {
-  font-family: 'Clash Display', sans-serif;
-  font-weight: 700;
-  font-size: 1.15rem;
-  letter-spacing: -0.5px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.nav-logo-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 10px var(--green);
-  animation: blink 2.5s ease-in-out infinite;
-}
-@keyframes blink {
-  0%,100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-.nav-logo em { color: var(--saffron); font-style: normal; }
+    /* Chat preview container on landing */
+    .chat-preview-wrap{width:100%;max-width:820px;animation:fadeUp .6s .4s ease both;position:relative}
+    .chat-preview-lock{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,8,16,.7);backdrop-filter:blur(4px);border-radius:20px;gap:14px}
+    .lock-icon{font-size:2.5rem}
+    .lock-text{font-size:1rem;font-weight:700;color:var(--text)}
+    .lock-subtext{font-size:.85rem;color:var(--muted)}
+    .lock-btns{display:flex;gap:10px;margin-top:8px}
+    .lock-btn-signin{padding:10px 24px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .lock-btn-signin:hover{border-color:var(--saffron);color:var(--saffron)}
+    .lock-btn-signup{padding:10px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px var(--glow)}
+    .lock-btn-signup:hover{transform:translateY(-1px)}
 
-.nav-center {
-  display: flex;
-  gap: 4px;
-}
-.nlang {
-  padding: 5px 13px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 0.3px;
-  background: transparent;
-}
-.nlang:hover, .nlang.on {
-  border-color: var(--saffron);
-  color: var(--saffron);
-  background: rgba(255,107,0,0.07);
-}
+    /* Chat container (landing preview) */
+    .chat-container{width:100%;max-width:820px;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,107,26,.08);animation:fadeUp .6s .4s ease both}
+    .chat-topbar{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border)}
+    .traffic{width:12px;height:12px;border-radius:50%}
+    .traffic.red{background:#FF5F57}.traffic.yellow{background:#FEBC2E}.traffic.green{background:#28C840}
+    .chat-url{flex:1;text-align:center;font-size:.8rem;color:var(--muted);font-weight:600;letter-spacing:.02em}
+    .messages{height:320px;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth}
+    .messages::-webkit-scrollbar{width:4px}
+    .messages::-webkit-scrollbar-track{background:transparent}
+    .messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+    .msg{display:flex;gap:12px;align-items:flex-start;animation:slideIn .35s ease both}
+    @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .msg.user{flex-direction:row-reverse}
+    .avatar{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800}
+    .avatar.bot{background:linear-gradient(135deg,var(--saffron),#e05500);color:white}
+    .avatar.user-av{background:var(--surface2);border:1px solid var(--border)}
+    .bubble{max-width:75%;padding:12px 16px;border-radius:14px;font-size:.92rem;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+    .bubble.bot{background:var(--surface2);border:1px solid var(--border);border-top-left-radius:4px;color:var(--text)}
+    .bubble.user{background:linear-gradient(135deg,var(--saffron),#d44e00);border-top-right-radius:4px;color:white}
+    .bubble code{background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px;font-family:'Courier New',monospace;font-size:.85rem}
+    /* Copy code blocks */
+    .code-block-wrap{margin:10px 0;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+    .code-block-topbar{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#111120;border-bottom:1px solid var(--border)}
+    .code-lang-label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .copy-code-btn{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;font-size:.75rem;font-weight:700;font-family:'Syne',sans-serif;transition:all .2s}
+    .copy-code-btn:hover{border-color:var(--gold);color:var(--gold)}
+    .code-block-wrap pre{margin:0;padding:14px 16px;background:#0a0a14;overflow-x:auto}
+    .code-block-wrap pre code{background:none;padding:0;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.7;color:#e8e6f0}
+    /* Typing indicator */
+    .typing-indicator{display:none;gap:5px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;border-top-left-radius:4px;width:fit-content}
+    .typing-indicator.show{display:flex}
+    .typing-dot{width:7px;height:7px;border-radius:50%;background:var(--saffron);animation:bounce 1.2s infinite ease-in-out}
+    .typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
+    @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+    /* Input */
+    .chat-input-row{display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--border);background:var(--surface2);align-items:flex-end;position:relative}
+    .chat-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px 16px;font-family:'Syne',sans-serif;font-size:.9rem;resize:none;outline:none;min-height:44px;max-height:160px;transition:border-color .2s;field-sizing:content}
+    .chat-input::placeholder{color:var(--muted)}
+    .chat-input:focus{border-color:var(--saffron)}
+    .send-btn{width:44px;height:44px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px var(--glow);font-size:1.1rem}
+    .send-btn:hover{transform:scale(1.08);box-shadow:0 6px 24px var(--glow)}
+    .send-btn:active{transform:scale(.96)}
+    /* Mic */
+    .mic-btn{width:44px;height:44px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:1.1rem}
+    .mic-btn:hover{border-color:var(--saffron);color:var(--saffron)}
+    .mic-btn.listening{background:rgba(255,107,26,.15);border-color:var(--saffron);color:var(--saffron);animation:mic-pulse 1s infinite}
+    @keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,26,.4)}50%{box-shadow:0 0 0 8px rgba(255,107,26,0)}}
+    .mic-status{position:absolute;bottom:74px;left:50%;transform:translateX(-50%);background:var(--saffron);color:white;padding:6px 16px;border-radius:20px;font-size:.78rem;font-weight:700;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10}
+    .mic-status.show{opacity:1}
 
-.nav-btn {
-  padding: 9px 22px;
-  background: var(--saffron);
-  color: #000;
-  border: none;
-  border-radius: 6px;
-  font-family: 'Clash Display', sans-serif;
-  font-weight: 600;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: all 0.25s;
-  letter-spacing: 0.2px;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.nav-btn:hover {
-  background: var(--saffron-lt);
-  box-shadow: 0 0 28px rgba(255,107,0,0.45);
-  transform: translateY(-1px);
-}
+    /* ── Features ── */
+    .features{position:relative;z-index:1;padding:100px 40px;max-width:1100px;margin:0 auto}
+    .section-label{text-align:center;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--saffron);margin-bottom:16px}
+    .section-title{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin-bottom:60px}
+    .section-title span{color:var(--gold)}
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+    .feat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;transition:transform .25s,border-color .25s,box-shadow .25s}
+    .feat-card:hover{transform:translateY(-4px);border-color:rgba(255,107,26,.3);box-shadow:0 20px 40px rgba(0,0,0,.3),0 0 30px var(--glow)}
+    .feat-icon{font-size:2rem;margin-bottom:16px}
+    .feat-title{font-size:1.05rem;font-weight:700;margin-bottom:10px}
+    .feat-desc{font-size:.88rem;color:var(--muted);line-height:1.65}
 
-/* ═══════════════════════════════════════════
-   HERO
-═══════════════════════════════════════════ */
-.hero {
-  min-height: 100vh;
-  padding: 120px 48px 80px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-}
+    /* Lang strip */
+    .lang-strip{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;overflow:hidden}
+    .lang-scroll{display:flex;gap:40px;white-space:nowrap;animation:scroll-left 20s linear infinite}
+    .lang-scroll-item{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:700;color:var(--muted);opacity:.6}
+    .lang-scroll-item span{font-size:1.3rem}
+    @keyframes scroll-left{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* Mandala background glow */
-.hero::before {
-  content: '';
-  position: absolute;
-  right: -200px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 700px; height: 700px;
-  background: radial-gradient(circle,
-    rgba(255,107,0,0.06) 0%,
-    rgba(255,107,0,0.02) 40%,
-    transparent 70%
-  );
-  border-radius: 50%;
-  pointer-events: none;
-}
+    /* Footer */
+    footer{position:relative;z-index:1;text-align:center;padding:40px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem}
+    .footer-flag{display:inline-flex;gap:4px;align-items:center;margin-bottom:10px;font-size:1.2rem}
+    .f-saffron{color:var(--saffron)}.f-white{color:#fff}.f-green{color:var(--green-india)}
 
-.hero-left {
-  padding-right: 60px;
-}
+    /* ── Quiz ── */
+    .quiz-block{margin-top:14px;padding:16px;background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.25);border-radius:12px;animation:slideIn .4s ease both}
+    .quiz-title{font-size:.95rem;font-weight:800;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .quiz-question{margin-bottom:14px}
+    .quiz-q-text{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.5}
+    .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .quiz-option{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:600;text-align:left;transition:all .2s;display:flex;align-items:center;gap:7px}
+    .quiz-option:hover:not(.answered){border-color:var(--gold);color:var(--gold);background:rgba(245,200,66,.08)}
+    .quiz-option.correct{border-color:#28C840;background:rgba(40,200,64,.15);color:#28C840}
+    .quiz-option.wrong{border-color:#FF5F57;background:rgba(255,95,87,.15);color:#FF5F57}
+    .option-label{width:20px;height:20px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0}
+    .quiz-score{margin-top:12px;padding:10px 14px;border-radius:8px;background:rgba(255,107,26,.1);border:1px solid rgba(255,107,26,.3);font-size:.88rem;font-weight:700;color:var(--saffron);text-align:center;display:none}
 
-.hero-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border: 1px solid rgba(0,255,136,0.25);
-  border-radius: 100px;
-  font-size: 0.68rem;
-  color: var(--green);
-  margin-bottom: 36px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  background: rgba(0,255,136,0.04);
-  opacity: 0;
-  animation: riseIn 0.9s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.tag-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  animation: blink 2s infinite;
-}
+    /* ── Compiler (shared) ── */
+    .code-editor-wrap{position:relative}
+    .code-editor-label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+    .code-editor{width:100%;min-height:280px;max-height:500px;background:#0a0a14;border:1px solid var(--border);color:#e8e6f0;border-radius:12px;padding:16px;font-family:'Courier New','Consolas',monospace;font-size:.88rem;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s;tab-size:4;box-sizing:border-box}
+    .code-editor:focus{border-color:var(--gold)}
+    .compiler-lang-select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;outline:none;transition:border-color .2s}
+    .compiler-lang-select:focus{border-color:var(--gold)}
+    .compiler-actions{display:flex;align-items:center;gap:10px;margin-top:12px}
+    .run-btn{display:flex;align-items:center;gap:8px;padding:10px 28px;border-radius:10px;border:none;background:linear-gradient(135deg,#28C840,#1a9e2e);color:white;font-family:'Syne',sans-serif;font-size:.92rem;font-weight:800;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px rgba(40,200,64,.3)}
+    .run-btn:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(40,200,64,.4)}
+    .run-btn:active{transform:scale(.97)}
+    .run-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .run-btn .run-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none}
+    .run-btn.running .run-spinner{display:block}
+    .run-btn.running .run-icon{display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .clear-btn{padding:10px 18px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Syne',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s}
+    .clear-btn:hover{border-color:var(--saffron);color:var(--saffron)}
+    .output-wrap{display:none;margin-top:14px}
+    .output-wrap.show{display:block}
+    .output-label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .output-status{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700}
+    .output-status.success{background:rgba(40,200,64,.15);color:#28C840}
+    .output-status.error{background:rgba(255,95,87,.15);color:#FF5F57}
+    .output-box{background:#04040c;border:1px solid var(--border);border-radius:12px;padding:16px;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.7;color:#a8ff78;min-height:80px;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto}
+    .output-box.error-output{color:#FF5F57}
+    .stdin-wrap{display:none;flex-direction:column;gap:8px;padding:14px 16px;background:rgba(245,200,66,.05);border:1px dashed rgba(245,200,66,.35);border-radius:12px;animation:fadeUp .3s ease both;margin-top:4px}
+    .stdin-wrap.show{display:flex}
+    .stdin-label{font-size:.78rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:7px}
+    .stdin-hint{font-size:.75rem;color:var(--muted);font-weight:500}
+    .stdin-input{width:100%;background:#0a0a14;border:1px solid rgba(245,200,66,.3);color:var(--text);border-radius:8px;padding:10px 14px;font-family:'Courier New',monospace;font-size:.88rem;line-height:1.6;resize:vertical;min-height:60px;outline:none;transition:border-color .2s;box-sizing:border-box}
+    .stdin-input:focus{border-color:var(--gold)}
+    .stdin-input::placeholder{color:var(--muted);font-style:italic}
+    .compiler-lang-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .compiler-lang-row-label{font-size:.88rem;font-weight:700;color:var(--text)}
 
-.hero-h1 {
-  font-family: 'Clash Display', sans-serif;
-  font-size: clamp(3.2rem, 5.5vw, 5.8rem);
-  font-weight: 700;
-  line-height: 1.0;
-  letter-spacing: -3px;
-  margin-bottom: 28px;
-  opacity: 0;
-  animation: riseIn 0.9s 0.25s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.hero-h1 .accent { color: var(--saffron); }
-.hero-h1 .ghost {
-  -webkit-text-stroke: 1px rgba(237,232,224,0.18);
-  color: transparent;
-}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-.hero-sub {
-  font-size: 0.88rem;
-  color: var(--text-dim);
-  line-height: 1.9;
-  max-width: 440px;
-  margin-bottom: 40px;
-  opacity: 0;
-  animation: riseIn 0.9s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
-}
+    /* ── Toast ── */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:.88rem;font-weight:700;color:var(--text);opacity:0;pointer-events:none;transition:all .3s;z-index:999;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.success{border-color:rgba(40,200,64,.4);color:#28C840}
+    .toast.error{border-color:rgba(255,95,87,.4);color:#FF5F57}
 
-.hero-langs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 44px;
-  opacity: 0;
-  animation: riseIn 0.9s 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.hlang {
-  padding: 8px 16px;
-  border: 1px solid rgba(255,107,0,0.2);
-  border-radius: 6px;
-  font-size: 1.0rem;
-  background: rgba(255,107,0,0.04);
-  transition: all 0.3s;
-  cursor: default;
-  font-family: 'Noto Sans Telugu', 'Noto Sans Tamil', 'Noto Sans Devanagari', sans-serif;
-}
-.hlang:hover {
-  border-color: var(--saffron);
-  background: rgba(255,107,0,0.09);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(255,107,0,0.12);
-}
-
-.hero-ctas {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  opacity: 0;
-  animation: riseIn 0.9s 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.cta-main {
-  padding: 14px 32px;
-  background: var(--saffron);
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  font-family: 'Clash Display', sans-serif;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.cta-main:hover {
-  background: var(--saffron-lt);
-  transform: translateY(-3px);
-  box-shadow: 0 16px 48px rgba(255,107,0,0.35);
-}
-.cta-ghost {
-  padding: 14px 28px;
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-family: 'Clash Display', sans-serif;
-  font-weight: 500;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-}
-.cta-ghost:hover {
-  border-color: rgba(255,255,255,0.2);
-  transform: translateY(-3px);
-  background: rgba(255,255,255,0.03);
-}
-
-/* HERO RIGHT — floating UI card */
-.hero-right {
-  opacity: 0;
-  animation: riseIn 0.9s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
-  position: relative;
-}
-
-.ui-card {
-  background: rgba(8,13,20,0.9);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(255,107,0,0.06),
-    0 40px 120px rgba(0,0,0,0.6),
-    inset 0 1px 0 rgba(255,255,255,0.05);
-  position: relative;
-}
-.ui-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 20%; right: 20%;
-  height: 1px;
-  background: linear-gradient(90deg,transparent,var(--saffron),transparent);
-  opacity: 0.5;
-}
-
-.ui-topbar {
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.02);
-}
-.dot { width:11px; height:11px; border-radius:50%; }
-.dr { background:#FF5F57; }
-.dy { background:#FEBC2E; }
-.dg { background:#28C840; }
-.ui-title {
-  flex: 1;
-  text-align: center;
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-}
-
-.ui-body {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-height: 380px;
-}
-
-.ui-question {
-  align-self: flex-end;
-  background: var(--saffron);
-  color: #000;
-  padding: 11px 18px;
-  border-radius: 14px 14px 3px 14px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  max-width: 80%;
-  font-family: 'Noto Sans Telugu', sans-serif;
-}
-
-.ui-answer {
-  align-self: flex-start;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  padding: 14px 18px;
-  border-radius: 3px 14px 14px 14px;
-  font-size: 0.77rem;
-  color: rgba(237,232,224,0.75);
-  max-width: 92%;
-  line-height: 1.75;
-  font-family: 'Noto Sans Telugu', sans-serif;
-}
-
-.ui-code {
-  background: #020810;
-  border: 1px solid rgba(0,245,255,0.15);
-  border-radius: 10px;
-  padding: 14px 16px;
-  font-size: 0.7rem;
-  color: var(--cyan);
-  line-height: 1.9;
-  font-family: 'JetBrains Mono', monospace;
-  position: relative;
-}
-.ui-code::before {
-  content: 'python';
-  position: absolute;
-  top: 8px; right: 12px;
-  font-size: 0.6rem;
-  color: rgba(0,245,255,0.3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.code-kw { color: var(--saffron); }
-.code-str { color: var(--green); }
-.code-cmt { color: rgba(255,255,255,0.25); }
-.code-fn { color: var(--gold); }
-
-.ui-quiz-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: rgba(0,255,136,0.05);
-  border: 1px solid rgba(0,255,136,0.15);
-  border-radius: 8px;
-  font-size: 0.72rem;
-  color: var(--green);
-}
-
-/* floating stats */
-.float-stat {
-  position: absolute;
-  background: rgba(8,13,20,0.92);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-}
-.float-stat-1 {
-  top: -20px; left: -50px;
-  animation: float1 5s ease-in-out infinite;
-}
-.float-stat-2 {
-  bottom: 30px; right: -40px;
-  animation: float2 6s ease-in-out infinite;
-}
-@keyframes float1 {
-  0%,100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-12px) rotate(-2deg); }
-}
-@keyframes float2 {
-  0%,100% { transform: translateY(0) rotate(2deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
-}
-.fstat-num {
-  font-family: 'Clash Display', sans-serif;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--saffron);
-  line-height: 1;
-}
-.fstat-label {
-  font-size: 0.62rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 2px;
-}
-
-/* ═══════════════════════════════════════════
-   SCROLL REVEAL
-═══════════════════════════════════════════ */
-.reveal {
-  opacity: 0;
-  transform: translateY(50px);
-  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1),
-              transform 0.9s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal.up { opacity: 1; transform: none; }
-.d1 { transition-delay: 0.05s; }
-.d2 { transition-delay: 0.15s; }
-.d3 { transition-delay: 0.25s; }
-.d4 { transition-delay: 0.35s; }
-.d5 { transition-delay: 0.45s; }
-.d6 { transition-delay: 0.55s; }
-
-/* ═══════════════════════════════════════════
-   FEATURES
-═══════════════════════════════════════════ */
-.features {
-  padding: 140px 48px;
-  position: relative;
-}
-.sec-eyebrow {
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  margin-bottom: 14px;
-}
-.sec-h2 {
-  font-family: 'Clash Display', sans-serif;
-  font-size: clamp(2rem, 4vw, 3.8rem);
-  font-weight: 700;
-  letter-spacing: -2.5px;
-  line-height: 1.05;
-  margin-bottom: 70px;
-}
-.sec-h2 em { font-style: normal; color: var(--saffron); }
-
-.feat-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-.feat-card {
-  padding: 36px 30px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
-  position: relative;
-  overflow: hidden;
-  cursor: default;
-}
-.feat-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--saffron), var(--gold), var(--cyan));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s;
-}
-.feat-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(255,107,0,0.25);
-  background: rgba(255,107,0,0.03);
-}
-.feat-card:hover::after { transform: scaleX(1); }
-
-.feat-icon {
-  width: 48px; height: 48px;
-  border-radius: 12px;
-  background: rgba(255,107,0,0.08);
-  border: 1px solid rgba(255,107,0,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  margin-bottom: 22px;
-}
-.feat-num {
-  font-size: 0.6rem;
-  color: rgba(255,107,0,0.45);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 10px;
-}
-.feat-title {
-  font-family: 'Clash Display', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 600;
-  letter-spacing: -0.5px;
-  margin-bottom: 10px;
-}
-.feat-desc {
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  line-height: 1.8;
-}
-
-/* ═══════════════════════════════════════════
-   DEMO WINDOW SECTION
-═══════════════════════════════════════════ */
-.demo-sec {
-  padding: 100px 48px 140px;
-  position: relative;
-}
-
-/* Glow behind demo */
-.demo-sec::before {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  width: 800px; height: 400px;
-  background: radial-gradient(ellipse, rgba(255,107,0,0.04), transparent 70%);
-  pointer-events: none;
-}
-
-.demo-wrap {
-  background: rgba(5,10,18,0.95);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(255,107,0,0.04),
-    0 60px 160px rgba(0,0,0,0.7);
-}
-.demo-bar {
-  padding: 15px 22px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255,255,255,0.025);
-  border-bottom: 1px solid var(--border);
-}
-.demo-url-bar {
-  flex: 1;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px 14px;
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  text-align: center;
-  letter-spacing: 0.3px;
-}
-
-.demo-grid {
-  display: grid;
-  grid-template-columns: 260px 1fr 300px;
-  min-height: 540px;
-}
-
-.dsidebar {
-  border-right: 1px solid var(--border);
-  padding: 22px 16px;
-  background: rgba(255,255,255,0.01);
-}
-.dsb-logo {
-  font-family: 'Clash Display', sans-serif;
-  font-weight: 700;
-  font-size: 0.9rem;
-  margin-bottom: 18px;
-  color: rgba(255,255,255,0.8);
-}
-.dsb-lang {
-  background: rgba(255,107,0,0.08);
-  border: 1px solid rgba(255,107,0,0.25);
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 0.78rem;
-  color: var(--saffron);
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-}
-.dsb-section {
-  font-size: 0.6rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-}
-.dsb-item {
-  padding: 9px 12px;
-  border-radius: 7px;
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 2px;
-}
-.dsb-item:hover {
-  background: rgba(255,255,255,0.04);
-  color: rgba(255,255,255,0.7);
-}
-
-.dmain {
-  padding: 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-}
-.dmsg-u {
-  align-self: flex-end;
-  background: var(--saffron);
-  color: #000;
-  padding: 10px 16px;
-  border-radius: 14px 14px 3px 14px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  max-width: 75%;
-  font-family: 'Noto Sans Telugu', sans-serif;
-}
-.dmsg-a {
-  align-self: flex-start;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  padding: 14px 18px;
-  border-radius: 3px 14px 14px 14px;
-  font-size: 0.75rem;
-  color: rgba(237,232,224,0.7);
-  max-width: 90%;
-  line-height: 1.8;
-  font-family: 'Noto Sans Telugu', sans-serif;
-}
-.dcode {
-  background: #020810;
-  border: 1px solid rgba(0,245,255,0.12);
-  border-radius: 9px;
-  padding: 12px 14px;
-  font-size: 0.68rem;
-  color: var(--cyan);
-  line-height: 1.9;
-  font-family: 'JetBrains Mono', monospace;
-  margin-top: 8px;
-}
-
-.dquiz {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.dq-header {
-  font-size: 0.62rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-}
-.dq-q {
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.5;
-  margin-bottom: 8px;
-  font-family: 'Noto Sans Telugu', sans-serif;
-}
-.dq-opt {
-  padding: 9px 13px;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: 'Noto Sans Telugu', sans-serif;
-}
-.dq-opt:hover { border-color: var(--saffron); color: rgba(255,255,255,0.8); }
-.dq-correct {
-  border-color: var(--green) !important;
-  color: var(--green) !important;
-  background: rgba(0,255,136,0.04);
-}
-.dq-score {
-  margin-top: 8px;
-  padding: 10px 14px;
-  background: rgba(0,255,136,0.05);
-  border: 1px solid rgba(0,255,136,0.2);
-  border-radius: 8px;
-  font-size: 0.72rem;
-  color: var(--green);
-  text-align: center;
-}
-
-/* ═══════════════════════════════════════════
-   LANGUAGES
-═══════════════════════════════════════════ */
-.langs-sec {
-  padding: 120px 48px;
-  background: linear-gradient(180deg, transparent 0%, rgba(255,107,0,0.02) 50%, transparent 100%);
-}
-.langs-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-top: 56px;
-}
-.lang-c {
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px 20px;
-  text-align: center;
-  background: var(--surface);
-  cursor: default;
-  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
-  position: relative;
-  overflow: hidden;
-}
-.lang-c::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 100%;
-  background: radial-gradient(ellipse at 50% 0%, rgba(255,107,0,0.07), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.lang-c:hover { transform: translateY(-10px); border-color: rgba(255,107,0,0.3); }
-.lang-c:hover::before { opacity: 1; }
-.lang-script {
-  font-size: 2.6rem;
-  line-height: 1;
-  margin-bottom: 14px;
-  display: block;
-  font-family: 'Noto Sans Telugu', 'Noto Sans Tamil', 'Noto Sans Devanagari', sans-serif;
-}
-.lang-en { font-family: 'Clash Display', sans-serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
-.lang-native {
-  font-size: 0.8rem;
-  color: var(--saffron);
-  font-family: 'Noto Sans Telugu','Noto Sans Tamil','Noto Sans Devanagari',sans-serif;
-}
-
-/* ═══════════════════════════════════════════
-   COMPILER SHOWCASE
-═══════════════════════════════════════════ */
-.compiler-sec {
-  padding: 120px 48px;
-}
-.compiler-wrap {
-  display: grid;
-  grid-template-columns: 1fr 1.3fr;
-  gap: 60px;
-  align-items: center;
-  margin-top: 60px;
-}
-.compiler-info {
-  display: flex;
-  flex-direction: column;
-}
-.compiler-langs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 28px;
-}
-.clang {
-  padding: 6px 13px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  transition: all 0.2s;
-  cursor: default;
-}
-.clang:hover {
-  border-color: var(--cyan);
-  color: var(--cyan);
-  background: var(--cyan-dim);
-}
-
-.compiler-window {
-  background: #020810;
-  border: 1px solid rgba(0,245,255,0.12);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 0 60px rgba(0,245,255,0.04);
-}
-.cw-bar {
-  padding: 12px 18px;
-  background: rgba(0,245,255,0.04);
-  border-bottom: 1px solid rgba(0,245,255,0.08);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.7rem;
-  color: var(--cyan);
-}
-.cw-lang-badge {
-  margin-left: auto;
-  padding: 3px 10px;
-  border: 1px solid rgba(0,245,255,0.2);
-  border-radius: 4px;
-  font-size: 0.65rem;
-  color: var(--cyan);
-  letter-spacing: 1px;
-}
-.cw-code {
-  padding: 24px;
-  font-size: 0.78rem;
-  color: var(--cyan);
-  line-height: 2;
-}
-.cw-output {
-  padding: 16px 24px;
-  background: rgba(0,255,136,0.03);
-  border-top: 1px solid rgba(0,255,136,0.1);
-  font-size: 0.78rem;
-  color: var(--green);
-}
-.cw-prompt {
-  color: rgba(0,255,136,0.4);
-  margin-right: 8px;
-}
-
-/* ═══════════════════════════════════════════
-   STATS ROW
-═══════════════════════════════════════════ */
-.stats-sec {
-  padding: 80px 48px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 0;
-}
-.stat-item {
-  text-align: center;
-  padding: 30px;
-  border-right: 1px solid var(--border);
-}
-.stat-item:last-child { border-right: none; }
-.stat-big {
-  font-family: 'Clash Display', sans-serif;
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: var(--saffron);
-  letter-spacing: -3px;
-  line-height: 1;
-}
-.stat-lbl {
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-top: 6px;
-}
-
-/* ═══════════════════════════════════════════
-   TECH STACK
-═══════════════════════════════════════════ */
-.tech-sec {
-  padding: 120px 48px;
-}
-.tech-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 40px;
-}
-.tbadge {
-  padding: 9px 18px;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  background: var(--surface);
-  transition: all 0.25s;
-  cursor: default;
-}
-.tbadge:hover {
-  border-color: var(--saffron);
-  color: var(--saffron);
-  background: rgba(255,107,0,0.05);
-  transform: translateY(-2px);
-}
-
-/* ═══════════════════════════════════════════
-   CTA BANNER
-═══════════════════════════════════════════ */
-.cta-sec {
-  padding: 160px 48px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.cta-glow {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  width: 700px; height: 500px;
-  background: radial-gradient(ellipse, rgba(255,107,0,0.07), transparent 65%);
-  pointer-events: none;
-}
-.cta-h2 {
-  font-family: 'Clash Display', sans-serif;
-  font-size: clamp(3rem, 6vw, 6rem);
-  font-weight: 700;
-  letter-spacing: -4px;
-  line-height: 1;
-  margin-bottom: 22px;
-}
-.cta-h2 em { font-style: normal; color: var(--saffron); }
-.cta-sub {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  margin-bottom: 48px;
-  letter-spacing: 0.3px;
-}
-
-/* ═══════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════ */
-footer {
-  padding: 32px 48px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.footer-logo {
-  font-family: 'Clash Display', sans-serif;
-  font-weight: 700;
-  font-size: 1.05rem;
-}
-.footer-logo em { font-style: normal; color: var(--saffron); }
-.footer-copy {
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  letter-spacing: 0.3px;
-}
-.footer-flag { font-size: 1.6rem; }
-
-/* ═══════════════════════════════════════════
-   KEYFRAMES
-═══════════════════════════════════════════ */
-@keyframes riseIn {
-  from { opacity:0; transform:translateY(28px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--ink); }
-::-webkit-scrollbar-thumb { background: rgba(255,107,0,0.25); border-radius:2px; }
-
-/* ═══════════════════════════════════════════
-   RESPONSIVE (basic)
-═══════════════════════════════════════════ */
-@media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-right { display: none; }
-  .feat-grid { grid-template-columns: 1fr 1fr; }
-  .langs-grid { grid-template-columns: repeat(3,1fr); }
-  .stats-row { grid-template-columns: repeat(2,1fr); }
-  .compiler-wrap { grid-template-columns: 1fr; }
-  .demo-grid { grid-template-columns: 1fr; }
-  .dsidebar, .dquiz { display: none; }
-  nav { padding: 0 20px; }
-  .nav-center { display: none; }
-  .hero { padding: 100px 24px 60px; }
-  .features, .demo-sec, .langs-sec, .compiler-sec, .cta-sec { padding-left: 24px; padding-right: 24px; }
-}
-</style>
+    /* ── Responsive ── */
+    @media(max-width:768px){
+      nav{padding:0 16px}
+      .nav-links .lang-pill{display:none}
+      .hero{padding:40px 16px 30px}
+      .features{padding:60px 16px}
+      .app-topbar{padding:10px 12px;gap:6px}
+      .app-lang-pills .lang-pill{font-size:.72rem;padding:5px 10px}
+      .app-user-name{display:none}
+      .sidebar{position:fixed;z-index:50;height:100vh}
+      .chat-viewport{height:calc(100vh - 56px)}
+      .app-messages{padding:16px 14px}
+      .app-input-row{padding:10px 12px}
+      .compiler-panel{padding:14px 16px}
+    }
+    @media(max-width:480px){
+      .quiz-options{grid-template-columns:1fr}
+      .otp-input{width:40px;height:48px;font-size:1.2rem}
+      .auth-modal{padding:28px 20px 24px;margin:16px}
+    }
+  </style>
 </head>
 <body>
 
-<!-- CURSOR -->
-<div id="cur"></div>
-<div id="cur-trail"></div>
+<!-- ── Starfield ── -->
+<div class="starfield" id="starfield"></div>
 
-<!-- INDIA TRICOLOR -->
-<div class="tricolor"></div>
+<!-- ── Toast ── -->
+<div class="toast" id="toast"></div>
 
-<!-- CANVAS BG -->
-<canvas id="universe"></canvas>
-<div class="grain"></div>
+<!-- ────────────────────────────────────────
+     AUTH MODAL
+──────────────────────────────────────── -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-modal">
+    <button class="auth-close-btn" onclick="closeAuthModal()">✕</button>
 
-<div class="page">
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ NAV -->
-<nav>
-  <div class="nav-logo">
-    <div class="nav-logo-dot"></div>
-    Code<em>Guru</em> India
-  </div>
-  <div class="nav-center">
-    <div class="nlang on">తెలుగు</div>
-    <div class="nlang">தமிழ்</div>
-    <div class="nlang">हिंदी</div>
-    <div class="nlang">ಕನ್ನಡ</div>
-    <div class="nlang">मराठी</div>
-  </div>
-  <a href="#try-it" class="nav-btn"></a>
-    Launch App <span>↗</span>
-  </a>
-</nav>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HERO -->
-<section class="hero">
-  <div class="hero-left">
-    <div class="hero-tag">
-      <span class="tag-dot"></span>
-      India's First Multilingual AI Coding Tutor
+    <!-- Logo -->
+    <div class="auth-logo">
+      <span class="dot"></span>
+      Code<span style="color:var(--saffron)">Guru</span><span style="color:var(--gold)"> India</span>
     </div>
 
-    <h1 class="hero-h1">
-      Learn Code<br>
-      <em class="accent">In Your</em><br>
-      <span class="ghost">Language</span>
-    </h1>
-
-    <p class="hero-sub">
-      AI-powered coding education in Telugu, Tamil, Hindi, Kannada & Marathi.
-      Ask questions in your mother tongue, get complete answers, run code instantly.
-    </p>
-
-    <div class="hero-langs">
-      <div class="hlang">తెలుగు లో నేర్చుకో</div>
-      <div class="hlang">தமிழில் கற்று</div>
-      <div class="hlang">हिंदी में सीखो</div>
-      <div class="hlang">ಕನ್ನಡದಲ್ಲಿ ಕಲಿ</div>
-      <div class="hlang">मराठीत शिका</div>
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignin" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
     </div>
 
-    <div class="hero-ctas">
-      <a href="#try-it" class="cta-main"></a>
-        🚀 Start Learning Free
-      </a>
-      <a href="https://github.com/ThurubilliSaiManoj2026/codeguru-india" target="_blank" class="cta-ghost">
-        GitHub ↗
-      </a>
-    </div>
-  </div>
-
-  <!-- FLOATING UI MOCKUP -->
-  <div class="hero-right">
-    <!-- floating badges -->
-    <div class="float-stat float-stat-1">
-      <div class="fstat-num">22</div>
-      <div class="fstat-label">Languages</div>
-    </div>
-    <div class="float-stat float-stat-2">
-      <div class="fstat-num">&lt;3s</div>
-      <div class="fstat-label">Response</div>
-    </div>
-
-    <div class="ui-card">
-      <div class="ui-topbar">
-        <div class="dot dr"></div>
-        <div class="dot dy"></div>
-        <div class="dot dg"></div>
-        <div class="ui-title">codeguru-india.streamlit.app</div>
+    <!-- SIGN IN FORM -->
+    <div id="signinForm">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="siEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')handleSignIn()" />
       </div>
-      <div class="ui-body">
-        <div class="ui-question">Python లో string reverse ఎలా చేయాలి?</div>
-        <div class="ui-answer">
-          Python లో string ని reverse చేయడానికి slicing పద్ధతి వాడతాము. <code style="color:var(--saffron)">[::-1]</code> అంటే చివరి నుండి మొదటికి చదవడం. రమేష్ ఒక password checker తయారు చేస్తున్నాడు:
-          <div class="ui-code">
-<span class="code-cmt"># String Reverse - 3 Methods</span><br>
-name = <span class="code-str">"Ramesh"</span><br>
-<br>
-<span class="code-cmt"># Method 1: Slicing (fastest)</span><br>
-rev = name[<span class="code-kw">::-1</span>]<br>
-<span class="code-fn">print</span>(rev)  <span class="code-cmt"># hsemaR</span><br>
-<br>
-<span class="code-cmt"># Method 2: reversed()</span><br>
-rev2 = <span class="code-str">''</span>.join(<span class="code-fn">reversed</span>(name))
-          </div>
-        </div>
-        <div class="ui-quiz-badge">
-          🧠 Quiz ready — 3 questions generated in Telugu
-        </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="siPassword" placeholder="Enter your password" onkeydown="if(event.key==='Enter')handleSignIn()" />
       </div>
+      <div class="auth-error" id="siError"></div>
+      <button class="auth-submit-btn" id="signinBtn" onclick="handleSignIn()">Sign In →</button>
+      <p class="auth-switch">New here? <a href="#" onclick="switchAuthTab('signup');return false;">Create account</a></p>
     </div>
-  </div>
-</section>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ STATS -->
-<div class="stats-sec">
-  <div class="stats-row">
-    <div class="stat-item reveal d1">
-      <div class="stat-big">5</div>
-      <div class="stat-lbl">Indian Languages</div>
+    <!-- SIGN UP FORM -->
+    <div id="signupForm" style="display:none">
+      <div class="auth-field">
+        <label>Your Name</label>
+        <input type="text" id="suName" placeholder="e.g. Sai Manoj" />
+      </div>
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="suEmail" placeholder="your@email.com" />
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="suPassword" placeholder="Minimum 6 characters" onkeydown="if(event.key==='Enter')handleSignUp()" />
+      </div>
+      <div class="auth-error" id="suError"></div>
+      <button class="auth-submit-btn" id="signupBtn" onclick="handleSignUp()">Send OTP →</button>
+      <p class="auth-switch">Already have an account? <a href="#" onclick="switchAuthTab('signin');return false;">Sign in</a></p>
     </div>
-    <div class="stat-item reveal d2">
-      <div class="stat-big">22</div>
-      <div class="stat-lbl">Compiler Languages</div>
-    </div>
-    <div class="stat-item reveal d3">
-      <div class="stat-big">&lt;3s</div>
-      <div class="stat-lbl">AI Response Time</div>
-    </div>
-    <div class="stat-item reveal d4">
-      <div class="stat-big">∞</div>
-      <div class="stat-lbl">Questions Supported</div>
+
+    <!-- OTP VERIFICATION FORM -->
+    <div id="otpForm" style="display:none">
+      <div class="otp-header">
+        <div class="otp-icon">📧</div>
+        <h3>Verify Your Email</h3>
+        <p id="otpDesc">Enter the 6-digit code</p>
+      </div>
+      <!-- Demo OTP display -->
+      <div class="otp-demo-box">
+        <span>🔐 Demo mode — OTP (would be emailed in production):</span>
+        <div class="otp-demo-code" id="otpDemoCode">------</div>
+      </div>
+      <div class="otp-inputs" id="otpInputsRow">
+        <input type="text" class="otp-input" maxlength="1" id="otp0" oninput="otpMove(this,0)" onkeydown="otpBack(event,0)" />
+        <input type="text" class="otp-input" maxlength="1" id="otp1" oninput="otpMove(this,1)" onkeydown="otpBack(event,1)" />
+        <input type="text" class="otp-input" maxlength="1" id="otp2" oninput="otpMove(this,2)" onkeydown="otpBack(event,2)" />
+        <input type="text" class="otp-input" maxlength="1" id="otp3" oninput="otpMove(this,3)" onkeydown="otpBack(event,3)" />
+        <input type="text" class="otp-input" maxlength="1" id="otp4" oninput="otpMove(this,4)" onkeydown="otpBack(event,4)" />
+        <input type="text" class="otp-input" maxlength="1" id="otp5" oninput="otpMove(this,5)" onkeydown="otpBack(event,5)" />
+      </div>
+      <div class="auth-error" id="otpError"></div>
+      <button class="auth-submit-btn" id="otpBtn" onclick="handleVerifyOTP()">Verify &amp; Continue →</button>
+      <p class="auth-switch"><a href="#" onclick="showSignupFromOTP();return false;">← Back to Sign Up</a></p>
     </div>
   </div>
 </div>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FEATURES -->
-<section class="features">
-  <p class="sec-eyebrow reveal">Capabilities</p>
-  <h2 class="sec-h2 reveal">Everything you need<br>to <em>code confidently</em></h2>
 
-  <div class="feat-grid">
-    <div class="feat-card reveal d1">
-      <div class="feat-icon">🎙️</div>
-      <div class="feat-num">01 — Voice Input</div>
-      <div class="feat-title">Speak Your Question</div>
-      <div class="feat-desc">Google-quality Web Speech API. Ask in Telugu, Tamil, Hindi, Kannada or Marathi. Auto-stops when you finish.</div>
-    </div>
-    <div class="feat-card reveal d2">
-      <div class="feat-icon">🤖</div>
-      <div class="feat-num">02 — AI Engine</div>
-      <div class="feat-title">LLaMA 3.3 70B via Groq</div>
-      <div class="feat-desc">World's fastest open-source LLM. Complete detailed answers in under 3 seconds. No word limits — full explanations every time.</div>
-    </div>
-    <div class="feat-card reveal d3">
-      <div class="feat-icon">🇮🇳</div>
-      <div class="feat-num">03 — Desi Context</div>
-      <div class="feat-title">Real Indian Examples</div>
-      <div class="feat-desc">Every answer uses relatable Indian examples — Ramesh's shop inventory, Sunita's hospital system, Kiran's bank app.</div>
-    </div>
-    <div class="feat-card reveal d4">
-      <div class="feat-icon">📝</div>
-      <div class="feat-num">04 — Auto Quiz</div>
-      <div class="feat-title">Test After Every Answer</div>
-      <div class="feat-desc">3 MCQ questions auto-generated in your language after each answer. Instant scoring and feedback.</div>
-    </div>
-    <div class="feat-card reveal d5">
-      <div class="feat-icon">💻</div>
-      <div class="feat-num">05 — Live Compiler</div>
-      <div class="feat-title">22 Languages, Zero Setup</div>
-      <div class="feat-desc">Python, Java, C++, JavaScript, Kotlin, Go, Rust, Swift and 14 more. Run code in browser instantly.</div>
-    </div>
-    <div class="feat-card reveal d6">
-      <div class="feat-icon">📊</div>
-      <div class="feat-num">06 — Progress</div>
-      <div class="feat-title">ChatGPT-Style History</div>
-      <div class="feat-desc">Full question history per student. Click any past question to reload it. Track your learning journey.</div>
-    </div>
-  </div>
-</section>
+<!-- ────────────────────────────────────────
+     APP LAYOUT — POST LOGIN
+──────────────────────────────────────── -->
+<div class="app-layout" id="appLayout">
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DEMO -->
-<section class="demo-sec">
-  <p class="sec-eyebrow reveal">Live Preview</p>
-  <h2 class="sec-h2 reveal">See it in <em>action</em></h2>
-
-  <div class="demo-wrap reveal">
-    <div class="demo-bar">
-      <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-      <div class="demo-url-bar">codeguru-india.streamlit.app</div>
-    </div>
-    <div class="demo-grid">
-      <div class="dsidebar">
-        <div class="dsb-logo">📖🎓 CodeGuru India</div>
-        <div class="dsb-lang">తెలుగు (Telugu) <span>▾</span></div>
-        <div class="dsb-section">Recent Questions</div>
-        <div class="dsb-item">💬 Variable అంటే ఏమిటి?</div>
-        <div class="dsb-item">💬 List vs Tuple?</div>
-        <div class="dsb-item">💬 OOP concepts explain...</div>
-        <div class="dsb-item">💬 SQL joins అంటే?</div>
-        <div class="dsb-item">💬 Machine Learning intro</div>
-        <div class="dsb-item">💬 Recursion ఏమిటి?</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo">
+        <span class="dot"></span>
+        Code<span style="color:var(--saffron)">Guru</span><span style="color:var(--gold)"> India</span>
       </div>
-      <div class="dmain">
-        <div class="dmsg-u">Python లో string reverse ఎలా చేయాలి?</div>
-        <div class="dmsg-a">
-          Python లో string ని reverse చేయడానికి మూడు methods ఉన్నాయి. అత్యంత సులభమైన మరియు వేగవంతమైన పద్ధతి slicing ని ఉపయోగించడం.
-          <br><br>
-          రమేష్ ఒక password validation system తయారు చేస్తున్నాడు. అతను user password ని reverse చేసి store చేయాలనుకుంటున్నాడు:
-          <div class="dcode">
-<span style="color:var(--text-dim)"># String Reverse in Python</span><br>
-password = <span style="color:var(--green)">"Ramesh@123"</span><br>
-<br>
-<span style="color:var(--text-dim)"># Method 1: Slicing (Best)</span><br>
-<span style="color:var(--cyan)">reversed_pwd = password[::-1]</span><br>
-<span style="color:var(--gold)">print</span>(reversed_pwd)  <span style="color:var(--text-dim)"># 321@hsemaR</span><br>
-<br>
-<span style="color:var(--text-dim)"># Method 2: reversed() built-in</span><br>
-rev2 = <span style="color:var(--green)">''</span>.join(<span style="color:var(--gold)">reversed</span>(password))<br>
-<span style="color:var(--gold)">print</span>(rev2)
+      <button class="new-chat-btn" onclick="startNewChat()">
+        <span class="plus">＋</span> New Chat
+      </button>
+      <input class="sidebar-search" type="text" id="chatSearch" placeholder="🔍 Search chats..." oninput="filterChats(this.value)" />
+      <div class="sidebar-section-label">Recent Chats</div>
+    </div>
+
+    <div class="sidebar-chats" id="sidebarChats">
+      <div class="sidebar-empty">
+        <div class="empty-icon">💬</div>
+        <div>No chats yet</div>
+        <div style="margin-top:6px;font-size:.76rem">Ask a question to get started!</div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-avatar" id="sidebarAvatar">CG</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebarUserName">Student</div>
+        <div class="sidebar-user-email" id="sidebarUserEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="671214021527020a060e0b4904080a">[email&#160;protected]</a></div>
+      </div>
+      <button class="sidebar-logout-btn" onclick="handleLogout()">Logout</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="app-main" id="appMain">
+
+    <!-- TOP BAR -->
+    <div class="app-topbar">
+      <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+      <div class="app-lang-pills">
+        <button class="lang-pill active" id="ap_te" onclick="setLang('te','తెలుగు',this)">తెలుగు</button>
+        <button class="lang-pill" id="ap_ta" onclick="setLang('ta','தமிழ்',this)">தமிழ்</button>
+        <button class="lang-pill" id="ap_hi" onclick="setLang('hi','हिंदी',this)">हिंदी</button>
+        <button class="lang-pill" id="ap_kn" onclick="setLang('kn','ಕನ್ನಡ',this)">ಕನ್ನಡ</button>
+        <button class="lang-pill" id="ap_mr" onclick="setLang('mr','मराठी',this)">मराठी</button>
+        <button class="lang-pill" id="ap_en" onclick="setLang('en','English',this)">English</button>
+      </div>
+      <button class="compiler-toggle-pill" id="compilerToggleBtn" onclick="toggleCompiler()">💻 Compiler</button>
+      <div class="app-user-badge">
+        <div class="app-user-avatar" id="appUserAvatar">CG</div>
+        <span class="app-user-name" id="appUserName">Student</span>
+      </div>
+    </div>
+
+    <!-- CHAT VIEWPORT: fills exactly one viewport height below the topbar -->
+    <div class="chat-viewport">
+
+      <!-- Messages -->
+      <div class="messages app-messages" id="messages">
+        <div class="msg bot" id="greetingMsg">
+          <div class="avatar bot">🎓</div>
+          <div class="bubble bot" id="greetingBubble">నమస్కారం! నేను మీ తెలుగు కోడింగ్ గురువుని 🎓
+Python, Java, DSA, ML ఏదైనా అడగండి!</div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div style="padding:0 28px 6px;">
+        <div class="typing-indicator" id="typing">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      </div>
+
+      <!-- Input row -->
+      <div class="chat-input-row app-input-row">
+        <span class="mic-status" id="micStatus">🎤 Listening...</span>
+        <textarea
+          class="chat-input" id="chatInput"
+          placeholder="మీ కోడింగ్ ప్రశ్న ఇక్కడ టైప్ చేయండి..."
+          rows="1" onkeydown="handleKey(event)"
+        ></textarea>
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Voice Input">🎤</button>
+        <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
+      </div>
+
+    </div><!-- end chat-viewport -->
+
+    <!-- ── COMPILER SECTION — scroll down or click Compiler button to reach ── -->
+      <div class="app-compiler-section" id="compilerSection">
+        <div class="compiler-header-row" onclick="toggleCompiler()">
+          <div class="compiler-header-title">
+            💻 Online Compiler
+            <span class="badge">22 Languages</span>
+          </div>
+          <span class="compiler-chevron" id="compilerChevron">▼</span>
+        </div>
+
+        <div class="compiler-panel" id="compilerPanel">
+          <div class="compiler-lang-row">
+            <span class="compiler-lang-row-label">Language:</span>
+            <select class="compiler-lang-select" id="progLang" onchange="updateDefaultCode()">
+              <option value="python3">🐍 Python 3</option>
+              <option value="java">☕ Java</option>
+              <option value="c">🔵 C</option>
+              <option value="cpp">🔷 C++</option>
+              <option value="javascript">🟨 JavaScript</option>
+              <option value="typescript">🔷 TypeScript</option>
+              <option value="kotlin">🟣 Kotlin</option>
+              <option value="swift">🟠 Swift</option>
+              <option value="go">🔵 Go</option>
+              <option value="rust">🟤 Rust</option>
+              <option value="ruby">🔴 Ruby</option>
+              <option value="php">🟣 PHP</option>
+              <option value="csharp">🟦 C#</option>
+              <option value="r">📊 R</option>
+              <option value="scala">🔴 Scala</option>
+              <option value="perl">🐪 Perl</option>
+              <option value="haskell">🟣 Haskell</option>
+              <option value="lua">🔵 Lua</option>
+              <option value="bash">⚡ Bash</option>
+              <option value="sql">🗃️ SQL</option>
+              <option value="html">🌐 HTML</option>
+              <option value="css">🎨 CSS</option>
+            </select>
+          </div>
+
+          <div class="code-editor-wrap">
+            <div class="code-editor-label">✏️ Write your code here:</div>
+            <textarea class="code-editor" id="codeEditor" spellcheck="false"
+              onkeydown="handleEditorTab(event)" oninput="detectStdin()" onchange="detectStdin()">print("Hello from CodeGuru India! 🇮🇳")</textarea>
+          </div>
+
+          <div class="stdin-wrap" id="stdinWrap">
+            <div class="stdin-label">⌨️ Program Input (stdin) <span class="stdin-hint">— one value per line</span></div>
+            <textarea class="stdin-input" id="stdinInput" placeholder="Type input here...&#10;Example:&#10;7&#10;John&#10;25" rows="3"></textarea>
+          </div>
+
+          <div class="compiler-actions">
+            <button class="run-btn" id="runBtn" onclick="runCode()">
+              <span class="run-icon">▶ Run Code</span>
+              <span class="run-spinner"></span>
+            </button>
+            <button class="clear-btn" onclick="clearEditor()">🗑 Clear</button>
+          </div>
+
+          <div class="output-wrap" id="outputWrap">
+            <div class="output-label">📤 Output <span class="output-status" id="outputStatus"></span></div>
+            <div class="output-box" id="outputBox"></div>
           </div>
         </div>
       </div>
-      <div class="dquiz">
-        <div class="dq-header">🧠 Quick Quiz</div>
-        <div class="dq-q">Q1: Python లో string reverse చేయడానికి ఏ slicing వాడాలి?</div>
-        <div class="dq-opt">string[0:-1]</div>
-        <div class="dq-opt dq-correct">string[::-1] ✓</div>
-        <div class="dq-opt">string[-1:0]</div>
-        <div class="dq-opt">string[1::]</div>
-        <div class="dq-score">🎯 Score: 1/1 — Excellent!</div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LANGUAGES -->
-<section class="langs-sec">
-  <p class="sec-eyebrow reveal">Supported Languages</p>
-  <h2 class="sec-h2 reveal">Your language,<br><em>your way</em></h2>
-  <div class="langs-grid">
-    <div class="lang-c reveal d1">
-      <span class="lang-script">అ</span>
-      <div class="lang-en">Telugu</div>
-      <div class="lang-native">తెలుగు</div>
-    </div>
-    <div class="lang-c reveal d2">
-      <span class="lang-script">அ</span>
-      <div class="lang-en">Tamil</div>
-      <div class="lang-native">தமிழ்</div>
-    </div>
-    <div class="lang-c reveal d3">
-      <span class="lang-script">अ</span>
-      <div class="lang-en">Hindi</div>
-      <div class="lang-native">हिंदी</div>
-    </div>
-    <div class="lang-c reveal d4">
-      <span class="lang-script">ಅ</span>
-      <div class="lang-en">Kannada</div>
-      <div class="lang-native">ಕನ್ನಡ</div>
-    </div>
-    <div class="lang-c reveal d5">
-      <span class="lang-script">अ</span>
-      <div class="lang-en">Marathi</div>
-      <div class="lang-native">मराठी</div>
-    </div>
-  </div>
-</section>
+    </div><!-- end app-compiler-section -->
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPILER -->
-<section class="compiler-sec">
-  <div class="compiler-wrap">
-    <div class="compiler-info reveal">
-      <p class="sec-eyebrow">Online Compiler</p>
-      <h2 class="sec-h2" style="margin-bottom:20px;">Run code in<br><em>22 languages</em></h2>
-      <p style="font-size:0.82rem;color:var(--text-dim);line-height:1.8;margin-bottom:24px;">
-        Write and execute code directly in the browser. Python runs locally for instant results. Java, C++, and all others powered by JDoodle API.
-      </p>
-      <div class="compiler-langs">
-        <span class="clang">Python</span><span class="clang">Java</span>
-        <span class="clang">C++</span><span class="clang">C</span>
-        <span class="clang">JavaScript</span><span class="clang">TypeScript</span>
-        <span class="clang">Kotlin</span><span class="clang">Go</span>
-        <span class="clang">Rust</span><span class="clang">Swift</span>
-        <span class="clang">Ruby</span><span class="clang">PHP</span>
-        <span class="clang">C#</span><span class="clang">Dart</span>
-        <span class="clang">Scala</span><span class="clang">R</span>
-        <span class="clang">Haskell</span><span class="clang">Lua</span>
-        <span class="clang">Bash</span><span class="clang">SQL</span>
-        <span class="clang">Perl</span><span class="clang">Assembly</span>
-      </div>
-    </div>
-    <div class="compiler-window reveal">
-      <div class="cw-bar">
-        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-        <span style="margin-left:8px;">compiler.py</span>
-        <span class="cw-lang-badge">PYTHON</span>
-      </div>
-      <div class="cw-code">
-<span style="color:var(--text-dim)"># Fibonacci Series</span><br>
-<span style="color:var(--saffron)">def</span> <span style="color:var(--gold)">fibonacci</span>(n):<br>
-&nbsp;&nbsp;&nbsp;&nbsp;a, b = <span style="color:var(--cyan)">0</span>, <span style="color:var(--cyan)">1</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--saffron)">for</span> _ <span style="color:var(--saffron)">in</span> <span style="color:var(--gold)">range</span>(n):<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gold)">print</span>(a, end=<span style="color:var(--green)">' '</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a, b = b, a + b<br>
-<br>
-<span style="color:var(--gold)">fibonacci</span>(<span style="color:var(--cyan)">10</span>)
-      </div>
-      <div class="cw-output">
-        <span class="cw-prompt">$</span>
-        <span style="color:var(--green)">0 1 1 2 3 5 8 13 21 34</span>
-        <div style="margin-top:4px;font-size:0.65rem;color:var(--text-dim);">✓ Executed in 0.08s</div>
-      </div>
-    </div>
-  </div>
-</section>
+  </div><!-- end app-main -->
+</div><!-- end app-layout -->
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TECH -->
-<section class="tech-sec">
-  <p class="sec-eyebrow reveal">Built With</p>
-  <h2 class="sec-h2 reveal" style="font-size:2rem;">Tech Stack</h2>
-  <div class="tech-row reveal">
-    <span class="tbadge">Python 3.12</span>
-    <span class="tbadge">Streamlit</span>
-    <span class="tbadge">Groq API</span>
-    <span class="tbadge">LLaMA 3.3 70B</span>
-    <span class="tbadge">Web Speech API</span>
-    <span class="tbadge">JDoodle Compiler</span>
-    <span class="tbadge">gTTS</span>
-    <span class="tbadge">SQLite</span>
-    <span class="tbadge">Streamlit Cloud</span>
-    <span class="tbadge">GitHub Actions</span>
-  </div>
-</section>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LIVE APP -->
-<section id="try-it" style="padding: 120px 48px;">
-  <p class="sec-eyebrow reveal">Try It Now</p>
-  <h2 class="sec-h2 reveal">Full app — <em>right here</em></h2>
-  <p style="font-size:0.82rem;color:var(--text-dim);margin-bottom:40px;font-family:'JetBrains Mono',monospace;" class="reveal">
-    No need to open another tab. Ask your coding question below in any language!
-  </p>
-  <div class="reveal" style="
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow: 0 40px 120px rgba(0,0,0,0.6);
-    position: relative;
-  ">
-    <!-- Top bar like a browser -->
-    <div style="
-      padding: 14px 22px;
-      background: rgba(255,255,255,0.025);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    ">
-      <div class="dot dr"></div>
-      <div class="dot dy"></div>
-      <div class="dot dg"></div>
-      <div style="
-        flex:1;
-        text-align:center;
-        font-size:0.7rem;
-        color:var(--text-dim);
-        background:rgba(255,255,255,0.04);
-        border:1px solid var(--border);
-        border-radius:6px;
-        padding:5px 14px;
-      ">codeguru-india.streamlit.app</div>
-    </div>
-    <!-- STREAMLIT APP EMBEDDED HERE -->
-    <iframe
-      src="https://codeguru-india-lb5idw9qmjkwujggvsdwiz.streamlit.app?embedded=true"
-      width="100%"
-      height="850px"
-      frameborder="0"
-      allow="microphone; camera"
-      style="display:block; background:#04060A;"
-    ></iframe>
-  </div>
-</section>
+<!-- ────────────────────────────────────────
+     LANDING PAGE (pre-login)
+──────────────────────────────────────── -->
+<div id="landingPage">
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CTA -->
-<section class="cta-sec">
-  <div class="cta-glow"></div>
-  <h2 class="cta-h2 reveal">
-    Start learning<br><em>today.</em>
-  </h2>
-  <p class="cta-sub reveal">Free forever. No signup. Just open and start coding.</p>
-  <div class="reveal">
-    <a href="https://codeguru-india-lb5idw9qmjkwujggvsdwiz.streamlit.app" target="_blank" class="cta-main" style="font-size:1rem;padding:18px 44px;display:inline-flex;">
-      🚀 Open CodeGuru India
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">
+      <span class="dot"></span>
+      Code<span class="logo-guru">Guru</span><span class="logo-india"> India</span>
     </a>
+    <div class="nav-links">
+      <button class="lang-pill active" onclick="setLangLanding('te','తెలుగు')">తెలుగు</button>
+      <button class="lang-pill" onclick="setLangLanding('ta','தமிழ்')">தமிழ்</button>
+      <button class="lang-pill" onclick="setLangLanding('hi','हिंदी')">हिंदी</button>
+      <button class="lang-pill" onclick="setLangLanding('kn','ಕನ್ನಡ')">ಕನ್ನಡ</button>
+      <button class="lang-pill" onclick="setLangLanding('mr','मराठी')">मराठी</button>
+      <button class="lang-pill" onclick="setLangLanding('en','English')">English</button>
+      <button class="btn-signin" onclick="showAuthModal('signin')">Sign In</button>
+      <button class="btn-cta" onclick="showAuthModal('signup')">Get Started ↓</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge"><span></span> AI-Powered • Free • 6 Indian Languages</div>
+    <h1 class="hero-title">
+      Learn to Code<br>
+      <span class="line-saffron">in Your Mother</span>
+      <span class="line-gold">Tongue.</span>
+    </h1>
+    <p class="hero-sub">Ask any coding question in Telugu, Tamil, Hindi, Kannada, Marathi, or English. Get instant, expert answers powered by AI.</p>
+
+    <!-- Language Selector -->
+    <div class="lang-selector">
+      <button class="lang-select-btn selected" onclick="setLangLanding('te','తెలుగు',this)"><span class="lang-native">తెలుగు</span> Telugu</button>
+      <button class="lang-select-btn" onclick="setLangLanding('ta','தமிழ்',this)"><span class="lang-native">தமிழ்</span> Tamil</button>
+      <button class="lang-select-btn" onclick="setLangLanding('hi','हिंदी',this)"><span class="lang-native">हिंदी</span> Hindi</button>
+      <button class="lang-select-btn" onclick="setLangLanding('kn','ಕನ್ನಡ',this)"><span class="lang-native">ಕನ್ನಡ</span> Kannada</button>
+      <button class="lang-select-btn" onclick="setLangLanding('mr','मराठी',this)"><span class="lang-native">मराठी</span> Marathi</button>
+      <button class="lang-select-btn" onclick="setLangLanding('en','English',this)">🌐 English</button>
+    </div>
+
+    <!-- Chat Preview (locked) -->
+    <div class="chat-preview-wrap">
+      <div class="chat-container">
+        <div class="chat-topbar">
+          <span class="traffic red"></span><span class="traffic yellow"></span><span class="traffic green"></span>
+          <span class="chat-url">codeguru-india.app</span>
+        </div>
+        <div class="messages" style="height:240px;pointer-events:none;filter:blur(2px)">
+          <div class="msg bot">
+            <div class="avatar bot">🎓</div>
+            <div class="bubble bot" id="landingGreeting">నమస్కారం! నేను మీ తెలుగు కోడింగ్ గురువుని 🎓
+Python, Java, DSA, ML ఏదైనా అడగండి!</div>
+          </div>
+          <div class="msg user">
+            <div class="avatar user-av">👤</div>
+            <div class="bubble user">Python లో loop ఎలా రాయాలి?</div>
+          </div>
+          <div class="msg bot">
+            <div class="avatar bot">🎓</div>
+            <div class="bubble bot">Python లో రెండు రకాల loops ఉన్నాయి: for loop మరియు while loop! 🐍</div>
+          </div>
+        </div>
+      </div>
+      <!-- Lock overlay -->
+      <div class="chat-preview-lock">
+        <div class="lock-icon">🔐</div>
+        <div class="lock-text">Sign in to Start Chatting</div>
+        <div class="lock-subtext">Free account • No credit card required</div>
+        <div class="lock-btns">
+          <button class="lock-btn-signin" onclick="showAuthModal('signin')">Sign In</button>
+          <button class="lock-btn-signup" onclick="showAuthModal('signup')">Create Free Account</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANGUAGE STRIP -->
+  <div class="lang-strip">
+    <div class="lang-scroll">
+      <span class="lang-scroll-item"><span>🇮🇳</span> Telugu తెలుగు</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Tamil தமிழ்</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Hindi हिंदी</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Kannada ಕನ್ನಡ</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Marathi मराठी</span>
+      <span class="lang-scroll-item"><span>🌐</span> English</span>
+      <span class="lang-scroll-item"><span>🐍</span> Python</span>
+      <span class="lang-scroll-item"><span>☕</span> Java</span>
+      <span class="lang-scroll-item"><span>🔬</span> DSA</span>
+      <span class="lang-scroll-item"><span>🤖</span> Machine Learning</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Telugu తెలుగు</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Tamil தமிழ்</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Hindi हिंदी</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Kannada ಕನ್ನಡ</span>
+      <span class="lang-scroll-item"><span>🇮🇳</span> Marathi मराठी</span>
+      <span class="lang-scroll-item"><span>🌐</span> English</span>
+      <span class="lang-scroll-item"><span>🐍</span> Python</span>
+      <span class="lang-scroll-item"><span>☕</span> Java</span>
+      <span class="lang-scroll-item"><span>🔬</span> DSA</span>
+      <span class="lang-scroll-item"><span>🤖</span> Machine Learning</span>
+    </div>
   </div>
-</section>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FOOTER -->
-<footer>
-  <div class="footer-logo">Code<em>Guru</em> India</div>
-  <div class="footer-copy">Built with ❤️ for Indian students — భారత విద్యార్థుల కోసం</div>
-  <div class="footer-flag">🇮🇳</div>
-</footer>
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label">Why CodeGuru India?</p>
+    <h2 class="section-title">Built for <span>Bharat</span> Coders</h2>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon">🗣️</div><div class="feat-title">6 Indian Languages</div><div class="feat-desc">Ask questions in Telugu, Tamil, Hindi, Kannada, Marathi, or English. Get expert answers in your own language.</div></div>
+      <div class="feat-card"><div class="feat-icon">⚡</div><div class="feat-title">Instant AI Answers</div><div class="feat-desc">No waiting, no searching Stack Overflow. Get accurate, detailed coding answers in seconds — available 24/7.</div></div>
+      <div class="feat-card"><div class="feat-icon">🐍</div><div class="feat-title">All Major Topics</div><div class="feat-desc">Python, Java, DSA, Web Dev, SQL, Machine Learning — every answer comes with clean, runnable code examples.</div></div>
+      <div class="feat-card"><div class="feat-icon">💻</div><div class="feat-title">Online Compiler — 22 Languages</div><div class="feat-desc">Write, run, and test code directly on CodeGuru India. No external tools needed.</div></div>
+      <div class="feat-card"><div class="feat-icon">💾</div><div class="feat-title">Chat History Saved</div><div class="feat-desc">Your conversations are saved automatically. Pick up exactly where you left off, every time you log in.</div></div>
+      <div class="feat-card"><div class="feat-icon">🆓</div><div class="feat-title">100% Free</div><div class="feat-desc">No subscription, no hidden fees. Coding education for every Indian student — completely free.</div></div>
+    </div>
+  </section>
 
-</div><!-- end .page -->
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-flag">
+      <span class="f-saffron">▬▬▬</span>
+      <span class="f-white">⚙</span>
+      <span class="f-green">▬▬▬</span>
+    </div>
+    <p>Made with ❤️ for India's next generation of coders</p>
+    <p style="margin-top:6px;font-size:.78rem;">© 2025 CodeGuru India · Empowering Bharat through code</p>
+  </footer>
 
-<script>
-/* ── CURSOR ── */
-const cur = document.getElementById('cur');
-const trail = document.getElementById('cur-trail');
-let mx=0,my=0,tx=0,ty=0;
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  cur.style.left = mx-4+'px';
-  cur.style.top  = my-4+'px';
-});
-(function animTrail(){
-  tx += (mx-tx)*0.13; ty += (my-ty)*0.13;
-  trail.style.left = tx-16+'px';
-  trail.style.top  = ty-16+'px';
-  requestAnimationFrame(animTrail);
+</div><!-- end landingPage -->
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let currentLang     = 'te';
+let currentLangName = 'తెలుగు';
+let appUser         = null;   // {id, name, email}
+let currentChatId   = null;
+let pendingUser     = null;   // temp during signup
+let currentOTP      = null;
+let compilerOpen    = false;
+let sidebarOpen     = true;
+
+// ═══════════════════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════════════════
+const greetings = {
+  te:"నమస్కారం! నేను మీ తెలుగు కోడింగ్ గురువుని 🎓\nPython, Java, DSA, ML ఏదైనా అడగండి!",
+  ta:"வணக்கம்! நான் உங்கள் தமிழ் கோடிங் குரு 🎓\nPython, Java, DSA, ML எதையும் கேளுங்கள்!",
+  hi:"नमस्ते! मैं आपका हिंदी कोडिंग गुरु हूँ 🎓\nPython, Java, DSA, ML — कुछ भी पूछिए!",
+  kn:"ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಕನ್ನಡ ಕೋಡಿಂಗ್ ಗುರು 🎓\nPython, Java, DSA, ML ಏನಾದರೂ ಕೇಳಿ!",
+  mr:"नमस्कार! मी तुमचा मराठी कोडिंग गुरू आहे 🎓\nPython, Java, DSA, ML — काहीही विचारा!",
+  en:"Hello! I'm your AI Coding Guru 🎓\nAsk me anything about Python, Java, DSA, ML or any coding topic!"
+};
+const placeholders = {
+  te:"మీ కోడింగ్ ప్రశ్న ఇక్కడ టైప్ చేయండి...",
+  ta:"உங்கள் கோடிங் கேள்வியை இங்கே தட்டச்சு செய்யுங்கள்...",
+  hi:"अपना कोडिंग प्रश्न यहाँ टाइप करें...",
+  kn:"ನಿಮ್ಮ ಕೋಡಿಂಗ್ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ...",
+  mr:"तुमचा कोडिंग प्रश्न इथे टाइप करा...",
+  en:"Type your coding question here..."
+};
+const landingGreetings = {
+  te:"నమస్కారం! నేను మీ తెలుగు కోడింగ్ గురువుని 🎓\nPython, Java, DSA, ML ఏదైనా అడగండి!",
+  ta:"வணக்கம்! நான் உங்கள் தமிழ் கோடிங் குரு 🎓",
+  hi:"नमस्ते! मैं आपका हिंदी कोडिंग गुरु हूँ 🎓",
+  kn:"ನಮಸ್ಕಾರ! ಕೋಡಿಂಗ್ ಗುರು 🎓",
+  mr:"नमस्कार! मराठी कोडिंग गुरू 🎓",
+  en:"Hello! I'm your AI Coding Guru 🎓\nAsk me anything about Python, Java, DSA, ML!"
+};
+
+// ═══════════════════════════════════════════════════════
+//  STARFIELD
+// ═══════════════════════════════════════════════════════
+(function createStars(){
+  const f=document.getElementById('starfield');
+  for(let i=0;i<120;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()*2.5+.5;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${(Math.random()*4+2).toFixed(1)}s;--delay:${(Math.random()*6).toFixed(1)}s;--op:${(Math.random()*.5+.2).toFixed(2)};`;
+    f.appendChild(s);
+  }
 })();
 
-/* ── CANVAS UNIVERSE — neural/particle system ── */
-const canvas = document.getElementById('universe');
-const ctx = canvas.getContext('2d');
-
-function resize(){
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
+function showToast(msg, type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
-resize();
-window.addEventListener('resize', () => { resize(); initParticles(); });
 
-const PCOUNT = 90;
-let particles = [];
+// ═══════════════════════════════════════════════════════
+//  USER STORAGE (localStorage)
+// ═══════════════════════════════════════════════════════
+function getUsers(){ try{return JSON.parse(localStorage.getItem('cg_users')||'[]')}catch{return[]} }
+function saveUsers(arr){ localStorage.setItem('cg_users',JSON.stringify(arr)) }
+function findUserByEmail(email){ return getUsers().find(u=>u.email.toLowerCase()===email.toLowerCase()) }
+function simpleHash(s){ let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))&0xFFFFFFFF;}return h.toString(16) }
 
-// Floating script characters
-const SCRIPTS = ['అ','ఆ','ఇ','అ','க','அ','त','न','ಅ','ಕ','अ','न','0','1','{}','[]','()','<>','//','fn','def','int','='];
+// ═══════════════════════════════════════════════════════
+//  SESSION
+// ═══════════════════════════════════════════════════════
+function saveSession(user){ localStorage.setItem('cg_session',JSON.stringify({id:user.id,name:user.name,email:user.email})) }
+function loadSession(){ try{const s=localStorage.getItem('cg_session');return s?JSON.parse(s):null}catch{return null} }
+function clearSession(){ localStorage.removeItem('cg_session') }
 
-function initParticles(){
-  particles = [];
-  for(let i=0;i<PCOUNT;i++){
-    particles.push({
-      x: Math.random()*canvas.width,
-      y: Math.random()*canvas.height,
-      vx:(Math.random()-.5)*.35,
-      vy:(Math.random()-.5)*.35,
-      r: Math.random()*1.5+.5,
-      char: Math.random()<0.3 ? SCRIPTS[Math.floor(Math.random()*SCRIPTS.length)] : null,
-      fontSize: Math.random()*10+8,
-      opacity: Math.random()*0.3+0.05,
-    });
+// ═══════════════════════════════════════════════════════
+//  AUTH MODAL
+// ═══════════════════════════════════════════════════════
+function showAuthModal(mode){
+  document.getElementById('authOverlay').classList.add('show');
+  switchAuthTab(mode==='signup'?'signup':'signin');
+}
+function closeAuthModal(){
+  document.getElementById('authOverlay').classList.remove('show');
+}
+function switchAuthTab(tab){
+  document.getElementById('signinForm').style.display= tab==='signin'?'block':'none';
+  document.getElementById('signupForm').style.display= tab==='signup'?'block':'none';
+  document.getElementById('otpForm').style.display='none';
+  document.getElementById('tabSignin').classList.toggle('active',tab==='signin');
+  document.getElementById('tabSignup').classList.toggle('active',tab==='signup');
+  document.getElementById('siError').textContent='';
+  document.getElementById('suError').textContent='';
+}
+function showSignupFromOTP(){
+  document.getElementById('otpForm').style.display='none';
+  document.getElementById('signupForm').style.display='block';
+  document.getElementById('tabSignup').classList.add('active');
+  document.getElementById('tabSignin').classList.remove('active');
+}
+
+// Sign Up
+function handleSignUp(){
+  const name=document.getElementById('suName').value.trim();
+  const email=document.getElementById('suEmail').value.trim();
+  const pw=document.getElementById('suPassword').value;
+  const errEl=document.getElementById('suError');
+  errEl.textContent='';
+  if(!name){errEl.textContent='❌ Please enter your name';return}
+  if(!email||!email.includes('@')){errEl.textContent='❌ Enter a valid email';return}
+  if(pw.length<6){errEl.textContent='❌ Password must be at least 6 characters';return}
+  if(findUserByEmail(email)){errEl.textContent='❌ Email already registered. Please sign in.';return}
+  // Generate OTP
+  currentOTP=String(Math.floor(100000+Math.random()*900000));
+  pendingUser={name,email,passwordHash:simpleHash(pw),id:'user_'+Date.now()};
+  // Show OTP form
+  document.getElementById('signupForm').style.display='none';
+  document.getElementById('otpForm').style.display='block';
+  document.getElementById('otpDesc').textContent='Code sent to: '+email;
+  document.getElementById('otpDemoCode').textContent=currentOTP;
+  // Clear OTP inputs
+  for(let i=0;i<6;i++){const el=document.getElementById('otp'+i);el.value='';el.classList.remove('filled')}
+  document.getElementById('otpError').textContent='';
+  setTimeout(()=>document.getElementById('otp0').focus(),100);
+}
+
+// Sign In
+function handleSignIn(){
+  const email=document.getElementById('siEmail').value.trim();
+  const pw=document.getElementById('siPassword').value;
+  const errEl=document.getElementById('siError');
+  errEl.textContent='';
+  if(!email){errEl.textContent='❌ Enter your email';return}
+  if(!pw){errEl.textContent='❌ Enter your password';return}
+  const user=findUserByEmail(email);
+  if(!user){errEl.textContent='❌ No account found. Please sign up.';return}
+  if(!user.verified){errEl.textContent='❌ Account not verified. Please sign up again.';return}
+  if(user.passwordHash!==simpleHash(pw)){errEl.textContent='❌ Incorrect password';return}
+  loginUser(user);
+}
+
+// OTP movement
+function otpMove(el,idx){
+  el.value=el.value.replace(/[^0-9]/g,'').slice(-1);
+  if(el.value){
+    el.classList.add('filled');
+    if(idx<5) document.getElementById('otp'+(idx+1)).focus();
+    else handleVerifyOTP();
+  } else { el.classList.remove('filled') }
+}
+function otpBack(e,idx){
+  if(e.key==='Backspace'&&!e.target.value&&idx>0){
+    document.getElementById('otp'+(idx-1)).focus();
   }
 }
-initParticles();
+function handleVerifyOTP(){
+  let entered='';
+  for(let i=0;i<6;i++) entered+=document.getElementById('otp'+i).value;
+  if(entered.length<6){document.getElementById('otpError').textContent='❌ Enter all 6 digits';return}
+  if(entered!==currentOTP){
+    document.getElementById('otpError').textContent='❌ Wrong OTP. Try again.';
+    for(let i=0;i<6;i++){const el=document.getElementById('otp'+i);el.value='';el.classList.remove('filled')}
+    document.getElementById('otp0').focus();
+    return;
+  }
+  // Verified! Save user
+  const users=getUsers();
+  users.push({...pendingUser,verified:true,createdAt:Date.now()});
+  saveUsers(users);
+  showToast('✅ Account created! Welcome '+pendingUser.name+'!','success');
+  loginUser(pendingUser);
+}
 
-function drawUniverse(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+function loginUser(user){
+  appUser={id:user.id,name:user.name,email:user.email};
+  saveSession(appUser);
+  closeAuthModal();
+  currentChatId=null;
+  initApp();
+  showApp();
+  showToast('👋 Welcome back, '+user.name+'!','success');
+}
 
-  // connections
-  for(let i=0;i<particles.length;i++){
-    for(let j=i+1;j<particles.length;j++){
-      const dx=particles[i].x-particles[j].x;
-      const dy=particles[i].y-particles[j].y;
-      const dist=Math.sqrt(dx*dx+dy*dy);
-      if(dist<130){
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x,particles[i].y);
-        ctx.lineTo(particles[j].x,particles[j].y);
-        ctx.strokeStyle=`rgba(255,107,0,${0.08*(1-dist/130)})`;
-        ctx.lineWidth=.4;
-        ctx.stroke();
+function handleLogout(){
+  appUser=null;
+  currentChatId=null;
+  clearSession();
+  showLanding();
+  showToast('Logged out successfully','info');
+}
+
+function showGreeting(){
+  const msgs=document.getElementById('messages');
+  const greetEl=document.getElementById('greetingMsg');
+  // Detach from wherever it is and put it at the top of messages alone
+  msgs.innerHTML='';
+  msgs.appendChild(greetEl);
+  msgs.scrollTop=0;
+}
+
+// ═══════════════════════════════════════════════════════
+//  APP STATE TRANSITIONS
+// ═══════════════════════════════════════════════════════
+function showApp(){
+  document.getElementById('landingPage').style.display='none';
+  document.getElementById('appLayout').classList.add('show');
+}
+function showLanding(){
+  document.getElementById('landingPage').style.display='block';
+  document.getElementById('appLayout').classList.remove('show');
+}
+function adjustMessagesHeight(){
+  // Not needed — chat-viewport uses calc(100vh - 64px) via CSS
+}
+window.addEventListener('resize',adjustMessagesHeight);
+
+function toggleSidebar(){
+  sidebarOpen=!sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('collapsed',!sidebarOpen);
+}
+function toggleCompiler(){
+  compilerOpen=!compilerOpen;
+  const panel=document.getElementById('compilerPanel');
+  const chevron=document.getElementById('compilerChevron');
+  const btn=document.getElementById('compilerToggleBtn');
+  panel.classList.toggle('open',compilerOpen);
+  chevron.classList.toggle('open',compilerOpen);
+  btn.classList.toggle('active',compilerOpen);
+  // Smooth scroll the app-main to reveal the compiler below the chat
+  const appMain=document.getElementById('appMain');
+  const compilerSection=document.getElementById('compilerSection');
+  if(compilerOpen){
+    setTimeout(()=>{
+      compilerSection.scrollIntoView({behavior:'smooth',block:'start'});
+    },50);
+  } else {
+    // Scroll back to top (chat)
+    appMain.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+function initApp(){
+  if(!appUser) return;
+  // Update UI with user info
+  const initials=appUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('sidebarAvatar').textContent=initials;
+  document.getElementById('sidebarUserName').textContent=appUser.name;
+  document.getElementById('sidebarUserEmail').textContent=appUser.email;
+  document.getElementById('appUserAvatar').textContent=initials;
+  document.getElementById('appUserName').textContent=appUser.name;
+  // Set greeting text for current language
+  const greetText=greetings[currentLang]||greetings['en'];
+  document.getElementById('greetingBubble').textContent=greetText;
+  document.getElementById('chatInput').placeholder=placeholders[currentLang]||placeholders['en'];
+  // Load chat history sidebar
+  renderSidebarChats();
+  // Show greeting as first message (always)
+  showGreeting();
+}
+
+// ═══════════════════════════════════════════════════════
+//  CHAT HISTORY
+// ═══════════════════════════════════════════════════════
+function getChatKey(){ return appUser?'cg_chats_'+appUser.id:null }
+function getUserChats(){
+  const k=getChatKey();
+  if(!k) return [];
+  try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return[]}
+}
+function saveUserChats(chats){
+  const k=getChatKey();
+  if(k) localStorage.setItem(k,JSON.stringify(chats));
+}
+function startNewChat(){
+  currentChatId=null;
+  // Update greeting for current language
+  document.getElementById('greetingBubble').textContent=greetings[currentLang]||greetings['en'];
+  showGreeting();
+  document.getElementById('outputWrap').classList.remove('show');
+  // Scroll back to chat top
+  document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
+  renderSidebarChats();
+  document.getElementById('chatInput').focus();
+}
+function createNewChatSession(firstMessage){
+  const id='chat_'+Date.now();
+  const title=firstMessage.length>50?firstMessage.slice(0,50)+'…':firstMessage;
+  const chats=getUserChats();
+  chats.unshift({id,title,messages:[],lang:currentLang,langName:currentLangName,createdAt:Date.now(),updatedAt:Date.now()});
+  saveUserChats(chats);
+  currentChatId=id;
+  return id;
+}
+function saveMessageToHistory(role,text){
+  if(!currentChatId||!appUser) return;
+  const chats=getUserChats();
+  const chat=chats.find(c=>c.id===currentChatId);
+  if(!chat) return;
+  chat.messages.push({role,text,time:Date.now()});
+  chat.updatedAt=Date.now();
+  saveUserChats(chats);
+}
+function loadChat(chatId){
+  const chats=getUserChats();
+  const chat=chats.find(c=>c.id===chatId);
+  if(!chat) return;
+  currentChatId=chatId;
+  const msgs=document.getElementById('messages');
+  msgs.innerHTML='';
+  if(chat.messages.length===0){
+    // Empty chat — show greeting
+    document.getElementById('greetingBubble').textContent=greetings[currentLang]||greetings['en'];
+    msgs.appendChild(document.getElementById('greetingMsg'));
+  } else {
+    chat.messages.forEach(m=>appendMessage(m.role,m.text,true));
+  }
+  msgs.scrollTop=msgs.scrollHeight;
+  // Scroll app-main back to chat top
+  document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
+  renderSidebarChats();
+}
+function renderSidebarChats(filter){
+  const container=document.getElementById('sidebarChats');
+  let chats=getUserChats();
+  if(filter) chats=chats.filter(c=>c.title.toLowerCase().includes(filter.toLowerCase())||((c.langName||c.lang||'').toLowerCase().includes(filter.toLowerCase())));
+  if(chats.length===0){
+    container.innerHTML=`<div class="sidebar-empty"><div class="empty-icon">💬</div><div>No chats yet</div><div style="margin-top:6px;font-size:.76rem">Ask a question to get started!</div></div>`;
+    return;
+  }
+  // Language flag/emoji map
+  const langEmoji={'te':'🇮🇳','ta':'🇮🇳','hi':'🇮🇳','kn':'🇮🇳','mr':'🇮🇳','en':'🌐'};
+  container.innerHTML=chats.map(c=>{
+    const active=c.id===currentChatId?'active':'';
+    const d=new Date(c.updatedAt);
+    const timeStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
+    const langLabel=c.langName||c.lang||'';
+    const emoji=langEmoji[c.lang]||'🌐';
+    return `<div class="sidebar-chat-item ${active}" onclick="loadChat('${c.id}')">
+      <div class="chat-item-content">
+        <div class="chat-item-title">${escHtml(c.title)}</div>
+        <div class="chat-item-meta">
+          <span class="chat-item-lang">${emoji} ${escHtml(langLabel)}</span>
+          <span class="chat-item-dot">·</span>
+          <span class="chat-item-time">${timeStr}</span>
+        </div>
+      </div>
+      <button class="chat-item-delete" onclick="deleteChat('${c.id}',event)" title="Delete">🗑</button>
+    </div>`;
+  }).join('');
+}
+function deleteChat(chatId,e){
+  e.stopPropagation();
+  let chats=getUserChats().filter(c=>c.id!==chatId);
+  saveUserChats(chats);
+  if(currentChatId===chatId){ currentChatId=null; startNewChat(); }
+  else renderSidebarChats();
+  showToast('Chat deleted','info');
+}
+function filterChats(q){ renderSidebarChats(q||undefined) }
+function escHtml(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+function formatTime(ts){
+  const d=new Date(ts);
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+// ═══════════════════════════════════════════════════════
+//  LANGUAGE SWITCHING
+// ═══════════════════════════════════════════════════════
+function setLang(code,name,btn){
+  // If language actually changed and user is in an active chat — start a fresh session
+  const langChanged = (code !== currentLang);
+  currentLang=code; currentLangName=name;
+
+  // Update app lang pills
+  document.querySelectorAll('.app-lang-pills .lang-pill').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+
+  // Update greeting text and placeholder
+  document.getElementById('greetingBubble').textContent=greetings[code]||greetings['en'];
+  document.getElementById('chatInput').placeholder=placeholders[code]||placeholders['en'];
+
+  if(langChanged && appUser){
+    // Always start a fresh chat when language changes
+    currentChatId=null;
+    showGreeting();
+    document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
+    renderSidebarChats();
+    showToast('🌐 Switched to '+name+' — new chat started','info');
+  } else if(!currentChatId){
+    showGreeting();
+  }
+}
+function setLangLanding(code,name,btn){
+  currentLang=code; currentLangName=name;
+  document.querySelectorAll('.nav-links .lang-pill').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.lang-select-btn').forEach(b=>b.classList.remove('selected'));
+  if(btn) btn.classList.add('selected');
+  // Update landing preview
+  const g=document.getElementById('landingGreeting');
+  if(g) g.textContent=landingGreetings[code]||landingGreetings['en'];
+}
+
+// ═══════════════════════════════════════════════════════
+//  CHAT CORE
+// ═══════════════════════════════════════════════════════
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+}
+
+function appendMessage(role,text,fromHistory){
+  const msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');
+  wrap.className=`msg ${role==='user'?'user':'bot'}`;
+  const avatar=document.createElement('div');
+  avatar.className=`avatar ${role==='user'?'user-av':'bot'}`;
+  avatar.textContent=role==='user'?'👤':'🎓';
+  const bubble=document.createElement('div');
+  bubble.className=`bubble ${role==='user'?'user':'bot'}`;
+  bubble.innerHTML=formatMessage(text);
+  wrap.appendChild(avatar); wrap.appendChild(bubble);
+  msgs.appendChild(wrap);
+  if(!fromHistory) msgs.scrollTop=msgs.scrollHeight;
+  return bubble;
+}
+
+function formatMessage(text){
+  let idx=0;
+  return text
+    .replace(/```(\w+)?\n([\s\S]*?)```/g,(match,lang,code)=>{
+      const id='cb-'+(idx++)+'-'+Date.now();
+      const label=lang?lang.toLowerCase():'code';
+      const escaped=code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return `<div class="code-block-wrap"><div class="code-block-topbar"><span class="code-lang-label">${label}</span><button class="copy-code-btn" onclick="copyCode('${id}')"><span id="icon-${id}">📋 Copy</span></button></div><pre><code id="${id}">${escaped}</code></pre></div>`;
+    })
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\n/g,'<br>');
+}
+
+function copyCode(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const text=el.innerText;
+  const iconEl=document.getElementById('icon-'+id);
+  navigator.clipboard.writeText(text).then(()=>{
+    iconEl.textContent='✅ Copied!';
+    setTimeout(()=>iconEl.textContent='📋 Copy',2000);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+    iconEl.textContent='✅ Copied!';
+    setTimeout(()=>iconEl.textContent='📋 Copy',2000);
+  });
+}
+
+async function sendMessage(){
+  const input=document.getElementById('chatInput');
+  const question=input.value.trim();
+  if(!question) return;
+  input.value='';
+
+  // Create chat session on first message
+  if(!currentChatId){
+    createNewChatSession(question);
+    renderSidebarChats();
+  }
+
+  saveMessageToHistory('user',question);
+  appendMessage('user',question);
+
+  // Scroll app-main back to chat area (in case compiler was open)
+  document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
+
+  document.getElementById('typing').classList.add('show');
+  const msgs=document.getElementById('messages');
+  msgs.scrollTop=msgs.scrollHeight;
+
+  try{
+    const res=await fetch('http://localhost:8000/ask',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        question,
+        language:currentLang,
+        language_name:currentLangName,
+        quiz_topic:question,
+        quiz_instruction:'Generate quiz questions ONLY about the specific topic asked in quiz_topic. Every question must directly test understanding of: '+question
+      })
+    });
+    document.getElementById('typing').classList.remove('show');
+    if(!res.ok) throw new Error('Server error');
+    const data=await res.json();
+    saveMessageToHistory('bot',data.answer);
+    const bubble=appendMessage('bot',data.answer);
+    renderSidebarChats();
+    // ── Always guarantee a quiz: use backend quiz if present, otherwise generate via AI ──
+    if(data.quiz&&data.quiz.questions&&data.quiz.questions.length>0){
+      appendQuiz(data.quiz,bubble.parentElement);
+    } else {
+      // Backend did not return a quiz — generate one directly via Anthropic API
+      generateQuizFromAI(question, data.answer, currentLang, currentLangName);
+    }
+  }catch(err){
+    document.getElementById('typing').classList.remove('show');
+    const demo=getDemoResponse(question,currentLang);
+    saveMessageToHistory('bot',demo);
+    appendMessage('bot',demo);
+    renderSidebarChats();
+    // Even in offline mode, generate quiz via AI
+    generateQuizFromAI(question, demo, currentLang, currentLangName);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  GUARANTEED QUIZ GENERATION via Anthropic API
+// ═══════════════════════════════════════════════════════
+async function generateQuizFromAI(question, context, lang, langName){
+  // Show a subtle "generating quiz..." indicator
+  const quizLoadWrap = document.createElement('div');
+  quizLoadWrap.className = 'msg bot';
+  quizLoadWrap.id = 'quizLoadMsg';
+  quizLoadWrap.innerHTML = `<div class="avatar bot">📝</div><div class="bubble bot" style="color:var(--muted);font-size:.85rem">📝 Generating quiz questions about: <strong>${escHtml(question.slice(0,50))}</strong>...</div>`;
+  const msgs = document.getElementById('messages');
+  msgs.appendChild(quizLoadWrap);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try{
+    const langInstruction = lang==='en' ? 'in English' : `in ${langName} language (use ${langName} script for all text)`;
+    const prompt = `You are a quiz generator for a coding tutor. The student asked: "${question}"
+
+Generate exactly 3 multiple choice quiz questions ${langInstruction} that STRICTLY test understanding of: "${question}"
+
+RULES:
+- ALL questions must be 100% about: ${question}
+- No unrelated or generic questions
+- Each question has exactly 4 options labeled A, B, C, D
+- Mark the correct answer clearly
+- Questions must test real conceptual understanding
+
+Return ONLY this exact JSON structure, no markdown, no extra words:
+{"quiz_title":"Quiz: ${question.slice(0,45)}","questions":[{"question":"question here","options":{"A":"opt a","B":"opt b","C":"opt c","D":"opt d"},"correct":"A"},{"question":"question 2","options":{"A":"opt a","B":"opt b","C":"opt c","D":"opt d"},"correct":"B"},{"question":"question 3","options":{"A":"opt a","B":"opt b","C":"opt c","D":"opt d"},"correct":"C"}]}`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1200,
+        messages: [{role: 'user', content: prompt}]
+      })
+    });
+
+    // Remove loading indicator
+    const loadMsg = document.getElementById('quizLoadMsg');
+    if(loadMsg) loadMsg.remove();
+
+    if(!res.ok){ console.warn('Quiz API failed:', res.status); return; }
+
+    const data = await res.json();
+    const rawText = data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+
+    // Extract JSON robustly
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if(!jsonMatch){ console.warn('No JSON in quiz response'); return; }
+
+    let quiz;
+    try{ quiz = JSON.parse(jsonMatch[0]); }
+    catch(e){ console.warn('Quiz JSON parse failed:', e); return; }
+
+    if(quiz && quiz.questions && quiz.questions.length > 0){
+      appendQuiz(quiz, null);
+    }
+  } catch(e) {
+    // Remove loading indicator on error
+    const loadMsg = document.getElementById('quizLoadMsg');
+    if(loadMsg) loadMsg.remove();
+    console.warn('Quiz generation error:', e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  QUIZ RENDERER
+// ═══════════════════════════════════════════════════════
+function appendQuiz(quiz,msgWrapper){
+  const msgs=document.getElementById('messages');
+  const quizBlock=document.createElement('div'); quizBlock.className='quiz-block';
+  const title=document.createElement('div'); title.className='quiz-title';
+  title.innerHTML=`📝 ${quiz.quiz_title}`; quizBlock.appendChild(title);
+  const totalQ=quiz.questions.length;
+  const userAnswers=new Array(totalQ).fill(null);
+  let answeredCount=0;
+  const scoreDiv=document.createElement('div'); scoreDiv.className='quiz-score';
+  quiz.questions.forEach((q,qIndex)=>{
+    const qBlock=document.createElement('div'); qBlock.className='quiz-question';
+    const qText=document.createElement('div'); qText.className='quiz-q-text';
+    qText.textContent=`${qIndex+1}. ${q.question}`; qBlock.appendChild(qText);
+    const optGrid=document.createElement('div'); optGrid.className='quiz-options';
+    let questionAnswered=false;
+    Object.entries(q.options).forEach(([key,val])=>{
+      const btn=document.createElement('button'); btn.className='quiz-option';
+      btn.innerHTML=`<span class="option-label">${key}</span>${val}`; btn.dataset.key=key;
+      btn.addEventListener('click',()=>{
+        if(questionAnswered) return; questionAnswered=true;
+        const correct=(key===q.correct); userAnswers[qIndex]=correct;
+        optGrid.querySelectorAll('.quiz-option').forEach(b=>{
+          b.classList.add('answered');
+          if(b.dataset.key===q.correct) b.classList.add('correct');
+          if(b.dataset.key===key&&!correct) b.classList.add('wrong');
+        });
+        answeredCount++;
+        if(answeredCount===totalQ){
+          const score=userAnswers.filter(a=>a===true).length;
+          let emoji='💪';
+          if(score===totalQ) emoji='🏆';
+          else if(score>=totalQ*.67) emoji='👍';
+          else if(score>=totalQ*.33) emoji='😊';
+          scoreDiv.textContent=`${emoji} ${score}/${totalQ} correct!`;
+          scoreDiv.style.display='block'; msgs.scrollTop=msgs.scrollHeight;
+        }
+      });
+      optGrid.appendChild(btn);
+    });
+    qBlock.appendChild(optGrid); quizBlock.appendChild(qBlock);
+  });
+  quizBlock.appendChild(scoreDiv);
+  const wrap=document.createElement('div'); wrap.className='msg bot';
+  const av=document.createElement('div'); av.className='avatar bot'; av.textContent='📝';
+  wrap.appendChild(av); wrap.appendChild(quizBlock);
+  msgs.appendChild(wrap); msgs.scrollTop=msgs.scrollHeight;
+}
+
+// ═══════════════════════════════════════════════════════
+//  VOICE INPUT
+// ═══════════════════════════════════════════════════════
+//  VOICE INPUT
+//  Strategy: Always recognise in English (most accurate for
+//  technical terms). If language ≠ English, translate via AI.
+// ═══════════════════════════════════════════════════════
+const MIC_LABELS={
+  'te':'🎤 మాట్లాడండి — తెలుగు లో అనువదిస్తాను...',
+  'ta':'🎤 பேசுங்கள் — தமிழில் மொழிபெயர்க்கிறேன்...',
+  'hi':'🎤 बोलिए — हिंदी में अनुवाद करूँगा...',
+  'kn':'🎤 ಮಾತನಾಡಿ — ಕನ್ನಡಕ್ಕೆ ಭಾಷಾಂತರಿಸುತ್ತೇನೆ...',
+  'mr':'🎤 बोला — मराठीत भाषांतर करतो...',
+  'en':'🎤 Listening... speak your question'
+};
+let recognition=null, isListening=false;
+
+function toggleMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){showToast('Voice input needs Chrome or Edge browser 🎤','error');return}
+  if(isListening) stopMic(); else startMic();
+}
+
+function startMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+
+  // Always use en-IN for recognition — Indian English accent, accurate technical terms
+  // "Generative AI", "machine learning", "encapsulation" etc. will be correctly captured
+  recognition.lang='en-IN';
+  recognition.continuous=false;
+  recognition.interimResults=true;
+  recognition.maxAlternatives=5;  // pick best from multiple alternatives
+
+  recognition.onstart=()=>{
+    isListening=true;
+    document.getElementById('micBtn').classList.add('listening');
+    document.getElementById('micBtn').textContent='⏹';
+    const s=document.getElementById('micStatus');
+    s.textContent=MIC_LABELS[currentLang]||'🎤 Listening...';
+    s.classList.add('show');
+    document.getElementById('chatInput').value='';
+    document.getElementById('chatInput').placeholder='🎤 Listening — speak clearly...';
+  };
+
+  recognition.onresult=(e)=>{
+    let finalText='', interimText='';
+    for(let i=0;i<e.results.length;i++){
+      if(e.results[i].isFinal){
+        // Pick highest-confidence alternative
+        let best=e.results[i][0].transcript;
+        let bestConf=e.results[i][0].confidence||0;
+        for(let a=1;a<e.results[i].length;a++){
+          const altConf=e.results[i][a].confidence||0;
+          if(altConf>bestConf){ best=e.results[i][a].transcript; bestConf=altConf; }
+        }
+        finalText+=best;
+      } else {
+        interimText+=e.results[i][0].transcript;
       }
     }
-  }
+    document.getElementById('chatInput').value=finalText||interimText;
+  };
 
-  // nodes
-  particles.forEach(p=>{
-    p.x+=p.vx; p.y+=p.vy;
-    if(p.x<0||p.x>canvas.width)  p.vx*=-1;
-    if(p.y<0||p.y>canvas.height) p.vy*=-1;
-
-    if(p.char){
-      ctx.font=`${p.fontSize}px 'Noto Sans Telugu','Noto Sans Tamil','Noto Sans Devanagari','JetBrains Mono',monospace`;
-      ctx.fillStyle=`rgba(255,107,0,${p.opacity*0.6})`;
-      ctx.fillText(p.char,p.x,p.y);
-    } else {
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,107,0,${p.opacity+0.1})`;
-      ctx.fill();
+  recognition.onend=()=>{
+    const recognized=(document.getElementById('chatInput').value||'').trim();
+    stopMic();
+    if(!recognized) return;
+    // If language is not English, translate the recognized English text
+    if(currentLang!=='en'){
+      translateVoiceInput(recognized, currentLang, currentLangName);
     }
-  });
+    // If English, keep as-is (already in correct language)
+  };
 
-  requestAnimationFrame(drawUniverse);
+  recognition.onerror=(e)=>{
+    stopMic();
+    if(e.error==='not-allowed') showToast('Microphone access denied ❌','error');
+    else if(e.error==='no-speech') showToast('No speech detected — try again 🎤','info');
+    else if(e.error!=='aborted') showToast('Voice error: '+e.error,'error');
+  };
+
+  recognition.start();
 }
-drawUniverse();
 
-/* ── SCROLL REVEAL ── */
-const reveals = document.querySelectorAll('.reveal');
-const io = new IntersectionObserver(entries=>{
-  entries.forEach((e,i)=>{
-    if(e.isIntersecting){
-      const delay = parseFloat(e.target.style.transitionDelay||0)*1000;
-      setTimeout(()=> e.target.classList.add('up'), delay+50);
+function stopMic(){
+  isListening=false;
+  if(recognition){try{recognition.stop();}catch(e){} recognition=null;}
+  document.getElementById('micBtn').classList.remove('listening');
+  document.getElementById('micBtn').textContent='🎤';
+  document.getElementById('micStatus').classList.remove('show');
+  document.getElementById('chatInput').placeholder=placeholders[currentLang]||placeholders['en'];
+  document.getElementById('chatInput').focus();
+}
+
+// Translate recognized English speech → selected language using Claude API
+async function translateVoiceInput(englishText, langCode, langName){
+  const input=document.getElementById('chatInput');
+  const micBtn=document.getElementById('micBtn');
+
+  // Show translating state
+  micBtn.textContent='⏳';
+  micBtn.disabled=true;
+  input.value=englishText;  // show recognized English while translating
+  input.placeholder='Translating to '+langName+'...';
+
+  try{
+    const prompt=`Translate this English question into ${langName} accurately.
+Rules:
+- Use correct ${langName} grammar and natural phrasing  
+- Keep technical English terms as-is (e.g., Python, AI, Generative AI, machine learning, API, loop, function, class, encapsulation, polymorphism)
+- Return ONLY the translated text — no explanation, no quotes, nothing else
+
+English question: "${englishText}"`;
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+
+    if(res.ok){
+      const data=await res.json();
+      const translated=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+      if(translated){
+        input.value=translated;
+        showToast('✅ Translated to '+langName,'success');
+      }
+    } else {
+      // Translation API failed — keep English (still fully usable)
+      showToast('Using English (translation unavailable)','info');
     }
-  });
-},{threshold:0.1});
-reveals.forEach(r=>io.observe(r));
+  }catch(e){
+    showToast('Using English (network error)','info');
+  } finally {
+    micBtn.textContent='🎤';
+    micBtn.disabled=false;
+    input.placeholder=placeholders[langCode]||placeholders['en'];
+    input.focus();
+  }
+}
 
-/* ── NAV LANG PILLS ── */
-document.querySelectorAll('.nlang').forEach(p=>{
-  p.addEventListener('click',function(){
-    document.querySelectorAll('.nlang').forEach(x=>x.classList.remove('on'));
-    this.classList.add('on');
-  });
-});
+// ═══════════════════════════════════════════════════════
+//  ONLINE COMPILER
+// ═══════════════════════════════════════════════════════
+const DEFAULT_CODES={
+  python3:`print("Hello from CodeGuru India! 🇮🇳")\n\nname = "Student"\nprint(f"Welcome, {name}! Let's code!")`,
+  java:`public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello from CodeGuru India!");\n    }\n}`,
+  c:`#include <stdio.h>\nint main() {\n    printf("Hello from CodeGuru India!\\n");\n    return 0;\n}`,
+  cpp:`#include <iostream>\nusing namespace std;\nint main() {\n    cout << "Hello from CodeGuru India!" << endl;\n    return 0;\n}`,
+  javascript:`console.log("Hello from CodeGuru India! 🇮🇳");\nconst name = "Student";\nconsole.log(\`Welcome, \${name}!\`);`,
+  typescript:`const message: string = "Hello from CodeGuru India!";\nconsole.log(message);`,
+  kotlin:`fun main() {\n    println("Hello from CodeGuru India!")\n}`,
+  swift:`print("Hello from CodeGuru India!")`,
+  go:`package main\nimport "fmt"\nfunc main() {\n    fmt.Println("Hello from CodeGuru India!")\n}`,
+  rust:`fn main() {\n    println!("Hello from CodeGuru India!");\n}`,
+  ruby:`puts "Hello from CodeGuru India!"`,
+  php:`<?php\necho "Hello from CodeGuru India!\\n";\n?>`,
+  csharp:`using System;\nclass Main {\n    static void Main() {\n        Console.WriteLine("Hello from CodeGuru India!");\n    }\n}`,
+  r:`cat("Hello from CodeGuru India!\\n")`,
+  scala:`object Main extends App {\n    println("Hello from CodeGuru India!")\n}`,
+  perl:`print "Hello from CodeGuru India!\\n";`,
+  haskell:`main :: IO ()\nmain = putStrLn "Hello from CodeGuru India!"`,
+  lua:`print("Hello from CodeGuru India!")`,
+  bash:`echo "Hello from CodeGuru India!"`,
+  sql:`SELECT 'Hello from CodeGuru India!' AS message;`,
+  html:`<!DOCTYPE html>\n<html>\n<body>\n  <h1>Hello from CodeGuru India!<\/h1>\n<\/body>\n<\/html>`,
+  css:`/* CSS cannot run standalone — try HTML mode */\nbody { background: #FF6B1A; color: white; }`,
+};
+function updateDefaultCode(){
+  const lang=document.getElementById('progLang').value;
+  document.getElementById('codeEditor').value=DEFAULT_CODES[lang]||'';
+  document.getElementById('outputWrap').classList.remove('show');
+  document.getElementById('stdinInput').value='';
+  detectStdin();
+}
+function clearEditor(){
+  const lang=document.getElementById('progLang').value;
+  document.getElementById('codeEditor').value=DEFAULT_CODES[lang]||'';
+  document.getElementById('outputWrap').classList.remove('show');
+  document.getElementById('stdinInput').value='';
+  document.getElementById('stdinWrap').classList.remove('show');
+  document.getElementById('codeEditor').focus();
+}
+function handleEditorTab(e){
+  if(e.key==='Tab'){
+    e.preventDefault();
+    const ed=document.getElementById('codeEditor');
+    const s=ed.selectionStart,end=ed.selectionEnd;
+    ed.value=ed.value.substring(0,s)+'    '+ed.value.substring(end);
+    ed.selectionStart=ed.selectionEnd=s+4;
+  }
+}
+const STDIN_PATTERNS={
+  python3:/\binput\s*\(/,java:/Scanner|BufferedReader|System\.in/,
+  c:/\bscanf\s*\(|gets\s*\(|fgets\s*\(/,cpp:/\bcin\s*>>|scanf\s*\(/,
+  javascript:/readline|process\.stdin/,typescript:/readline|process\.stdin/,
+  kotlin:/readLine\(\)|Scanner/,swift:/readLine\(\)/,
+  go:/fmt\.Scan|bufio\.NewReader/,rust:/std::io::stdin|read_line/,
+  ruby:/\bgets\b|\bSTDIN\b/,php:/fgets\s*\(\s*STDIN|readline\s*\(/,
+  csharp:/Console\.Read|Console\.ReadLine/,r:/readline\(\)|scan\(/,
+  scala:/readLine\(\)|StdIn/,perl:/<STDIN>|readline/,
+  haskell:/getLine|getContents/,lua:/io\.read/,bash:/\bread\b/,
+};
+function detectStdin(){
+  const code=document.getElementById('codeEditor').value;
+  const lang=document.getElementById('progLang').value;
+  const p=STDIN_PATTERNS[lang];
+  document.getElementById('stdinWrap').classList.toggle('show',p?p.test(code):false);
+}
+async function runCode(){
+  const code=document.getElementById('codeEditor').value.trim();
+  const lang=document.getElementById('progLang').value;
+  const stdin=document.getElementById('stdinInput').value;
+  const runBtn=document.getElementById('runBtn');
+  if(!code){showOutput('❌ Please write some code first!',true);return}
+  runBtn.disabled=true; runBtn.classList.add('running');
+  document.getElementById('outputWrap').classList.remove('show');
+  try{
+    const res=await fetch('http://localhost:8000/run-code',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({code,language:lang,stdin})
+    });
+    const data=await res.json();
+    if(data.output!==undefined){
+      showOutput(data.output||'(No output)',data.is_error||data.output.toLowerCase().includes('error'));
+    }else{
+      showOutput('❌ Server error: '+(data.detail||'Unknown error'),true);
+    }
+  }catch(err){
+    showOutput('❌ Could not connect to backend.\n\nStart it with:\nuvicorn backend:app --host 0.0.0.0 --port 8000 --reload',true);
+  }finally{
+    runBtn.disabled=false; runBtn.classList.remove('running');
+  }
+}
+function showOutput(text,isError=false){
+  const wrap=document.getElementById('outputWrap');
+  const box=document.getElementById('outputBox');
+  const status=document.getElementById('outputStatus');
+  box.textContent=text;
+  box.className='output-box'+(isError?' error-output':'');
+  status.textContent=isError?'❌ Error':'✅ Success';
+  status.className='output-status '+(isError?'error':'success');
+  wrap.classList.add('show');
+  wrap.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 
-/* ── QUIZ OPTS (demo interaction) ── */
-document.querySelectorAll('.dq-opt:not(.dq-correct)').forEach(opt=>{
-  opt.addEventListener('click',function(){
-    this.style.borderColor='rgba(255,107,0,0.4)';
-    this.style.color='rgba(255,107,0,0.7)';
-    setTimeout(()=>{
-      this.style.borderColor='';
-      this.style.color='';
-    },600);
+// ═══════════════════════════════════════════════════════
+//  DEMO RESPONSE (when backend offline)
+// ═══════════════════════════════════════════════════════
+function getDemoResponse(q,lang){
+  const demos={
+    te:`మీ ప్రశ్నకు ధన్యవాదాలు! 🙏\n\nBackend server start చేయడానికి:\n\`\`\`bash\nuvicorn backend:app --host 0.0.0.0 --port 8000 --reload\n\`\`\`\nServer run అవ్వగానే real AI answers వస్తాయి!`,
+    ta:`உங்கள் கேள்விக்கு நன்றி! 🙏\n\nBackend server தொடங்க:\n\`\`\`bash\nuvicorn backend:app --host 0.0.0.0 --port 8000 --reload\n\`\`\``,
+    hi:`आपके प्रश्न के लिए धन्यवाद! 🙏\n\nBackend server चलाने के लिए:\n\`\`\`bash\nuvicorn backend:app --host 0.0.0.0 --port 8000 --reload\n\`\`\``,
+    en:`Thanks for your question! 🙏\n\nTo get real AI answers, start the backend:\n\`\`\`bash\nuvicorn backend:app --host 0.0.0.0 --port 8000 --reload\n\`\`\`\nThen ask again!`
+  };
+  return demos[lang]||demos['en'];
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT ON PAGE LOAD
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  const session=loadSession();
+  if(session){
+    appUser=session;
+    initApp();
+    showApp();
+  } else {
+    showLanding();
+  }
+  // Close auth modal on overlay click
+  document.getElementById('authOverlay').addEventListener('click',function(e){
+    if(e.target===this) closeAuthModal();
   });
 });
 </script>
