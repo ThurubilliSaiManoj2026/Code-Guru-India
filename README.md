@@ -10,7 +10,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Live-28C840?style=for-the-badge)
 
-**The first AI-powered multilingual coding tutor built specifically for Indian students.**  
+**The first AI-powered multilingual coding tutor built for Indian students.**  
 Ask coding questions in Telugu, Tamil, Hindi, Kannada, Marathi, or English — get expert answers instantly, for free.
 
 [🌐 Live App](https://thurubillisaimanoj2026.github.io/Code-Guru-India) · [🔧 API Docs](https://bharat-multilingual-online-coding-tutor.onrender.com/docs) · [📊 Health Check](https://bharat-multilingual-online-coding-tutor.onrender.com)
@@ -43,7 +43,7 @@ Ask coding questions in Telugu, Tamil, Hindi, Kannada, Marathi, or English — g
 
 ## 🎯 Project Overview
 
-**CodeGuru India** is a full-stack AI-powered coding education platform designed exclusively for Indian students who are more comfortable learning in their native language. The platform removes the language barrier from programming education by allowing students to ask any coding question in **6 Indian languages** and receive expert-level answers powered by cutting-edge AI.
+**CodeGuru India** is a full-stack AI-powered coding education platform designed for Indian students who are more comfortable learning in their native language. The platform removes the language barrier from programming education by allowing students to ask any coding question in **6 Indian languages** and receive expert-level answers powered by cutting-edge AI.
 
 > *"Learn to code in your mother tongue."*
 
@@ -53,7 +53,6 @@ The project was built completely from scratch — from UI design to backend AI i
 
 ## 🏹 Objectives
 
-- ✅ Break the **language barrier** in programming education for Indian students
 - ✅ Provide **instant AI-powered answers** in native Indian languages
 - ✅ Include an **interactive online compiler** supporting 22 programming languages
 - ✅ Auto-generate **quiz questions** after every answer to reinforce learning
@@ -102,7 +101,6 @@ The project was built completely from scratch — from UI design to backend AI i
 - Email + Password signup with **OTP verification** (demo mode — OTP displayed on screen)
 - Secure sign in with hashed passwords (stored in localStorage)
 - **Forgot Password** flow: Email → OTP verify → Set new password
-- **Password visibility toggle** (eye icon) on all password fields
 - **Live password strength indicator** (Weak / Medium / Strong) during signup
 - Session persistence — users stay logged in across browser sessions
 
@@ -121,7 +119,7 @@ The project was built completely from scratch — from UI design to backend AI i
 
 ### 🌙 UI/UX
 - Dark space-themed design with animated starfield background
-- Saffron, Gold, and Green color palette — inspired by the Indian flag
+- Saffron, Gold, and Green color palette
 - Fully responsive for desktop and mobile
 - Smooth animations, typing indicators, copy-to-clipboard for code blocks
 - Language strip scrolling animation on landing page
@@ -325,10 +323,10 @@ pip install -r requirements.txt
 ### Step 3 — Create .env File
 Create a `.env` file in the root directory:
 ```
-GEMINI_API_KEY=your_gemini_api_key_here
-GROQ_API_KEY=your_groq_api_key_here
-JDOODLE_CLIENT_ID=your_jdoodle_client_id_here
-JDOODLE_CLIENT_SECRET=your_jdoodle_client_secret_here
+GEMINI_API_KEY=gemini_api_key_here
+GROQ_API_KEY=groq_api_key_here
+JDOODLE_CLIENT_ID=jdoodle_client_id_here
+JDOODLE_CLIENT_SECRET=jdoodle_client_secret_here
 ```
 
 ### Step 4 — Run the Backend
@@ -355,7 +353,7 @@ Simply open `index.html` in your browser — no build step needed.
 | `JDOODLE_CLIENT_ID` | [JDoodle](https://www.jdoodle.com/compiler-api/) | ✅ Yes (compiler) |
 | `JDOODLE_CLIENT_SECRET` | [JDoodle](https://www.jdoodle.com/compiler-api/) | ✅ Yes (compiler) |
 
-> ⚠️ **Never commit your `.env` file to GitHub.** Add `.env` to `.gitignore`.
+> ⚠️ **Never commit `.env` file to GitHub.** Add `.env` to `.gitignore`.
 
 ---
 
@@ -432,7 +430,6 @@ Every `git push origin main` automatically triggers:
 
 ### Improvement — Authentication UX
 Added 5 new auth features:
-- 👁 Password visibility toggle on Sign In, Sign Up, and Reset Password fields
 - 📊 Live password strength bar (Weak/Medium/Strong) on signup
 - 🔑 Complete Forgot Password flow (Email → OTP → New Password)
 - ⚠️ Real-time "minimum 6 characters" warning while typing
@@ -461,12 +458,7 @@ Upgraded from `gemini-2.0-flash` (retiring March 3, 2026) to `gemini-2.5-flash` 
 
 - [ ] **Real email OTP delivery** via SendGrid or AWS SES for production-grade auth
 - [ ] **PostgreSQL database** to move from localStorage to persistent cloud storage
-- [ ] **User progress dashboard** — track topics learned, quiz scores over time
 - [ ] **Code explanation mode** — paste any code, get a line-by-line explanation in your language
-- [ ] **Roadmaps** — guided learning paths (Python Beginner → Advanced, DSA, Web Dev)
-- [ ] **Mobile app** — React Native wrapper for Android/iOS
-- [ ] **Offline mode** — cached responses for common topics
-- [ ] **Teacher dashboard** — classroom management for coding instructors
 - [ ] **More Indian languages** — Bengali, Gujarati, Odia, Punjabi
 - [ ] **Gemini Vision** — upload screenshots of code or errors and get instant help
 - [ ] **Paid tier** — remove compiler limits, priority AI responses, unlimited history
@@ -502,8 +494,6 @@ This project is licensed under the **MIT License** — free to use, modify, and 
 <div align="center">
 
 Made with ❤️ for India's next generation of coders
-
-**🇮🇳 Empowering Bharat through code — one language at a time 🇮🇳**
 
 ⭐ Star this repo if CodeGuru India helped you!
 
