@@ -1373,7 +1373,7 @@ async function sendMessage(){
   const msgs=document.getElementById('messages');
   msgs.scrollTop=msgs.scrollHeight;
   try{
-    const res=await fetch('http://localhost:8000/ask',{
+    const res = await fetch('https://bharat-multilingual-online-coding-tutor.onrender.com/ask', {
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         question,
@@ -1807,7 +1807,7 @@ async function runCode(){
   runBtn.disabled=true; runBtn.classList.add('running');
   document.getElementById('outputWrap').classList.remove('show');
   try{
-    const res=await fetch('http://localhost:8000/run-code',{
+    const res = await fetch('https://bharat-multilingual-online-coding-tutor.onrender.com/run-code', {
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({code,language:lang,stdin})
     });
