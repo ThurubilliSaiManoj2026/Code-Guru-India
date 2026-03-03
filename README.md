@@ -43,7 +43,7 @@ Ask coding questions in Telugu, Tamil, Hindi, Kannada, Marathi, or English — g
 
 ## 🎯 Project Overview
 
-**CodeGuru India** is a full-stack AI-powered coding education platform designed for Indian students who are more comfortable learning in their native language. The platform removes the language barrier from programming education by allowing students to ask any coding question in **6 Indian languages** and receive expert-level answers powered by cutting-edge AI.
+**CodeGuru India** is a full-stack AI-powered coding education platform designed for Indian students who are more comfortable learning in their native language. The platform provides education by allowing students to ask any programming question, coding question in **6 Indian languages** and receive expert-level answers powered by cutting-edge AI.
 
 > *"Learn to code in your mother tongue."*
 
