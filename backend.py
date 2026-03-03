@@ -1,14 +1,16 @@
 # ─────────────────────────────────────────────────────────────
-#  CodeGuru India — Backend v5.0
+#  CodeGuru India — Backend v6.0
 #  PRIMARY:  Google Gemini 2.0 Flash  (FREE - 1500/day)
 #  BACKUP:   Groq LLaMA 3.3           (FREE - unlimited)
 #  FIXES:    - Increased token limits (no more cut-offs)
 #            - Robust JSON quiz parsing
 #            - Smart fallback when Gemini quota exceeded
 #            - Answer and Quiz are separate AI calls
+#            - quiz_topic & quiz_instruction accepted from frontend
+#            - is_error detection uses statusCode only (no false positives)
 #
 #  Run:     uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
-#  Install: pip install fastapi uvicorn groq python-dotenv google-genai
+#  Install: pip install fastapi uvicorn groq python-dotenv google-genai httpx
 # ─────────────────────────────────────────────────────────────
 
 import os
@@ -54,7 +56,7 @@ if gemini_client and groq_client:
     print("🚀 Both AIs ready — Primary: Gemini | Backup: Groq | Cost: $0.00")
 
 # ── FastAPI ──
-app = FastAPI(title="CodeGuru India API", version="5.0")
+app = FastAPI(title="CodeGuru India API", version="6.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -62,7 +64,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Languages ──
+# ── Language name map ──
 LANGUAGE_NAMES = {
     "te": "Telugu (తెలుగు)",
     "ta": "Tamil (தமிழ்)",
@@ -83,20 +85,20 @@ QUIZ_WORD = {
 
 
 # ──────────────────────────────────────────
-# Core AI caller — tries Gemini first,
-# falls back to Groq automatically
+# Core AI caller
+# Tries Gemini first, falls back to Groq
 # ──────────────────────────────────────────
 def call_ai(prompt: str, max_tokens: int = 3000) -> tuple[str, str]:
     """
-    Returns (response_text, ai_name)
-    Tries Gemini first, then Groq as fallback.
+    Returns (response_text, ai_name).
+    Tries Gemini first, then Groq as automatic fallback.
     """
     # ── Try Gemini ──
     if gemini_client:
         try:
             from google.genai import types as genai_types
             response = gemini_client.models.generate_content(
-                model    = "gemini-2.0-flash",
+                model = "gemini-2.5-flash",
                 contents = prompt,
                 config   = genai_types.GenerateContentConfig(
                     max_output_tokens = max_tokens,
@@ -116,9 +118,9 @@ def call_ai(prompt: str, max_tokens: int = 3000) -> tuple[str, str]:
     if groq_client:
         try:
             chat = groq_client.chat.completions.create(
-                model      = "llama-3.3-70b-versatile",
-                messages   = [{"role": "user", "content": prompt}],
-                max_tokens = max_tokens,
+                model       = "llama-3.3-70b-versatile",
+                messages    = [{"role": "user", "content": prompt}],
+                max_tokens  = max_tokens,
                 temperature = 0.7,
             )
             return chat.choices[0].message.content, "Groq LLaMA 3.3"
@@ -129,7 +131,7 @@ def call_ai(prompt: str, max_tokens: int = 3000) -> tuple[str, str]:
 
 
 # ──────────────────────────────────────────
-# Answer Prompt — complete, no cutoffs
+# Answer prompt — complete, no cut-offs
 # ──────────────────────────────────────────
 def build_answer_prompt(lang_name: str, question: str) -> str:
     return f"""You are CodeGuru India — a friendly, expert AI coding tutor for Indian students.
@@ -158,7 +160,7 @@ Student's question: {question}"""
 
 
 # ──────────────────────────────────────────
-# Quiz Prompt — strict JSON, no extras
+# Quiz prompt — strict JSON, no extras
 # ──────────────────────────────────────────
 def build_quiz_prompt(lang_name: str, lang_code: str, topic: str) -> str:
     quiz_word = QUIZ_WORD.get(lang_code, "Quiz")
@@ -169,7 +171,7 @@ Return ONLY a JSON object. No extra text, no markdown, no explanation before or 
 
 The JSON must follow this EXACT structure:
 {{
-  "quiz_title": "{quiz_word}",
+  "quiz_title": "{quiz_word}: {topic[:40]}",
   "questions": [
     {{
       "question": "First question in {lang_name}?",
@@ -239,7 +241,7 @@ def extract_json(text: str) -> dict:
     except:
         pass
 
-    # Method 4: Find { ... } in text
+    # Method 4: Find outermost { ... } in text
     try:
         match = re.search(r'\{.*\}', text, re.DOTALL)
         if match:
@@ -251,7 +253,7 @@ def extract_json(text: str) -> dict:
 
 
 # ──────────────────────────────────────────
-# Models
+# Pydantic Models
 # ──────────────────────────────────────────
 class QuizOption(BaseModel):
     A: str
@@ -269,9 +271,14 @@ class QuizData(BaseModel):
     questions:  List[QuizQuestion]
 
 class AskRequest(BaseModel):
-    question:      str
-    language:      str = "en"
-    language_name: str = "English"
+    question:         str
+    language:         str = "en"
+    language_name:    str = "English"
+    # FIX: accept quiz_topic and quiz_instruction sent by frontend
+    # (they are not used server-side since we use req.question,
+    #  but accepting them prevents Pydantic validation errors)
+    quiz_topic:       Optional[str] = None
+    quiz_instruction: Optional[str] = None
 
 class AskResponse(BaseModel):
     answer:   str
@@ -279,13 +286,25 @@ class AskResponse(BaseModel):
     language: str
     quiz:     Optional[QuizData] = None
 
+class RunCodeRequest(BaseModel):
+    code:     str
+    language: str = "python3"
+    stdin:    str = ""
+
+class RunCodeResponse(BaseModel):
+    output:   str
+    is_error: bool
+
 
 # ──────────────────────────────────────────
-# Main /ask endpoint
+# /ask endpoint
 # ──────────────────────────────────────────
 @app.post("/ask", response_model=AskResponse)
 async def ask_question(req: AskRequest):
     lang_name = LANGUAGE_NAMES.get(req.language, req.language_name)
+
+    # Use quiz_topic if frontend provides it, otherwise fall back to question
+    topic_for_quiz = req.quiz_topic if req.quiz_topic else req.question
 
     # ── STEP 1: Get complete answer (high token limit) ──
     answer_prompt = build_answer_prompt(lang_name, req.question)
@@ -302,7 +321,7 @@ async def ask_question(req: AskRequest):
     # ── STEP 2: Generate quiz separately (prevents mixing with answer) ──
     quiz_data = None
     try:
-        quiz_prompt = build_quiz_prompt(lang_name, req.language, req.question)
+        quiz_prompt = build_quiz_prompt(lang_name, req.language, topic_for_quiz)
         quiz_text, _ = call_ai(quiz_prompt, max_tokens=2000)
 
         if quiz_text:
@@ -323,10 +342,8 @@ async def ask_question(req: AskRequest):
     )
 
 
-
-
 # ──────────────────────────────────────────
-# Online Compiler — JDoodle API
+# /run-code endpoint — JDoodle API
 # ──────────────────────────────────────────
 JDOODLE_LANG_MAP = {
     "python3":    ("python3",    "4"),
@@ -353,15 +370,6 @@ JDOODLE_LANG_MAP = {
     "css":        ("css",        "0"),
 }
 
-class RunCodeRequest(BaseModel):
-    code:     str
-    language: str = "python3"
-    stdin:    str = ""          # ← user input lines
-
-class RunCodeResponse(BaseModel):
-    output:   str
-    is_error: bool
-
 @app.post("/run-code", response_model=RunCodeResponse)
 async def run_code(req: RunCodeRequest):
     import httpx
@@ -386,7 +394,7 @@ async def run_code(req: RunCodeRequest):
         "versionIndex": version,
     }
 
-    # ── Pass stdin to JDoodle if provided ──
+    # Pass stdin to JDoodle if the user provided input
     if req.stdin and req.stdin.strip():
         payload["stdin"] = req.stdin
 
@@ -398,13 +406,16 @@ async def run_code(req: RunCodeRequest):
             )
             result = response.json()
 
-        output   = result.get("output", "No output returned.")
-        is_error = (
-            result.get("statusCode", 200) != 200 or
-            "error" in output.lower()[:80]
-        )
-        print(f"✅ Code executed: {req.language} | stdin: {'yes' if req.stdin.strip() else 'no'} | Error: {is_error}")
-        return RunCodeResponse(output=output.strip(), is_error=is_error)
+        output = result.get("output", "No output returned.").strip()
+
+        # FIX: use JDoodle's statusCode ONLY to determine error.
+        # Old approach used "error" in output text which gave false positives
+        # (e.g. a program that prints "error" would be flagged incorrectly).
+        status_code = result.get("statusCode", 200)
+        is_error    = (status_code != 200)
+
+        print(f"✅ Code executed: {req.language} | stdin: {'yes' if req.stdin.strip() else 'no'} | StatusCode: {status_code} | Error: {is_error}")
+        return RunCodeResponse(output=output, is_error=is_error)
 
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Code execution failed: {str(e)}")
@@ -417,12 +428,12 @@ async def run_code(req: RunCodeRequest):
 def health():
     jdoodle_id = os.getenv("JDOODLE_CLIENT_ID")
     return {
-        "status":    "🇮🇳 CodeGuru India v6.0 is running!",
-        "gemini":    "✅ FREE - connected" if gemini_client else "❌ Add GEMINI_API_KEY to .env",
-        "groq":      "✅ FREE - connected" if groq_client   else "❌ Add GROQ_API_KEY to .env",
-        "compiler":  "✅ Online Compiler ready (JDoodle)" if jdoodle_id else "❌ Add JDOODLE_CLIENT_ID to .env",
-        "cost":      "💸 AI is FREE | Compiler uses your JDoodle plan",
-        "features":  "✅ AI Chat | ✅ Auto Quiz | ✅ Online Compiler | ✅ Voice Input"
+        "status":   "🇮🇳 CodeGuru India v6.0 is running!",
+        "gemini":   "✅ FREE - connected" if gemini_client else "❌ Add GEMINI_API_KEY to .env",
+        "groq":     "✅ FREE - connected" if groq_client   else "❌ Add GROQ_API_KEY to .env",
+        "compiler": "✅ Online Compiler ready (JDoodle)" if jdoodle_id else "❌ Add JDOODLE_CLIENT_ID to .env",
+        "cost":     "💸 AI is FREE | Compiler uses your JDoodle plan",
+        "features": "✅ AI Chat | ✅ Auto Quiz | ✅ Online Compiler | ✅ Voice Input"
     }
 
 
@@ -432,7 +443,7 @@ def health():
 if __name__ == "__main__":
     import uvicorn
     print("─" * 60)
-    print("🚀 CodeGuru India Backend v5.0")
+    print("🚀 CodeGuru India Backend v6.0")
     print("📡 API URL:  http://localhost:8000")
     print("📖 Docs:     http://localhost:8000/docs")
     print("✅ Max tokens: 4000 (answers) + 2000 (quiz)")

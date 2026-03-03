@@ -29,9 +29,7 @@
     .star{position:absolute;border-radius:50%;background:white;opacity:0;animation:twinkle var(--d,4s) var(--delay,0s) infinite ease-in-out}
     @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--op,.6);transform:scale(1)}}
 
-    /* ─────────────────────────────────────────
-       AUTH MODAL
-    ───────────────────────────────────────── */
+    /* AUTH MODAL */
     .auth-overlay{position:fixed;inset:0;z-index:500;background:rgba(4,4,12,.92);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
     .auth-overlay.show{opacity:1;pointer-events:all}
     .auth-modal{background:var(--surface);border:1px solid rgba(255,107,26,.2);border-radius:22px;padding:40px 36px 32px;width:100%;max-width:430px;position:relative;animation:authPop .35s ease both;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 60px rgba(255,107,26,.06)}
@@ -46,6 +44,24 @@
     .auth-field input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:11px 14px;font-family:'Syne',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
     .auth-field input:focus{border-color:var(--saffron)}
     .auth-field input::placeholder{color:var(--muted)}
+    /* ── Password field with eye icon ── */
+    .pw-wrap{position:relative}
+    .pw-wrap input{padding-right:44px}
+    .pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:1.1rem;line-height:1;transition:color .2s;display:flex;align-items:center;justify-content:center}
+    .pw-eye:hover{color:var(--saffron)}
+    /* ── Forgot password link ── */
+    .forgot-link-row{text-align:right;margin-top:-8px;margin-bottom:14px}
+    .forgot-link{font-size:.8rem;color:var(--muted);text-decoration:none;font-weight:600;transition:color .2s}
+    .forgot-link:hover{color:var(--saffron)}
+    /* ── Password strength bar ── */
+    .pw-strength{margin-top:6px;height:3px;border-radius:3px;background:var(--border);overflow:hidden}
+    .pw-strength-bar{height:100%;border-radius:3px;width:0%;transition:width .3s,background .3s}
+    .pw-strength-label{font-size:.72rem;margin-top:4px;font-weight:600}
+    /* ── Forgot password form steps ── */
+    .fp-step{display:none}
+    .fp-step.show{display:block}
+    .fp-back-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.82rem;font-family:'Syne',sans-serif;font-weight:600;padding:0;margin-bottom:16px;display:flex;align-items:center;gap:4px;transition:color .2s}
+    .fp-back-btn:hover{color:var(--saffron)}
     .auth-error{min-height:22px;font-size:.8rem;color:#FF5F57;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
     .auth-submit-btn{width:100%;padding:13px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 24px var(--glow);margin-bottom:16px}
     .auth-submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 32px var(--glow)}
@@ -55,7 +71,6 @@
     .auth-switch a:hover{text-decoration:underline}
     .auth-close-btn{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:6px;border-radius:8px;line-height:1;transition:color .2s}
     .auth-close-btn:hover{color:var(--text)}
-    /* OTP */
     .otp-header{text-align:center;margin-bottom:20px}
     .otp-header .otp-icon{font-size:2.4rem;margin-bottom:10px}
     .otp-header h3{font-size:1.1rem;font-weight:800;margin-bottom:6px}
@@ -68,13 +83,11 @@
     .otp-input:focus{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(255,107,26,.15)}
     .otp-input.filled{border-color:var(--gold)}
 
-    /* ─────────────────────────────────────────
-       APP LAYOUT (post-login)
-    ───────────────────────────────────────── */
+    /* APP LAYOUT */
     .app-layout{display:none;height:100vh;overflow:hidden;position:relative;z-index:1}
     .app-layout.show{display:flex}
 
-    /* ── Sidebar ── */
+    /* Sidebar */
     .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden;flex-shrink:0;transition:transform .3s,width .3s}
     .sidebar.collapsed{width:0;transform:translateX(-100%)}
     .sidebar-top{padding:18px 14px 10px;flex-shrink:0}
@@ -88,7 +101,6 @@
     .sidebar-search:focus{border-color:var(--muted)}
     .sidebar-search::placeholder{color:var(--muted)}
     .sidebar-section-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:10px 4px 6px}
-    /* Chat History */
     .sidebar-chats{flex:1;overflow-y:auto;padding:4px 8px;display:flex;flex-direction:column;gap:2px}
     .sidebar-chats::-webkit-scrollbar{width:3px}
     .sidebar-chats::-webkit-scrollbar-track{background:transparent}
@@ -108,7 +120,6 @@
     .chat-item-delete:hover{color:#FF5F57;background:rgba(255,95,87,.1)}
     .sidebar-empty{text-align:center;padding:40px 16px;color:var(--muted);font-size:.82rem}
     .sidebar-empty .empty-icon{font-size:2rem;margin-bottom:10px}
-    /* Sidebar Footer */
     .sidebar-footer{padding:12px 14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
     .sidebar-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .sidebar-user-info{flex:1;min-width:0}
@@ -117,7 +128,7 @@
     .sidebar-logout-btn{background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:7px 9px;border-radius:8px;font-size:.8rem;transition:all .2s;white-space:nowrap;font-family:'Syne',sans-serif;font-weight:600}
     .sidebar-logout-btn:hover{border-color:#FF5F57;color:#FF5F57;background:rgba(255,95,87,.08)}
 
-    /* ── App Main ── */
+    /* App Main */
     .app-main{flex:1;display:flex;flex-direction:column;overflow-y:auto;scroll-behavior:smooth;min-width:0;height:100vh}
     .app-main::-webkit-scrollbar{width:7px}
     .app-main::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
@@ -133,7 +144,6 @@
     .compiler-toggle-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;transition:all .2s;white-space:nowrap}
     .compiler-toggle-pill:hover,.compiler-toggle-pill.active{background:rgba(245,200,66,.15);border-color:var(--gold);color:var(--gold)}
 
-    /* Chat Viewport — fills exactly one screen height below topbar */
     .chat-viewport{height:calc(100vh - 64px);display:flex;flex-direction:column;flex-shrink:0;position:relative}
     .app-messages{flex:1;overflow-y:auto;padding:28px 32px;display:flex;flex-direction:column;gap:18px;scroll-behavior:smooth}
     .app-messages::-webkit-scrollbar{width:5px}
@@ -141,7 +151,7 @@
     .app-messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
     .app-input-row{padding:14px 24px 16px;border-top:1px solid var(--border);background:rgba(8,8,16,.92);backdrop-filter:blur(16px);flex-shrink:0;display:flex;gap:10px;align-items:flex-end;position:relative}
 
-    /* Compiler Section — below the chat viewport, scroll down to reach */
+    /* Compiler Section */
     .app-compiler-section{flex-shrink:0;border-top:2px solid rgba(245,200,66,.2)}
     .compiler-header-row{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;cursor:pointer;background:rgba(15,15,26,.7);transition:background .2s;user-select:none}
     .compiler-header-row:hover{background:rgba(245,200,66,.05)}
@@ -152,12 +162,8 @@
     .compiler-panel{display:none;padding:20px 24px 24px}
     .compiler-panel.open{display:block}
 
-    /* ─────────────────────────────────────────
-       LANDING PAGE (pre-login)
-    ───────────────────────────────────────── */
+    /* LANDING PAGE */
     #landingPage{position:relative;z-index:1}
-
-    /* Navbar */
     nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(8,8,16,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
     .logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;letter-spacing:-.02em;text-decoration:none;color:var(--text)}
     .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--saffron);animation:pulse 2s infinite}
@@ -171,7 +177,6 @@
     .btn-cta{padding:8px 22px;border-radius:8px;background:linear-gradient(135deg,var(--saffron),#e05500);color:white;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;margin-left:6px;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 20px var(--glow)}
     .btn-cta:hover{transform:translateY(-1px);box-shadow:0 6px 30px var(--glow)}
 
-    /* Hero */
     .hero{position:relative;z-index:1;min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 20px 40px}
     .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:30px;border:1px solid rgba(245,200,66,.3);background:rgba(245,200,66,.08);font-size:.8rem;color:var(--gold);font-weight:600;margin-bottom:28px;letter-spacing:.05em;text-transform:uppercase;animation:fadeUp .6s ease both}
     .hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--gold)}
@@ -185,7 +190,6 @@
     .lang-select-btn.selected{background:var(--saffron);border-color:var(--saffron);color:white;box-shadow:0 4px 24px var(--glow)}
     .lang-native{font-size:1.05rem}
 
-    /* Chat preview container on landing */
     .chat-preview-wrap{width:100%;max-width:820px;animation:fadeUp .6s .4s ease both;position:relative}
     .chat-preview-lock{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,8,16,.7);backdrop-filter:blur(4px);border-radius:20px;gap:14px}
     .lock-icon{font-size:2.5rem}
@@ -197,7 +201,6 @@
     .lock-btn-signup{padding:10px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px var(--glow)}
     .lock-btn-signup:hover{transform:translateY(-1px)}
 
-    /* Chat container (landing preview) */
     .chat-container{width:100%;max-width:820px;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,107,26,.08);animation:fadeUp .6s .4s ease both}
     .chat-topbar{display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--surface2);border-bottom:1px solid var(--border)}
     .traffic{width:12px;height:12px;border-radius:50%}
@@ -217,7 +220,6 @@
     .bubble.bot{background:var(--surface2);border:1px solid var(--border);border-top-left-radius:4px;color:var(--text)}
     .bubble.user{background:linear-gradient(135deg,var(--saffron),#d44e00);border-top-right-radius:4px;color:white}
     .bubble code{background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px;font-family:'Courier New',monospace;font-size:.85rem}
-    /* Copy code blocks */
     .code-block-wrap{margin:10px 0;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
     .code-block-topbar{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#111120;border-bottom:1px solid var(--border)}
     .code-lang-label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
@@ -225,13 +227,11 @@
     .copy-code-btn:hover{border-color:var(--gold);color:var(--gold)}
     .code-block-wrap pre{margin:0;padding:14px 16px;background:#0a0a14;overflow-x:auto}
     .code-block-wrap pre code{background:none;padding:0;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.7;color:#e8e6f0}
-    /* Typing indicator */
     .typing-indicator{display:none;gap:5px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;border-top-left-radius:4px;width:fit-content}
     .typing-indicator.show{display:flex}
     .typing-dot{width:7px;height:7px;border-radius:50%;background:var(--saffron);animation:bounce 1.2s infinite ease-in-out}
     .typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
     @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
-    /* Input */
     .chat-input-row{display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--border);background:var(--surface2);align-items:flex-end;position:relative}
     .chat-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px 16px;font-family:'Syne',sans-serif;font-size:.9rem;resize:none;outline:none;min-height:44px;max-height:160px;transition:border-color .2s;field-sizing:content}
     .chat-input::placeholder{color:var(--muted)}
@@ -239,7 +239,6 @@
     .send-btn{width:44px;height:44px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--saffron),#d44e00);color:white;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px var(--glow);font-size:1.1rem}
     .send-btn:hover{transform:scale(1.08);box-shadow:0 6px 24px var(--glow)}
     .send-btn:active{transform:scale(.96)}
-    /* Mic */
     .mic-btn{width:44px;height:44px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:1.1rem}
     .mic-btn:hover{border-color:var(--saffron);color:var(--saffron)}
     .mic-btn.listening{background:rgba(255,107,26,.15);border-color:var(--saffron);color:var(--saffron);animation:mic-pulse 1s infinite}
@@ -247,7 +246,6 @@
     .mic-status{position:absolute;bottom:74px;left:50%;transform:translateX(-50%);background:var(--saffron);color:white;padding:6px 16px;border-radius:20px;font-size:.78rem;font-weight:700;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10}
     .mic-status.show{opacity:1}
 
-    /* ── Features ── */
     .features{position:relative;z-index:1;padding:100px 40px;max-width:1100px;margin:0 auto}
     .section-label{text-align:center;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--saffron);margin-bottom:16px}
     .section-title{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin-bottom:60px}
@@ -259,19 +257,17 @@
     .feat-title{font-size:1.05rem;font-weight:700;margin-bottom:10px}
     .feat-desc{font-size:.88rem;color:var(--muted);line-height:1.65}
 
-    /* Lang strip */
     .lang-strip{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;overflow:hidden}
     .lang-scroll{display:flex;gap:40px;white-space:nowrap;animation:scroll-left 20s linear infinite}
     .lang-scroll-item{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:700;color:var(--muted);opacity:.6}
     .lang-scroll-item span{font-size:1.3rem}
     @keyframes scroll-left{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-    /* Footer */
     footer{position:relative;z-index:1;text-align:center;padding:40px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem}
     .footer-flag{display:inline-flex;gap:4px;align-items:center;margin-bottom:10px;font-size:1.2rem}
     .f-saffron{color:var(--saffron)}.f-white{color:#fff}.f-green{color:var(--green-india)}
 
-    /* ── Quiz ── */
+    /* Quiz */
     .quiz-block{margin-top:14px;padding:16px;background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.25);border-radius:12px;animation:slideIn .4s ease both}
     .quiz-title{font-size:.95rem;font-weight:800;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px}
     .quiz-question{margin-bottom:14px}
@@ -281,10 +277,11 @@
     .quiz-option:hover:not(.answered){border-color:var(--gold);color:var(--gold);background:rgba(245,200,66,.08)}
     .quiz-option.correct{border-color:#28C840;background:rgba(40,200,64,.15);color:#28C840}
     .quiz-option.wrong{border-color:#FF5F57;background:rgba(255,95,87,.15);color:#FF5F57}
+    .quiz-option.answered{cursor:default}
     .option-label{width:20px;height:20px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0}
     .quiz-score{margin-top:12px;padding:10px 14px;border-radius:8px;background:rgba(255,107,26,.1);border:1px solid rgba(255,107,26,.3);font-size:.88rem;font-weight:700;color:var(--saffron);text-align:center;display:none}
 
-    /* ── Compiler (shared) ── */
+    /* Compiler */
     .code-editor-wrap{position:relative}
     .code-editor-label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
     .code-editor{width:100%;min-height:280px;max-height:500px;background:#0a0a14;border:1px solid var(--border);color:#e8e6f0;border-radius:12px;padding:16px;font-family:'Courier New','Consolas',monospace;font-size:.88rem;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s;tab-size:4;box-sizing:border-box}
@@ -322,13 +319,12 @@
 
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-    /* ── Toast ── */
+    /* Toast */
     .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:.88rem;font-weight:700;color:var(--text);opacity:0;pointer-events:none;transition:all .3s;z-index:999;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4)}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .toast.success{border-color:rgba(40,200,64,.4);color:#28C840}
     .toast.error{border-color:rgba(255,95,87,.4);color:#FF5F57}
 
-    /* ── Responsive ── */
     @media(max-width:768px){
       nav{padding:0 16px}
       .nav-links .lang-pill{display:none}
@@ -352,32 +348,21 @@
 </head>
 <body>
 
-<!-- ── Starfield ── -->
 <div class="starfield" id="starfield"></div>
-
-<!-- ── Toast ── -->
 <div class="toast" id="toast"></div>
 
-<!-- ────────────────────────────────────────
-     AUTH MODAL
-──────────────────────────────────────── -->
+<!-- AUTH MODAL -->
 <div class="auth-overlay" id="authOverlay">
   <div class="auth-modal">
     <button class="auth-close-btn" onclick="closeAuthModal()">✕</button>
-
-    <!-- Logo -->
     <div class="auth-logo">
       <span class="dot"></span>
       Code<span style="color:var(--saffron)">Guru</span><span style="color:var(--gold)"> India</span>
     </div>
-
-    <!-- Tabs -->
     <div class="auth-tabs">
       <button class="auth-tab active" id="tabSignin" onclick="switchAuthTab('signin')">Sign In</button>
       <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
     </div>
-
-    <!-- SIGN IN FORM -->
     <div id="signinForm">
       <div class="auth-field">
         <label>Email</label>
@@ -385,14 +370,18 @@
       </div>
       <div class="auth-field">
         <label>Password</label>
-        <input type="password" id="siPassword" placeholder="Enter your password" onkeydown="if(event.key==='Enter')handleSignIn()" />
+        <div class="pw-wrap">
+          <input type="password" id="siPassword" placeholder="Enter your password" onkeydown="if(event.key==='Enter')handleSignIn()" />
+          <button type="button" class="pw-eye" onclick="toggleEye('siPassword',this)" title="Show/hide password">👁</button>
+        </div>
+      </div>
+      <div class="forgot-link-row">
+        <a href="#" class="forgot-link" onclick="showForgotForm();return false;">Forgot Password?</a>
       </div>
       <div class="auth-error" id="siError"></div>
       <button class="auth-submit-btn" id="signinBtn" onclick="handleSignIn()">Sign In →</button>
       <p class="auth-switch">New here? <a href="#" onclick="switchAuthTab('signup');return false;">Create account</a></p>
     </div>
-
-    <!-- SIGN UP FORM -->
     <div id="signupForm" style="display:none">
       <div class="auth-field">
         <label>Your Name</label>
@@ -404,21 +393,23 @@
       </div>
       <div class="auth-field">
         <label>Password</label>
-        <input type="password" id="suPassword" placeholder="Minimum 6 characters" onkeydown="if(event.key==='Enter')handleSignUp()" />
+        <div class="pw-wrap">
+          <input type="password" id="suPassword" placeholder="Minimum 6 characters" oninput="checkPwStrength(this.value)" onkeydown="if(event.key==='Enter')handleSignUp()" />
+          <button type="button" class="pw-eye" onclick="toggleEye('suPassword',this)" title="Show/hide password">👁</button>
+        </div>
+        <div class="pw-strength"><div class="pw-strength-bar" id="pwBar"></div></div>
+        <div class="pw-strength-label" id="pwLabel" style="color:var(--muted)"></div>
       </div>
       <div class="auth-error" id="suError"></div>
       <button class="auth-submit-btn" id="signupBtn" onclick="handleSignUp()">Send OTP →</button>
       <p class="auth-switch">Already have an account? <a href="#" onclick="switchAuthTab('signin');return false;">Sign in</a></p>
     </div>
-
-    <!-- OTP VERIFICATION FORM -->
     <div id="otpForm" style="display:none">
       <div class="otp-header">
         <div class="otp-icon">📧</div>
         <h3>Verify Your Email</h3>
         <p id="otpDesc">Enter the 6-digit code</p>
       </div>
-      <!-- Demo OTP display -->
       <div class="otp-demo-box">
         <span>🔐 Demo mode — OTP (would be emailed in production):</span>
         <div class="otp-demo-code" id="otpDemoCode">------</div>
@@ -435,16 +426,83 @@
       <button class="auth-submit-btn" id="otpBtn" onclick="handleVerifyOTP()">Verify &amp; Continue →</button>
       <p class="auth-switch"><a href="#" onclick="showSignupFromOTP();return false;">← Back to Sign Up</a></p>
     </div>
+
+    <!-- ── FORGOT PASSWORD FORM (3 steps) ── -->
+    <div id="forgotForm" style="display:none">
+
+      <!-- Step 1: Enter email -->
+      <div class="fp-step show" id="fpStep1">
+        <button type="button" class="fp-back-btn" onclick="showForgotBack()">← Back to Sign In</button>
+        <div class="otp-header" style="margin-bottom:16px">
+          <div class="otp-icon">🔑</div>
+          <h3>Reset Password</h3>
+          <p>Enter your registered email address</p>
+        </div>
+        <div class="auth-field">
+          <label>Registered Email</label>
+          <input type="email" id="fpEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')handleForgotSendOTP()" />
+        </div>
+        <div class="auth-error" id="fpStep1Error"></div>
+        <button class="auth-submit-btn" onclick="handleForgotSendOTP()">Send OTP →</button>
+      </div>
+
+      <!-- Step 2: Verify OTP -->
+      <div class="fp-step" id="fpStep2">
+        <button type="button" class="fp-back-btn" onclick="showFPStep(1)">← Back</button>
+        <div class="otp-header" style="margin-bottom:16px">
+          <div class="otp-icon">📧</div>
+          <h3>Verify OTP</h3>
+          <p id="fpOtpDesc">Code sent to your email</p>
+        </div>
+        <div class="otp-demo-box">
+          <span>🔐 Demo mode — OTP for password reset:</span>
+          <div class="otp-demo-code" id="fpOtpDemoCode">------</div>
+        </div>
+        <div class="otp-inputs">
+          <input type="text" class="otp-input" maxlength="1" id="fpotp0" oninput="fpOtpMove(this,0)" onkeydown="fpOtpBack(event,0)" />
+          <input type="text" class="otp-input" maxlength="1" id="fpotp1" oninput="fpOtpMove(this,1)" onkeydown="fpOtpBack(event,1)" />
+          <input type="text" class="otp-input" maxlength="1" id="fpotp2" oninput="fpOtpMove(this,2)" onkeydown="fpOtpBack(event,2)" />
+          <input type="text" class="otp-input" maxlength="1" id="fpotp3" oninput="fpOtpMove(this,3)" onkeydown="fpOtpBack(event,3)" />
+          <input type="text" class="otp-input" maxlength="1" id="fpotp4" oninput="fpOtpMove(this,4)" onkeydown="fpOtpBack(event,4)" />
+          <input type="text" class="otp-input" maxlength="1" id="fpotp5" oninput="fpOtpMove(this,5)" onkeydown="fpOtpBack(event,5)" />
+        </div>
+        <div class="auth-error" id="fpStep2Error"></div>
+        <button class="auth-submit-btn" onclick="handleForgotVerifyOTP()">Verify OTP →</button>
+      </div>
+
+      <!-- Step 3: Set new password -->
+      <div class="fp-step" id="fpStep3">
+        <div class="otp-header" style="margin-bottom:16px">
+          <div class="otp-icon">🔒</div>
+          <h3>Create New Password</h3>
+          <p>Choose a strong password (min 6 characters)</p>
+        </div>
+        <div class="auth-field">
+          <label>New Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="fpNewPw" placeholder="Minimum 6 characters" oninput="checkPwStrength(this.value,'fp')" onkeydown="if(event.key==='Enter')handleResetPassword()" />
+            <button type="button" class="pw-eye" onclick="toggleEye('fpNewPw',this)" title="Show/hide password">👁</button>
+          </div>
+          <div class="pw-strength"><div class="pw-strength-bar" id="fpPwBar"></div></div>
+          <div class="pw-strength-label" id="fpPwLabel" style="color:var(--muted)"></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="fpConfirmPw" placeholder="Re-enter new password" onkeydown="if(event.key==='Enter')handleResetPassword()" />
+            <button type="button" class="pw-eye" onclick="toggleEye('fpConfirmPw',this)" title="Show/hide password">👁</button>
+          </div>
+        </div>
+        <div class="auth-error" id="fpStep3Error"></div>
+        <button class="auth-submit-btn" onclick="handleResetPassword()">Save New Password →</button>
+      </div>
+
+    </div>
   </div>
 </div>
 
-
-<!-- ────────────────────────────────────────
-     APP LAYOUT — POST LOGIN
-──────────────────────────────────────── -->
+<!-- APP LAYOUT -->
 <div class="app-layout" id="appLayout">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
       <div class="sidebar-logo">
@@ -457,7 +515,6 @@
       <input class="sidebar-search" type="text" id="chatSearch" placeholder="🔍 Search chats..." oninput="filterChats(this.value)" />
       <div class="sidebar-section-label">Recent Chats</div>
     </div>
-
     <div class="sidebar-chats" id="sidebarChats">
       <div class="sidebar-empty">
         <div class="empty-icon">💬</div>
@@ -465,21 +522,17 @@
         <div style="margin-top:6px;font-size:.76rem">Ask a question to get started!</div>
       </div>
     </div>
-
     <div class="sidebar-footer">
       <div class="sidebar-avatar" id="sidebarAvatar">CG</div>
       <div class="sidebar-user-info">
         <div class="sidebar-user-name" id="sidebarUserName">Student</div>
-        <div class="sidebar-user-email" id="sidebarUserEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="671214021527020a060e0b4904080a">[email&#160;protected]</a></div>
+        <div class="sidebar-user-email" id="sidebarUserEmail">student@codeguru.in</div>
       </div>
       <button class="sidebar-logout-btn" onclick="handleLogout()">Logout</button>
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
   <div class="app-main" id="appMain">
-
-    <!-- TOP BAR -->
     <div class="app-topbar">
       <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
       <div class="app-lang-pills">
@@ -497,19 +550,10 @@
       </div>
     </div>
 
-    <!-- CHAT VIEWPORT: fills exactly one viewport height below the topbar -->
     <div class="chat-viewport">
-
-      <!-- Messages -->
       <div class="messages app-messages" id="messages">
-        <div class="msg bot" id="greetingMsg">
-          <div class="avatar bot">🎓</div>
-          <div class="bubble bot" id="greetingBubble">నమస్కారం! నేను మీ తెలుగు కోడింగ్ గురువుని 🎓
-Python, Java, DSA, ML ఏదైనా అడగండి!</div>
-        </div>
+        <!-- greeting injected dynamically by showGreeting() -->
       </div>
-
-      <!-- Typing indicator -->
       <div style="padding:0 28px 6px;">
         <div class="typing-indicator" id="typing">
           <span class="typing-dot"></span>
@@ -517,98 +561,78 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
           <span class="typing-dot"></span>
         </div>
       </div>
-
-      <!-- Input row -->
       <div class="chat-input-row app-input-row">
         <span class="mic-status" id="micStatus">🎤 Listening...</span>
-        <textarea
-          class="chat-input" id="chatInput"
-          placeholder="మీ కోడింగ్ ప్రశ్న ఇక్కడ టైప్ చేయండి..."
-          rows="1" onkeydown="handleKey(event)"
-        ></textarea>
+        <textarea class="chat-input" id="chatInput" placeholder="మీ కోడింగ్ ప్రశ్న ఇక్కడ టైప్ చేయండి..." rows="1" onkeydown="handleKey(event)"></textarea>
         <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Voice Input">🎤</button>
         <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
       </div>
+    </div>
 
-    </div><!-- end chat-viewport -->
-
-    <!-- ── COMPILER SECTION — scroll down or click Compiler button to reach ── -->
-      <div class="app-compiler-section" id="compilerSection">
-        <div class="compiler-header-row" onclick="toggleCompiler()">
-          <div class="compiler-header-title">
-            💻 Online Compiler
-            <span class="badge">22 Languages</span>
-          </div>
-          <span class="compiler-chevron" id="compilerChevron">▼</span>
+    <div class="app-compiler-section" id="compilerSection">
+      <div class="compiler-header-row" onclick="toggleCompiler()">
+        <div class="compiler-header-title">
+          💻 Online Compiler
+          <span class="badge">22 Languages</span>
         </div>
-
-        <div class="compiler-panel" id="compilerPanel">
-          <div class="compiler-lang-row">
-            <span class="compiler-lang-row-label">Language:</span>
-            <select class="compiler-lang-select" id="progLang" onchange="updateDefaultCode()">
-              <option value="python3">🐍 Python 3</option>
-              <option value="java">☕ Java</option>
-              <option value="c">🔵 C</option>
-              <option value="cpp">🔷 C++</option>
-              <option value="javascript">🟨 JavaScript</option>
-              <option value="typescript">🔷 TypeScript</option>
-              <option value="kotlin">🟣 Kotlin</option>
-              <option value="swift">🟠 Swift</option>
-              <option value="go">🔵 Go</option>
-              <option value="rust">🟤 Rust</option>
-              <option value="ruby">🔴 Ruby</option>
-              <option value="php">🟣 PHP</option>
-              <option value="csharp">🟦 C#</option>
-              <option value="r">📊 R</option>
-              <option value="scala">🔴 Scala</option>
-              <option value="perl">🐪 Perl</option>
-              <option value="haskell">🟣 Haskell</option>
-              <option value="lua">🔵 Lua</option>
-              <option value="bash">⚡ Bash</option>
-              <option value="sql">🗃️ SQL</option>
-              <option value="html">🌐 HTML</option>
-              <option value="css">🎨 CSS</option>
-            </select>
-          </div>
-
-          <div class="code-editor-wrap">
-            <div class="code-editor-label">✏️ Write your code here:</div>
-            <textarea class="code-editor" id="codeEditor" spellcheck="false"
-              onkeydown="handleEditorTab(event)" oninput="detectStdin()" onchange="detectStdin()">print("Hello from CodeGuru India! 🇮🇳")</textarea>
-          </div>
-
-          <div class="stdin-wrap" id="stdinWrap">
-            <div class="stdin-label">⌨️ Program Input (stdin) <span class="stdin-hint">— one value per line</span></div>
-            <textarea class="stdin-input" id="stdinInput" placeholder="Type input here...&#10;Example:&#10;7&#10;John&#10;25" rows="3"></textarea>
-          </div>
-
-          <div class="compiler-actions">
-            <button class="run-btn" id="runBtn" onclick="runCode()">
-              <span class="run-icon">▶ Run Code</span>
-              <span class="run-spinner"></span>
-            </button>
-            <button class="clear-btn" onclick="clearEditor()">🗑 Clear</button>
-          </div>
-
-          <div class="output-wrap" id="outputWrap">
-            <div class="output-label">📤 Output <span class="output-status" id="outputStatus"></span></div>
-            <div class="output-box" id="outputBox"></div>
-          </div>
+        <span class="compiler-chevron" id="compilerChevron">▼</span>
+      </div>
+      <div class="compiler-panel" id="compilerPanel">
+        <div class="compiler-lang-row">
+          <span class="compiler-lang-row-label">Language:</span>
+          <select class="compiler-lang-select" id="progLang" onchange="updateDefaultCode()">
+            <option value="python3">🐍 Python 3</option>
+            <option value="java">☕ Java</option>
+            <option value="c">🔵 C</option>
+            <option value="cpp">🔷 C++</option>
+            <option value="javascript">🟨 JavaScript</option>
+            <option value="typescript">🔷 TypeScript</option>
+            <option value="kotlin">🟣 Kotlin</option>
+            <option value="swift">🟠 Swift</option>
+            <option value="go">🔵 Go</option>
+            <option value="rust">🟤 Rust</option>
+            <option value="ruby">🔴 Ruby</option>
+            <option value="php">🟣 PHP</option>
+            <option value="csharp">🟦 C#</option>
+            <option value="r">📊 R</option>
+            <option value="scala">🔴 Scala</option>
+            <option value="perl">🐪 Perl</option>
+            <option value="haskell">🟣 Haskell</option>
+            <option value="lua">🔵 Lua</option>
+            <option value="bash">⚡ Bash</option>
+            <option value="sql">🗃️ SQL</option>
+            <option value="html">🌐 HTML</option>
+            <option value="css">🎨 CSS</option>
+          </select>
+        </div>
+        <div class="code-editor-wrap">
+          <div class="code-editor-label">✏️ Write your code here:</div>
+          <textarea class="code-editor" id="codeEditor" spellcheck="false"
+            onkeydown="handleEditorTab(event)" oninput="detectStdin()" onchange="detectStdin()">print("Hello from CodeGuru India! 🇮🇳")</textarea>
+        </div>
+        <div class="stdin-wrap" id="stdinWrap">
+          <div class="stdin-label">⌨️ Program Input (stdin) <span class="stdin-hint">— one value per line</span></div>
+          <textarea class="stdin-input" id="stdinInput" placeholder="Type input here...&#10;Example:&#10;7&#10;John&#10;25" rows="3"></textarea>
+        </div>
+        <div class="compiler-actions">
+          <button class="run-btn" id="runBtn" onclick="runCode()">
+            <span class="run-icon">▶ Run Code</span>
+            <span class="run-spinner"></span>
+          </button>
+          <button class="clear-btn" onclick="clearEditor()">🗑 Clear</button>
+        </div>
+        <div class="output-wrap" id="outputWrap">
+          <div class="output-label">📤 Output <span class="output-status" id="outputStatus"></span></div>
+          <div class="output-box" id="outputBox"></div>
         </div>
       </div>
+    </div>
 
-    </div><!-- end app-compiler-section -->
+  </div>
+</div>
 
-  </div><!-- end app-main -->
-</div><!-- end app-layout -->
-
-
-<!-- ────────────────────────────────────────
-     LANDING PAGE (pre-login)
-──────────────────────────────────────── -->
+<!-- LANDING PAGE -->
 <div id="landingPage">
-
-  <!-- NAV -->
   <nav>
     <a href="#" class="logo">
       <span class="dot"></span>
@@ -625,8 +649,6 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
       <button class="btn-cta" onclick="showAuthModal('signup')">Get Started ↓</button>
     </div>
   </nav>
-
-  <!-- HERO -->
   <section class="hero">
     <div class="hero-badge"><span></span> AI-Powered • Free • 6 Indian Languages</div>
     <h1 class="hero-title">
@@ -635,8 +657,6 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
       <span class="line-gold">Tongue.</span>
     </h1>
     <p class="hero-sub">Ask any coding question in Telugu, Tamil, Hindi, Kannada, Marathi, or English. Get instant, expert answers powered by AI.</p>
-
-    <!-- Language Selector -->
     <div class="lang-selector">
       <button class="lang-select-btn selected" onclick="setLangLanding('te','తెలుగు',this)"><span class="lang-native">తెలుగు</span> Telugu</button>
       <button class="lang-select-btn" onclick="setLangLanding('ta','தமிழ்',this)"><span class="lang-native">தமிழ்</span> Tamil</button>
@@ -645,8 +665,6 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
       <button class="lang-select-btn" onclick="setLangLanding('mr','मराठी',this)"><span class="lang-native">मराठी</span> Marathi</button>
       <button class="lang-select-btn" onclick="setLangLanding('en','English',this)">🌐 English</button>
     </div>
-
-    <!-- Chat Preview (locked) -->
     <div class="chat-preview-wrap">
       <div class="chat-container">
         <div class="chat-topbar">
@@ -669,7 +687,6 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
           </div>
         </div>
       </div>
-      <!-- Lock overlay -->
       <div class="chat-preview-lock">
         <div class="lock-icon">🔐</div>
         <div class="lock-text">Sign in to Start Chatting</div>
@@ -682,7 +699,6 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
     </div>
   </section>
 
-  <!-- LANGUAGE STRIP -->
   <div class="lang-strip">
     <div class="lang-scroll">
       <span class="lang-scroll-item"><span>🇮🇳</span> Telugu తెలుగు</span>
@@ -708,7 +724,6 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
     </div>
   </div>
 
-  <!-- FEATURES -->
   <section class="features">
     <p class="section-label">Why CodeGuru India?</p>
     <h2 class="section-title">Built for <span>Bharat</span> Coders</h2>
@@ -722,7 +737,6 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-flag">
       <span class="f-saffron">▬▬▬</span>
@@ -732,19 +746,17 @@ Python, Java, DSA, ML ఏదైనా అడగండి!</div>
     <p>Made with ❤️ for India's next generation of coders</p>
     <p style="margin-top:6px;font-size:.78rem;">© 2025 CodeGuru India · Empowering Bharat through code</p>
   </footer>
+</div>
 
-</div><!-- end landingPage -->
-
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ═══════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════
 let currentLang     = 'te';
 let currentLangName = 'తెలుగు';
-let appUser         = null;   // {id, name, email}
+let appUser         = null;
 let currentChatId   = null;
-let pendingUser     = null;   // temp during signup
+let pendingUser     = null;
 let currentOTP      = null;
 let compilerOpen    = false;
 let sidebarOpen     = true;
@@ -801,7 +813,7 @@ function showToast(msg, type='info'){
 }
 
 // ═══════════════════════════════════════════════════════
-//  USER STORAGE (localStorage)
+//  USER STORAGE
 // ═══════════════════════════════════════════════════════
 function getUsers(){ try{return JSON.parse(localStorage.getItem('cg_users')||'[]')}catch{return[]} }
 function saveUsers(arr){ localStorage.setItem('cg_users',JSON.stringify(arr)) }
@@ -829,10 +841,142 @@ function switchAuthTab(tab){
   document.getElementById('signinForm').style.display= tab==='signin'?'block':'none';
   document.getElementById('signupForm').style.display= tab==='signup'?'block':'none';
   document.getElementById('otpForm').style.display='none';
+  document.getElementById('forgotForm').style.display='none';
   document.getElementById('tabSignin').classList.toggle('active',tab==='signin');
   document.getElementById('tabSignup').classList.toggle('active',tab==='signup');
   document.getElementById('siError').textContent='';
   document.getElementById('suError').textContent='';
+}
+
+// ── Eye toggle (show/hide password) ──
+function toggleEye(inputId, btn){
+  const inp = document.getElementById(inputId);
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  btn.textContent = isHidden ? '🙈' : '👁';
+}
+
+// ── Password strength checker ──
+// prefix: '' = signup bar, 'fp' = forgot-password bar
+function checkPwStrength(val, prefix=''){
+  const barId   = prefix ? 'fpPwBar'   : 'pwBar';
+  const labelId = prefix ? 'fpPwLabel' : 'pwLabel';
+  const bar   = document.getElementById(barId);
+  const label = document.getElementById(labelId);
+  if(!bar||!label) return;
+  const len = val.length;
+  if(len === 0){ bar.style.width='0%'; label.textContent=''; return; }
+  let strength=0, text='', color='';
+  if(len >= 6)  strength++;
+  if(len >= 10) strength++;
+  if(/[A-Z]/.test(val)) strength++;
+  if(/[0-9]/.test(val)) strength++;
+  if(/[^A-Za-z0-9]/.test(val)) strength++;
+  if(strength <= 1){ text='Weak';   color='#FF5F57'; }
+  else if(strength<=3){ text='Medium'; color='#FEBC2E'; }
+  else               { text='Strong'; color='#28C840'; }
+  const pct = Math.min(100, strength * 20)+'%';
+  bar.style.width = pct;
+  bar.style.background = color;
+  label.style.color = color;
+  label.textContent = len < 6 ? '⚠️ Minimum 6 characters required' : text;
+}
+
+// ── Forgot Password flow ──
+let forgotOTP = null;
+let forgotEmail = null;
+
+function showForgotForm(){
+  document.getElementById('signinForm').style.display='none';
+  document.getElementById('forgotForm').style.display='block';
+  showFPStep(1);
+  document.getElementById('fpEmail').value='';
+  document.getElementById('fpStep1Error').textContent='';
+}
+
+function showForgotBack(){
+  document.getElementById('forgotForm').style.display='none';
+  document.getElementById('signinForm').style.display='block';
+}
+
+function showFPStep(n){
+  for(let i=1;i<=3;i++){
+    const el=document.getElementById('fpStep'+i);
+    if(el) el.classList.toggle('show', i===n);
+  }
+}
+
+function handleForgotSendOTP(){
+  const email = document.getElementById('fpEmail').value.trim();
+  const errEl = document.getElementById('fpStep1Error');
+  errEl.textContent='';
+  if(!email||!email.includes('@')){ errEl.textContent='❌ Enter a valid email address'; return; }
+  const user = findUserByEmail(email);
+  if(!user||!user.verified){ errEl.textContent='❌ No account found with this email'; return; }
+  forgotEmail = email;
+  forgotOTP   = String(Math.floor(100000+Math.random()*900000));
+  document.getElementById('fpOtpDesc').textContent = 'Code sent to: '+email;
+  document.getElementById('fpOtpDemoCode').textContent = forgotOTP;
+  for(let i=0;i<6;i++){
+    const el=document.getElementById('fpotp'+i);
+    if(el){el.value='';el.classList.remove('filled');}
+  }
+  document.getElementById('fpStep2Error').textContent='';
+  showFPStep(2);
+  setTimeout(()=>{ const el=document.getElementById('fpotp0'); if(el)el.focus(); },100);
+}
+
+function fpOtpMove(el, idx){
+  el.value = el.value.replace(/[^0-9]/g,'').slice(-1);
+  if(el.value){
+    el.classList.add('filled');
+    if(idx<5) document.getElementById('fpotp'+(idx+1)).focus();
+    else handleForgotVerifyOTP();
+  } else { el.classList.remove('filled'); }
+}
+function fpOtpBack(e, idx){
+  if(e.key==='Backspace'&&!e.target.value&&idx>0){
+    document.getElementById('fpotp'+(idx-1)).focus();
+  }
+}
+
+function handleForgotVerifyOTP(){
+  let entered='';
+  for(let i=0;i<6;i++) entered+=(document.getElementById('fpotp'+i).value||'');
+  const errEl=document.getElementById('fpStep2Error');
+  errEl.textContent='';
+  if(entered.length<6){ errEl.textContent='❌ Enter all 6 digits'; return; }
+  if(entered!==forgotOTP){
+    errEl.textContent='❌ Wrong OTP. Try again.';
+    for(let i=0;i<6;i++){const el=document.getElementById('fpotp'+i);if(el){el.value='';el.classList.remove('filled');}}
+    document.getElementById('fpotp0').focus();
+    return;
+  }
+  document.getElementById('fpNewPw').value='';
+  document.getElementById('fpConfirmPw').value='';
+  document.getElementById('fpStep3Error').textContent='';
+  const bar=document.getElementById('fpPwBar'); if(bar) bar.style.width='0%';
+  const lbl=document.getElementById('fpPwLabel'); if(lbl) lbl.textContent='';
+  showFPStep(3);
+  setTimeout(()=>document.getElementById('fpNewPw').focus(),100);
+}
+
+function handleResetPassword(){
+  const pw1 = document.getElementById('fpNewPw').value;
+  const pw2 = document.getElementById('fpConfirmPw').value;
+  const errEl = document.getElementById('fpStep3Error');
+  errEl.textContent='';
+  if(pw1.length<6){ errEl.textContent='❌ Password must be at least 6 characters'; return; }
+  if(pw1!==pw2){ errEl.textContent='❌ Passwords do not match'; return; }
+  const users = getUsers();
+  const idx   = users.findIndex(u=>u.email.toLowerCase()===forgotEmail.toLowerCase());
+  if(idx<0){ errEl.textContent='❌ Account not found. Please sign up again.'; return; }
+  users[idx].passwordHash = simpleHash(pw1);
+  saveUsers(users);
+  forgotOTP=null; forgotEmail=null;
+  document.getElementById('forgotForm').style.display='none';
+  switchAuthTab('signin');
+  showToast('✅ Password reset! Please sign in with your new password.','success');
 }
 function showSignupFromOTP(){
   document.getElementById('otpForm').style.display='none';
@@ -841,7 +985,6 @@ function showSignupFromOTP(){
   document.getElementById('tabSignin').classList.remove('active');
 }
 
-// Sign Up
 function handleSignUp(){
   const name=document.getElementById('suName').value.trim();
   const email=document.getElementById('suEmail').value.trim();
@@ -852,21 +995,17 @@ function handleSignUp(){
   if(!email||!email.includes('@')){errEl.textContent='❌ Enter a valid email';return}
   if(pw.length<6){errEl.textContent='❌ Password must be at least 6 characters';return}
   if(findUserByEmail(email)){errEl.textContent='❌ Email already registered. Please sign in.';return}
-  // Generate OTP
   currentOTP=String(Math.floor(100000+Math.random()*900000));
   pendingUser={name,email,passwordHash:simpleHash(pw),id:'user_'+Date.now()};
-  // Show OTP form
   document.getElementById('signupForm').style.display='none';
   document.getElementById('otpForm').style.display='block';
   document.getElementById('otpDesc').textContent='Code sent to: '+email;
   document.getElementById('otpDemoCode').textContent=currentOTP;
-  // Clear OTP inputs
   for(let i=0;i<6;i++){const el=document.getElementById('otp'+i);el.value='';el.classList.remove('filled')}
   document.getElementById('otpError').textContent='';
   setTimeout(()=>document.getElementById('otp0').focus(),100);
 }
 
-// Sign In
 function handleSignIn(){
   const email=document.getElementById('siEmail').value.trim();
   const pw=document.getElementById('siPassword').value;
@@ -881,7 +1020,6 @@ function handleSignIn(){
   loginUser(user);
 }
 
-// OTP movement
 function otpMove(el,idx){
   el.value=el.value.replace(/[^0-9]/g,'').slice(-1);
   if(el.value){
@@ -905,7 +1043,6 @@ function handleVerifyOTP(){
     document.getElementById('otp0').focus();
     return;
   }
-  // Verified! Save user
   const users=getUsers();
   users.push({...pendingUser,verified:true,createdAt:Date.now()});
   saveUsers(users);
@@ -931,12 +1068,31 @@ function handleLogout(){
   showToast('Logged out successfully','info');
 }
 
+// ═══════════════════════════════════════════════════════
+//  FIX 2: showGreeting() — ALWAYS recreates elements fresh
+//  Root bug was: msgs.innerHTML='' (in loadChat) destroyed
+//  greetingMsg, then showGreeting tried getElementById and
+//  got null, so appendChild(null) silently did nothing.
+//  Now we rebuild from scratch every time.
+// ═══════════════════════════════════════════════════════
 function showGreeting(){
   const msgs=document.getElementById('messages');
-  const greetEl=document.getElementById('greetingMsg');
-  // Detach from wherever it is and put it at the top of messages alone
   msgs.innerHTML='';
-  msgs.appendChild(greetEl);
+  const greetText=greetings[currentLang]||greetings['en'];
+  const wrap=document.createElement('div');
+  wrap.className='msg bot';
+  wrap.id='greetingMsg';
+  const av=document.createElement('div');
+  av.className='avatar bot';
+  av.textContent='🎓';
+  const bubble=document.createElement('div');
+  bubble.className='bubble bot';
+  bubble.id='greetingBubble';
+  bubble.style.whiteSpace='pre-wrap';
+  bubble.textContent=greetText;
+  wrap.appendChild(av);
+  wrap.appendChild(bubble);
+  msgs.appendChild(wrap);
   msgs.scrollTop=0;
 }
 
@@ -951,10 +1107,6 @@ function showLanding(){
   document.getElementById('landingPage').style.display='block';
   document.getElementById('appLayout').classList.remove('show');
 }
-function adjustMessagesHeight(){
-  // Not needed — chat-viewport uses calc(100vh - 64px) via CSS
-}
-window.addEventListener('resize',adjustMessagesHeight);
 
 function toggleSidebar(){
   sidebarOpen=!sidebarOpen;
@@ -968,36 +1120,26 @@ function toggleCompiler(){
   panel.classList.toggle('open',compilerOpen);
   chevron.classList.toggle('open',compilerOpen);
   btn.classList.toggle('active',compilerOpen);
-  // Smooth scroll the app-main to reveal the compiler below the chat
   const appMain=document.getElementById('appMain');
   const compilerSection=document.getElementById('compilerSection');
   if(compilerOpen){
-    setTimeout(()=>{
-      compilerSection.scrollIntoView({behavior:'smooth',block:'start'});
-    },50);
+    setTimeout(()=>{ compilerSection.scrollIntoView({behavior:'smooth',block:'start'}); },50);
   } else {
-    // Scroll back to top (chat)
     appMain.scrollTo({top:0,behavior:'smooth'});
   }
 }
 
 function initApp(){
   if(!appUser) return;
-  // Update UI with user info
   const initials=appUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('sidebarAvatar').textContent=initials;
   document.getElementById('sidebarUserName').textContent=appUser.name;
   document.getElementById('sidebarUserEmail').textContent=appUser.email;
   document.getElementById('appUserAvatar').textContent=initials;
   document.getElementById('appUserName').textContent=appUser.name;
-  // Set greeting text for current language
-  const greetText=greetings[currentLang]||greetings['en'];
-  document.getElementById('greetingBubble').textContent=greetText;
   document.getElementById('chatInput').placeholder=placeholders[currentLang]||placeholders['en'];
-  // Load chat history sidebar
   renderSidebarChats();
-  // Show greeting as first message (always)
-  showGreeting();
+  showGreeting(); // builds greeting fresh — no dependency on static HTML element
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1013,17 +1155,17 @@ function saveUserChats(chats){
   const k=getChatKey();
   if(k) localStorage.setItem(k,JSON.stringify(chats));
 }
+
+// FIX 2 continued: startNewChat always works because showGreeting recreates elements
 function startNewChat(){
   currentChatId=null;
-  // Update greeting for current language
-  document.getElementById('greetingBubble').textContent=greetings[currentLang]||greetings['en'];
   showGreeting();
   document.getElementById('outputWrap').classList.remove('show');
-  // Scroll back to chat top
   document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
   renderSidebarChats();
   document.getElementById('chatInput').focus();
 }
+
 function createNewChatSession(firstMessage){
   const id='chat_'+Date.now();
   const title=firstMessage.length>50?firstMessage.slice(0,50)+'…':firstMessage;
@@ -1033,6 +1175,7 @@ function createNewChatSession(firstMessage){
   currentChatId=id;
   return id;
 }
+
 function saveMessageToHistory(role,text){
   if(!currentChatId||!appUser) return;
   const chats=getUserChats();
@@ -1042,25 +1185,56 @@ function saveMessageToHistory(role,text){
   chat.updatedAt=Date.now();
   saveUserChats(chats);
 }
+
+// ── FIX 1: Quiz persistence — save quiz to localStorage ──
+function saveQuizToHistory(quizData){
+  if(!currentChatId||!appUser) return -1;
+  const chats=getUserChats();
+  const chat=chats.find(c=>c.id===currentChatId);
+  if(!chat) return -1;
+  // selectedAnswers: { questionIndex: selectedKey } e.g. {0:'A', 1:'C', 2:'B'}
+  const entry={role:'quiz',quiz:quizData,selectedAnswers:{},time:Date.now()};
+  chat.messages.push(entry);
+  chat.updatedAt=Date.now();
+  saveUserChats(chats);
+  return chat.messages.length-1; // index used to update answers later
+}
+
+function updateQuizAnswerInHistory(quizMsgIndex, qIndex, selectedKey){
+  if(!currentChatId||!appUser||quizMsgIndex<0) return;
+  const chats=getUserChats();
+  const chat=chats.find(c=>c.id===currentChatId);
+  if(!chat||!chat.messages[quizMsgIndex]) return;
+  chat.messages[quizMsgIndex].selectedAnswers[qIndex]=selectedKey;
+  chat.updatedAt=Date.now();
+  saveUserChats(chats);
+}
+
+// FIX 1 + FIX 2: loadChat handles quiz entries and doesn't rely on static greetingMsg
 function loadChat(chatId){
   const chats=getUserChats();
   const chat=chats.find(c=>c.id===chatId);
   if(!chat) return;
   currentChatId=chatId;
   const msgs=document.getElementById('messages');
-  msgs.innerHTML='';
+  msgs.innerHTML=''; // safe now — showGreeting() recreates elements
   if(chat.messages.length===0){
-    // Empty chat — show greeting
-    document.getElementById('greetingBubble').textContent=greetings[currentLang]||greetings['en'];
-    msgs.appendChild(document.getElementById('greetingMsg'));
+    showGreeting();
   } else {
-    chat.messages.forEach(m=>appendMessage(m.role,m.text,true));
+    chat.messages.forEach(m=>{
+      if(m.role==='quiz'){
+        // FIX 1: restore quiz with saved answer state
+        appendQuizFromHistory(m.quiz, m.selectedAnswers||{});
+      } else {
+        appendMessage(m.role,m.text,true);
+      }
+    });
+    msgs.scrollTop=msgs.scrollHeight;
   }
-  msgs.scrollTop=msgs.scrollHeight;
-  // Scroll app-main back to chat top
   document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
   renderSidebarChats();
 }
+
 function renderSidebarChats(filter){
   const container=document.getElementById('sidebarChats');
   let chats=getUserChats();
@@ -1069,7 +1243,6 @@ function renderSidebarChats(filter){
     container.innerHTML=`<div class="sidebar-empty"><div class="empty-icon">💬</div><div>No chats yet</div><div style="margin-top:6px;font-size:.76rem">Ask a question to get started!</div></div>`;
     return;
   }
-  // Language flag/emoji map
   const langEmoji={'te':'🇮🇳','ta':'🇮🇳','hi':'🇮🇳','kn':'🇮🇳','mr':'🇮🇳','en':'🌐'};
   container.innerHTML=chats.map(c=>{
     const active=c.id===currentChatId?'active':'';
@@ -1100,31 +1273,21 @@ function deleteChat(chatId,e){
 }
 function filterChats(q){ renderSidebarChats(q||undefined) }
 function escHtml(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-function formatTime(ts){
-  const d=new Date(ts);
-  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-}
 
 // ═══════════════════════════════════════════════════════
-//  LANGUAGE SWITCHING
+//  FIX 2: LANGUAGE SWITCHING
+//  setLang() now works even from previous chat view because
+//  showGreeting() properly recreates the greeting elements.
 // ═══════════════════════════════════════════════════════
 function setLang(code,name,btn){
-  // If language actually changed and user is in an active chat — start a fresh session
-  const langChanged = (code !== currentLang);
+  const langChanged=(code!==currentLang);
   currentLang=code; currentLangName=name;
-
-  // Update app lang pills
   document.querySelectorAll('.app-lang-pills .lang-pill').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-
-  // Update greeting text and placeholder
-  document.getElementById('greetingBubble').textContent=greetings[code]||greetings['en'];
   document.getElementById('chatInput').placeholder=placeholders[code]||placeholders['en'];
-
-  if(langChanged && appUser){
-    // Always start a fresh chat when language changes
+  if(langChanged&&appUser){
     currentChatId=null;
-    showGreeting();
+    showGreeting(); // works correctly now
     document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
     renderSidebarChats();
     showToast('🌐 Switched to '+name+' — new chat started','info');
@@ -1137,7 +1300,6 @@ function setLangLanding(code,name,btn){
   document.querySelectorAll('.nav-links .lang-pill').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.lang-select-btn').forEach(b=>b.classList.remove('selected'));
   if(btn) btn.classList.add('selected');
-  // Update landing preview
   const g=document.getElementById('landingGreeting');
   if(g) g.textContent=landingGreetings[code]||landingGreetings['en'];
 }
@@ -1200,23 +1362,16 @@ async function sendMessage(){
   const question=input.value.trim();
   if(!question) return;
   input.value='';
-
-  // Create chat session on first message
   if(!currentChatId){
     createNewChatSession(question);
     renderSidebarChats();
   }
-
   saveMessageToHistory('user',question);
   appendMessage('user',question);
-
-  // Scroll app-main back to chat area (in case compiler was open)
   document.getElementById('appMain').scrollTo({top:0,behavior:'smooth'});
-
   document.getElementById('typing').classList.add('show');
   const msgs=document.getElementById('messages');
   msgs.scrollTop=msgs.scrollHeight;
-
   try{
     const res=await fetch('http://localhost:8000/ask',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -1234,12 +1389,11 @@ async function sendMessage(){
     saveMessageToHistory('bot',data.answer);
     const bubble=appendMessage('bot',data.answer);
     renderSidebarChats();
-    // ── Always guarantee a quiz: use backend quiz if present, otherwise generate via AI ──
     if(data.quiz&&data.quiz.questions&&data.quiz.questions.length>0){
-      appendQuiz(data.quiz,bubble.parentElement);
+      const qIdx=saveQuizToHistory(data.quiz); // FIX 1
+      appendQuiz(data.quiz,bubble.parentElement,qIdx);
     } else {
-      // Backend did not return a quiz — generate one directly via Anthropic API
-      generateQuizFromAI(question, data.answer, currentLang, currentLangName);
+      generateQuizFromAI(question,data.answer,currentLang,currentLangName);
     }
   }catch(err){
     document.getElementById('typing').classList.remove('show');
@@ -1247,8 +1401,7 @@ async function sendMessage(){
     saveMessageToHistory('bot',demo);
     appendMessage('bot',demo);
     renderSidebarChats();
-    // Even in offline mode, generate quiz via AI
-    generateQuizFromAI(question, demo, currentLang, currentLangName);
+    generateQuizFromAI(question,demo,currentLang,currentLangName);
   }
 }
 
@@ -1256,18 +1409,16 @@ async function sendMessage(){
 //  GUARANTEED QUIZ GENERATION via Anthropic API
 // ═══════════════════════════════════════════════════════
 async function generateQuizFromAI(question, context, lang, langName){
-  // Show a subtle "generating quiz..." indicator
-  const quizLoadWrap = document.createElement('div');
-  quizLoadWrap.className = 'msg bot';
-  quizLoadWrap.id = 'quizLoadMsg';
-  quizLoadWrap.innerHTML = `<div class="avatar bot">📝</div><div class="bubble bot" style="color:var(--muted);font-size:.85rem">📝 Generating quiz questions about: <strong>${escHtml(question.slice(0,50))}</strong>...</div>`;
-  const msgs = document.getElementById('messages');
+  const quizLoadWrap=document.createElement('div');
+  quizLoadWrap.className='msg bot';
+  quizLoadWrap.id='quizLoadMsg';
+  quizLoadWrap.innerHTML=`<div class="avatar bot">📝</div><div class="bubble bot" style="color:var(--muted);font-size:.85rem">📝 Generating quiz about: <strong>${escHtml(question.slice(0,50))}</strong>...</div>`;
+  const msgs=document.getElementById('messages');
   msgs.appendChild(quizLoadWrap);
-  msgs.scrollTop = msgs.scrollHeight;
-
+  msgs.scrollTop=msgs.scrollHeight;
   try{
-    const langInstruction = lang==='en' ? 'in English' : `in ${langName} language (use ${langName} script for all text)`;
-    const prompt = `You are a quiz generator for a coding tutor. The student asked: "${question}"
+    const langInstruction=lang==='en'?'in English':`in ${langName} language (use ${langName} script for all text)`;
+    const prompt=`You are a quiz generator for a coding tutor. The student asked: "${question}"
 
 Generate exactly 3 multiple choice quiz questions ${langInstruction} that STRICTLY test understanding of: "${question}"
 
@@ -1281,48 +1432,40 @@ RULES:
 Return ONLY this exact JSON structure, no markdown, no extra words:
 {"quiz_title":"Quiz: ${question.slice(0,45)}","questions":[{"question":"question here","options":{"A":"opt a","B":"opt b","C":"opt c","D":"opt d"},"correct":"A"},{"question":"question 2","options":{"A":"opt a","B":"opt b","C":"opt c","D":"opt d"},"correct":"B"},{"question":"question 3","options":{"A":"opt a","B":"opt b","C":"opt c","D":"opt d"},"correct":"C"}]}`;
 
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1200,
-        messages: [{role: 'user', content: prompt}]
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1200,
+        messages:[{role:'user',content:prompt}]
       })
     });
-
-    // Remove loading indicator
-    const loadMsg = document.getElementById('quizLoadMsg');
+    const loadMsg=document.getElementById('quizLoadMsg');
     if(loadMsg) loadMsg.remove();
-
-    if(!res.ok){ console.warn('Quiz API failed:', res.status); return; }
-
-    const data = await res.json();
-    const rawText = data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
-
-    // Extract JSON robustly
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if(!jsonMatch){ console.warn('No JSON in quiz response'); return; }
-
+    if(!res.ok){console.warn('Quiz API failed:',res.status);return;}
+    const data=await res.json();
+    const rawText=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+    const jsonMatch=rawText.match(/\{[\s\S]*\}/);
+    if(!jsonMatch){console.warn('No JSON in quiz response');return;}
     let quiz;
-    try{ quiz = JSON.parse(jsonMatch[0]); }
-    catch(e){ console.warn('Quiz JSON parse failed:', e); return; }
-
-    if(quiz && quiz.questions && quiz.questions.length > 0){
-      appendQuiz(quiz, null);
+    try{quiz=JSON.parse(jsonMatch[0]);}catch(e){console.warn('Quiz JSON parse failed:',e);return;}
+    if(quiz&&quiz.questions&&quiz.questions.length>0){
+      const qIdx=saveQuizToHistory(quiz); // FIX 1
+      appendQuiz(quiz,null,qIdx);
     }
-  } catch(e) {
-    // Remove loading indicator on error
-    const loadMsg = document.getElementById('quizLoadMsg');
+  }catch(e){
+    const loadMsg=document.getElementById('quizLoadMsg');
     if(loadMsg) loadMsg.remove();
-    console.warn('Quiz generation error:', e);
+    console.warn('Quiz generation error:',e);
   }
 }
 
 // ═══════════════════════════════════════════════════════
-//  QUIZ RENDERER
+//  FIX 1: QUIZ RENDERER — active session
+//  Saves each answer to localStorage as it's selected.
 // ═══════════════════════════════════════════════════════
-function appendQuiz(quiz,msgWrapper){
+function appendQuiz(quiz, msgWrapper, quizHistoryIndex=-1){
   const msgs=document.getElementById('messages');
   const quizBlock=document.createElement('div'); quizBlock.className='quiz-block';
   const title=document.createElement('div'); title.className='quiz-title';
@@ -1331,6 +1474,7 @@ function appendQuiz(quiz,msgWrapper){
   const userAnswers=new Array(totalQ).fill(null);
   let answeredCount=0;
   const scoreDiv=document.createElement('div'); scoreDiv.className='quiz-score';
+
   quiz.questions.forEach((q,qIndex)=>{
     const qBlock=document.createElement('div'); qBlock.className='quiz-question';
     const qText=document.createElement('div'); qText.className='quiz-q-text';
@@ -1348,6 +1492,8 @@ function appendQuiz(quiz,msgWrapper){
           if(b.dataset.key===q.correct) b.classList.add('correct');
           if(b.dataset.key===key&&!correct) b.classList.add('wrong');
         });
+        // FIX 1: persist answer immediately
+        if(quizHistoryIndex>=0) updateQuizAnswerInHistory(quizHistoryIndex,qIndex,key);
         answeredCount++;
         if(answeredCount===totalQ){
           const score=userAnswers.filter(a=>a===true).length;
@@ -1371,11 +1517,71 @@ function appendQuiz(quiz,msgWrapper){
 }
 
 // ═══════════════════════════════════════════════════════
-//  VOICE INPUT
+//  FIX 1: QUIZ RENDERER — history (read-only with saved state)
+//  Restores correct/wrong markings and final score exactly
+//  as they were when the user originally answered.
+// ═══════════════════════════════════════════════════════
+function appendQuizFromHistory(quiz, savedAnswers){
+  const msgs=document.getElementById('messages');
+  const quizBlock=document.createElement('div'); quizBlock.className='quiz-block';
+  const title=document.createElement('div'); title.className='quiz-title';
+  title.innerHTML=`📝 ${quiz.quiz_title}`; quizBlock.appendChild(title);
+  const totalQ=quiz.questions.length;
+  let answeredCount=0;
+  let correctCount=0;
+
+  quiz.questions.forEach((q,qIndex)=>{
+    const selectedKey=savedAnswers[qIndex]; // e.g. 'A', 'B', 'C', 'D', or undefined
+    const isAnswered=(selectedKey!=null&&selectedKey!==undefined);
+    if(isAnswered){
+      answeredCount++;
+      if(selectedKey===q.correct) correctCount++;
+    }
+    const qBlock=document.createElement('div'); qBlock.className='quiz-question';
+    const qText=document.createElement('div'); qText.className='quiz-q-text';
+    qText.textContent=`${qIndex+1}. ${q.question}`; qBlock.appendChild(qText);
+    const optGrid=document.createElement('div'); optGrid.className='quiz-options';
+    Object.entries(q.options).forEach(([key,val])=>{
+      const btn=document.createElement('button'); btn.className='quiz-option';
+      btn.innerHTML=`<span class="option-label">${key}</span>${val}`; btn.dataset.key=key;
+      if(isAnswered){
+        // restore exact visual state
+        btn.classList.add('answered');
+        btn.setAttribute('disabled','');
+        btn.style.cursor='default';
+        if(key===q.correct) btn.classList.add('correct');
+        if(key===selectedKey&&selectedKey!==q.correct) btn.classList.add('wrong');
+      }
+      // unanswered questions in history are also shown as non-interactive
+      if(!isAnswered){
+        btn.setAttribute('disabled','');
+        btn.style.cursor='default';
+        btn.style.opacity='0.6';
+      }
+      optGrid.appendChild(btn);
+    });
+    qBlock.appendChild(optGrid); quizBlock.appendChild(qBlock);
+  });
+
+  // Show final score if all questions were answered
+  const scoreDiv=document.createElement('div'); scoreDiv.className='quiz-score';
+  if(answeredCount===totalQ&&totalQ>0){
+    let emoji='💪';
+    if(correctCount===totalQ) emoji='🏆';
+    else if(correctCount>=totalQ*.67) emoji='👍';
+    else if(correctCount>=totalQ*.33) emoji='😊';
+    scoreDiv.textContent=`${emoji} ${correctCount}/${totalQ} correct!`;
+    scoreDiv.style.display='block';
+  }
+  quizBlock.appendChild(scoreDiv);
+  const wrap=document.createElement('div'); wrap.className='msg bot';
+  const av=document.createElement('div'); av.className='avatar bot'; av.textContent='📝';
+  wrap.appendChild(av); wrap.appendChild(quizBlock);
+  msgs.appendChild(wrap);
+}
+
 // ═══════════════════════════════════════════════════════
 //  VOICE INPUT
-//  Strategy: Always recognise in English (most accurate for
-//  technical terms). If language ≠ English, translate via AI.
 // ═══════════════════════════════════════════════════════
 const MIC_LABELS={
   'te':'🎤 మాట్లాడండి — తెలుగు లో అనువదిస్తాను...',
@@ -1396,14 +1602,10 @@ function toggleMic(){
 function startMic(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   recognition=new SR();
-
-  // Always use en-IN for recognition — Indian English accent, accurate technical terms
-  // "Generative AI", "machine learning", "encapsulation" etc. will be correctly captured
   recognition.lang='en-IN';
   recognition.continuous=false;
   recognition.interimResults=true;
-  recognition.maxAlternatives=5;  // pick best from multiple alternatives
-
+  recognition.maxAlternatives=5;
   recognition.onstart=()=>{
     isListening=true;
     document.getElementById('micBtn').classList.add('listening');
@@ -1414,12 +1616,10 @@ function startMic(){
     document.getElementById('chatInput').value='';
     document.getElementById('chatInput').placeholder='🎤 Listening — speak clearly...';
   };
-
   recognition.onresult=(e)=>{
     let finalText='', interimText='';
     for(let i=0;i<e.results.length;i++){
       if(e.results[i].isFinal){
-        // Pick highest-confidence alternative
         let best=e.results[i][0].transcript;
         let bestConf=e.results[i][0].confidence||0;
         for(let a=1;a<e.results[i].length;a++){
@@ -1427,31 +1627,22 @@ function startMic(){
           if(altConf>bestConf){ best=e.results[i][a].transcript; bestConf=altConf; }
         }
         finalText+=best;
-      } else {
-        interimText+=e.results[i][0].transcript;
-      }
+      } else { interimText+=e.results[i][0].transcript; }
     }
     document.getElementById('chatInput').value=finalText||interimText;
   };
-
   recognition.onend=()=>{
     const recognized=(document.getElementById('chatInput').value||'').trim();
     stopMic();
     if(!recognized) return;
-    // If language is not English, translate the recognized English text
-    if(currentLang!=='en'){
-      translateVoiceInput(recognized, currentLang, currentLangName);
-    }
-    // If English, keep as-is (already in correct language)
+    if(currentLang!=='en') translateVoiceInput(recognized,currentLang,currentLangName);
   };
-
   recognition.onerror=(e)=>{
     stopMic();
     if(e.error==='not-allowed') showToast('Microphone access denied ❌','error');
     else if(e.error==='no-speech') showToast('No speech detected — try again 🎤','info');
     else if(e.error!=='aborted') showToast('Voice error: '+e.error,'error');
   };
-
   recognition.start();
 }
 
@@ -1465,52 +1656,32 @@ function stopMic(){
   document.getElementById('chatInput').focus();
 }
 
-// Translate recognized English speech → selected language using Claude API
 async function translateVoiceInput(englishText, langCode, langName){
   const input=document.getElementById('chatInput');
   const micBtn=document.getElementById('micBtn');
-
-  // Show translating state
-  micBtn.textContent='⏳';
-  micBtn.disabled=true;
-  input.value=englishText;  // show recognized English while translating
+  micBtn.textContent='⏳'; micBtn.disabled=true;
+  input.value=englishText;
   input.placeholder='Translating to '+langName+'...';
-
   try{
     const prompt=`Translate this English question into ${langName} accurately.
 Rules:
-- Use correct ${langName} grammar and natural phrasing  
-- Keep technical English terms as-is (e.g., Python, AI, Generative AI, machine learning, API, loop, function, class, encapsulation, polymorphism)
+- Use correct ${langName} grammar and natural phrasing
+- Keep technical English terms as-is (e.g., Python, AI, machine learning, API, loop, function, class)
 - Return ONLY the translated text — no explanation, no quotes, nothing else
 
 English question: "${englishText}"`;
-
     const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:200,
-        messages:[{role:'user',content:prompt}]
-      })
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
     });
-
     if(res.ok){
       const data=await res.json();
       const translated=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
-      if(translated){
-        input.value=translated;
-        showToast('✅ Translated to '+langName,'success');
-      }
-    } else {
-      // Translation API failed — keep English (still fully usable)
-      showToast('Using English (translation unavailable)','info');
-    }
-  }catch(e){
-    showToast('Using English (network error)','info');
-  } finally {
-    micBtn.textContent='🎤';
-    micBtn.disabled=false;
+      if(translated){ input.value=translated; showToast('✅ Translated to '+langName,'success'); }
+    } else { showToast('Using English (translation unavailable)','info'); }
+  }catch(e){ showToast('Using English (network error)','info'); }
+  finally{
+    micBtn.textContent='🎤'; micBtn.disabled=false;
     input.placeholder=placeholders[langCode]||placeholders['en'];
     input.focus();
   }
@@ -1543,6 +1714,7 @@ const DEFAULT_CODES={
   html:`<!DOCTYPE html>\n<html>\n<body>\n  <h1>Hello from CodeGuru India!<\/h1>\n<\/body>\n<\/html>`,
   css:`/* CSS cannot run standalone — try HTML mode */\nbody { background: #FF6B1A; color: white; }`,
 };
+
 function updateDefaultCode(){
   const lang=document.getElementById('progLang').value;
   document.getElementById('codeEditor').value=DEFAULT_CODES[lang]||'';
@@ -1584,6 +1756,48 @@ function detectStdin(){
   const p=STDIN_PATTERNS[lang];
   document.getElementById('stdinWrap').classList.toggle('show',p?p.test(code):false);
 }
+
+// ═══════════════════════════════════════════════════════
+//  FIX 3: TERMINAL-STYLE OUTPUT BUILDER
+//  Interleaves stdin values with input prompts so output
+//  looks like a real terminal session, e.g.:
+//    "Enter a number: 89"   ← prompt + typed value
+//    "89 is a positive number"  ← program output
+//
+//  Problem: JDoodle/backend returns raw output where the
+//  input prompt and next output appear on the SAME line
+//  (e.g. "Enter a number: The number is Positive").
+//  This function splits that and inserts the stdin value.
+// ═══════════════════════════════════════════════════════
+function buildTerminalOutput(rawOutput, stdinText){
+  if(!stdinText||!stdinText.trim()) return rawOutput;
+  const stdinVals=stdinText.trim().split('\n').map(s=>s.trim()).filter(Boolean);
+  if(!stdinVals.length) return rawOutput;
+  let stdinIdx=0;
+  const lines=rawOutput.split('\n');
+  const result=[];
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    if(stdinIdx>=stdinVals.length){result.push(line);continue;}
+    // Case 1: "Enter a number: The number is Positive"
+    // — backend output combines prompt + result on one line after consuming stdin.
+    // We split at the first prompt marker and insert the stdin value.
+    const sameLine=line.match(/^(.+?[:\?]\s+)([A-Za-z\u0900-\u097F\u0C00-\u0C7F\u0B80-\u0BFF\u0C80-\u0CFF\u0900-\u097F].+)$/);
+    if(sameLine){
+      result.push(sameLine[1]+stdinVals[stdinIdx++]);
+      result.push(sameLine[2]);
+      continue;
+    }
+    // Case 2: Line ends with prompt character (: or ?) — stdin goes directly after
+    if(/[:\?]\s*$/.test(line)&&stdinIdx<stdinVals.length){
+      result.push(line+stdinVals[stdinIdx++]);
+      continue;
+    }
+    result.push(line);
+  }
+  return result.join('\n');
+}
+
 async function runCode(){
   const code=document.getElementById('codeEditor').value.trim();
   const lang=document.getElementById('progLang').value;
@@ -1599,7 +1813,11 @@ async function runCode(){
     });
     const data=await res.json();
     if(data.output!==undefined){
-      showOutput(data.output||'(No output)',data.is_error||data.output.toLowerCase().includes('error'));
+      const isErr=data.is_error||data.output.toLowerCase().includes('error');
+      const rawOut=data.output||'(No output)';
+      // FIX 3: apply terminal formatting only for success output with stdin
+      const displayOut=(!isErr&&stdin.trim())?buildTerminalOutput(rawOut,stdin):rawOut;
+      showOutput(displayOut,isErr);
     }else{
       showOutput('❌ Server error: '+(data.detail||'Unknown error'),true);
     }
@@ -1609,6 +1827,7 @@ async function runCode(){
     runBtn.disabled=false; runBtn.classList.remove('running');
   }
 }
+
 function showOutput(text,isError=false){
   const wrap=document.getElementById('outputWrap');
   const box=document.getElementById('outputBox');
@@ -1646,7 +1865,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   } else {
     showLanding();
   }
-  // Close auth modal on overlay click
   document.getElementById('authOverlay').addEventListener('click',function(e){
     if(e.target===this) closeAuthModal();
   });
