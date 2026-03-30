@@ -488,8 +488,6 @@ Contributions are welcome! Here's how:
 
 This project is licensed under the **MIT License** — free to use, modify, and distribute.
 
----
-
 <div align="center">
 
 ⭐ Star this repo if CodeGuru India helped you!
