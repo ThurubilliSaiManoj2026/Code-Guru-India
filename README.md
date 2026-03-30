@@ -1,4 +1,4 @@
-# 🇮🇳 CodeGuru India — AI Coding Tutor in Your Language
+# CodeGuru India — AI Coding Tutor in Your Language
 
 <div align="center">
 
@@ -19,7 +19,7 @@ Ask coding questions in Telugu, Tamil, Hindi, Kannada, Marathi, or English — g
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
 - [Project Overview](#-project-overview)
 - [Objectives](#-objectives)
@@ -41,7 +41,7 @@ Ask coding questions in Telugu, Tamil, Hindi, Kannada, Marathi, or English — g
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 **CodeGuru India** is a full-stack AI-powered coding education platform designed for Indian students who are more comfortable learning in their native language. The platform provides education by allowing students to ask any programming question, coding question in **6 Indian languages** and receive expert-level answers powered by cutting-edge AI.
 
@@ -51,7 +51,7 @@ The project was built completely from scratch — from UI design to backend AI i
 
 ---
 
-## 🏹 Objectives
+## Objectives
 
 - ✅ Provide **instant AI-powered answers** in native Indian languages
 - ✅ Include an **interactive online compiler** supporting 22 programming languages
@@ -62,62 +62,62 @@ The project was built completely from scratch — from UI design to backend AI i
 
 ---
 
-## 🌐 Live Demo
+## Live Demo
 
 | Component | URL |
 |-----------|-----|
-| 🖥️ Frontend (GitHub Pages) | https://thurubillisaimanoj2026.github.io/Code-Guru-India |
-| ⚙️ Backend API (Render) | https://bharat-multilingual-online-coding-tutor.onrender.com |
-| 📖 API Documentation | https://bharat-multilingual-online-coding-tutor.onrender.com/docs |
+| Frontend (GitHub Pages) | https://thurubillisaimanoj2026.github.io/Code-Guru-India |
+| Backend API (Render) | https://bharat-multilingual-online-coding-tutor.onrender.com |
+| API Documentation | https://bharat-multilingual-online-coding-tutor.onrender.com/docs |
 
 ---
 
-## ✨ Features
+## Features
 
-### 🗣️ Multilingual AI Chat
+### Multilingual AI Chat
 - Supports **6 Indian languages**: Telugu, Tamil, Hindi, Kannada, Marathi, and English
 - Complete answers in the selected language with code examples always in English
 - Warm, beginner-friendly tone for every response
 - Structured responses: Introduction → Explanation → Code → How it works → Real-world use → Tip
 
-### 🤖 Dual AI with Auto-Fallback
+### Dual AI with Auto-Fallback
 - **Primary:** Google Gemini 2.5 Flash (free, 500 requests/day)
 - **Backup:** Groq LLaMA 3.3 70B (free, unlimited)
 - Automatic failover — if Gemini quota is exceeded, Groq takes over instantly with zero downtime
 
-### 📝 Automatic Quiz Generation
+### Automatic Quiz Generation
 - Every AI answer is followed by **3 auto-generated MCQ quiz questions**
 - Quizzes are in the same language as the answer
 - Questions strictly test the exact topic the student asked about
 - **Full quiz state persistence** — answers, correct/wrong highlights, and final score are saved and restored when revisiting old chats
 
-### 💻 Online Compiler (22 Languages)
+### Online Compiler (22 Languages)
 - Supports: Python, Java, C, C++, JavaScript, TypeScript, Kotlin, Swift, Go, Rust, Ruby, PHP, C#, R, Scala, Perl, Haskell, Lua, Bash, SQL, HTML, CSS
 - **Interactive stdin support** — programs that use `input()` / `scanf()` show terminal-style interleaved output
 - Powered by JDoodle API
 - Auto-detects when code needs user input and shows an input field
 
-### 🔐 Authentication System
+### Authentication System
 - Email + Password signup with **OTP verification** (demo mode — OTP displayed on screen)
 - Secure sign in with hashed passwords (stored in localStorage)
 - **Forgot Password** flow: Email → OTP verify → Set new password
 - **Live password strength indicator** (Weak / Medium / Strong) during signup
 - Session persistence — users stay logged in across browser sessions
 
-### 💬 Chat History & Sessions
+### Chat History & Sessions
 - All conversations saved automatically per user in localStorage
 - Sidebar shows recent chats with language tag and date
 - Chat search functionality
 - Full restoration of previous chats including quiz states
 - New Chat button and language switching always responsive
 
-### 🎤 Voice Input
+### Voice Input
 - Web Speech API integration (Chrome / Edge)
 - Recognizes speech in English (en-IN) for best accuracy on technical terms
 - Automatically **translates** recognized speech to the selected Indian language using Claude API
 - Real-time status indicator while listening
 
-### 🌙 UI/UX
+### UI/UX
 - Dark space-themed design with animated starfield background
 - Saffron, Gold, and Green color palette
 - Fully responsive for desktop and mobile
@@ -126,7 +126,7 @@ The project was built completely from scratch — from UI design to backend AI i
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 | Technology | Purpose |
@@ -165,7 +165,7 @@ The project was built completely from scratch — from UI design to backend AI i
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -222,7 +222,7 @@ Code-Guru-India/
 
 ---
 
-## 🔐 Authentication Flow
+## Authentication Flow
 
 ```
 SIGN UP:
@@ -261,7 +261,7 @@ Redirected to Sign In with success toast
 
 ---
 
-## 🤖 AI & Compiler Flow
+## AI & Compiler Flow
 
 ```
 USER ASKS A QUESTION:
@@ -302,7 +302,7 @@ Output returned → frontend applies terminal formatting
 
 ---
 
-## 💻 Installation & Local Setup
+## Installation & Local Setup
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -344,7 +344,7 @@ Simply open `index.html` in your browser — no build step needed.
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 | Variable | Where to Get | Required |
 |----------|-------------|----------|
@@ -357,7 +357,7 @@ Simply open `index.html` in your browser — no build step needed.
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### Backend — Render (Free)
 
@@ -402,7 +402,7 @@ Every `git push origin main` automatically triggers:
 
 ---
 
-## 🐛 Bugs Fixed & Improvements
+## Bugs Fixed & Improvements
 
 ### Bug 1 — Quiz State Not Persisting in Previous Chats
 **Problem:** When revisiting old chats, quizzes showed without any answer highlights or score.  
@@ -430,17 +430,17 @@ Every `git push origin main` automatically triggers:
 
 ### Improvement — Authentication UX
 Added 5 new auth features:
-- 📊 Live password strength bar (Weak/Medium/Strong) on signup
-- 🔑 Complete Forgot Password flow (Email → OTP → New Password)
-- ⚠️ Real-time "minimum 6 characters" warning while typing
-- 🔒 Password confirmation field on reset
+- Live password strength bar (Weak/Medium/Strong) on signup
+- Complete Forgot Password flow (Email → OTP → New Password)
+- Real-time "minimum 6 characters" warning while typing
+- Password confirmation field on reset
 
 ### Improvement — AI Model Upgrade
 Upgraded from `gemini-2.0-flash` (retiring March 3, 2026) to `gemini-2.5-flash` — faster, smarter, and stable on the free tier.
 
 ---
 
-## 🤯 Challenges Faced & Solutions
+## Challenges Faced & Solutions
 
 | Challenge | Solution |
 |-----------|----------|
@@ -454,7 +454,7 @@ Upgraded from `gemini-2.0-flash` (retiring March 3, 2026) to `gemini-2.5-flash` 
 
 ---
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - [ ] **Real email OTP delivery** via SendGrid or AWS SES for production-grade auth
 - [ ] **PostgreSQL database** to move from localStorage to persistent cloud storage
@@ -465,10 +465,9 @@ Upgraded from `gemini-2.0-flash` (retiring March 3, 2026) to `gemini-2.5-flash` 
 
 ---
 
-## 👨‍💻 About the Developer
+## About the Developer
 
 **Thurubilli Sai Manoj**  
-Building tech for Bharat 🇮🇳  
 GitHub: [@ThurubilliSaiManoj2026](https://github.com/ThurubilliSaiManoj2026)
 
 ---
@@ -485,15 +484,13 @@ Contributions are welcome! Here's how:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** — free to use, modify, and distribute.
 
 ---
 
 <div align="center">
-
-Made with ❤️ for India's next generation of coders
 
 ⭐ Star this repo if CodeGuru India helped you!
 
