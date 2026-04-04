@@ -1,4 +1,4 @@
-# CodeGuru India — AI Coding Tutor in Your Language
+# CodeGuru India —> AI Coding Tutor in Your Language
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Live-28C840?style=for-the-badge)
 
-**The first AI-powered multilingual coding tutor built for Indian students.**  
+**The AI-powered multilingual coding tutor built for Indian students.**  
 Ask coding questions in Telugu, Tamil, Hindi, Kannada, Marathi, or English — get expert answers instantly, for free.
 
 [🌐 Live App](https://thurubillisaimanoj2026.github.io/Code-Guru-India) · [🔧 API Docs](https://bharat-multilingual-online-coding-tutor.onrender.com/docs) · [📊 Health Check](https://bharat-multilingual-online-coding-tutor.onrender.com)
